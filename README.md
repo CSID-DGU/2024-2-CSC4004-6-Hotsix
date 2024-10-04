@@ -43,9 +43,7 @@
   </tr>
 </table>
 
-<h2>Open Source</h2>
 
 
-<h2>Reference</h2>
 
 
