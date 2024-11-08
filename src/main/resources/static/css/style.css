@@ -1,0 +1,204 @@
+/* 헤더 스타일 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    background-color: #111;
+    color: white;
+  }
+  
+  .logo img {
+    height: 24px;
+  }
+  
+  .nav a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  
+  .tags button {
+    background: none;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 20px;
+    padding: 6px 12px;
+    margin: 0 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .tags button:hover {
+    background-color: #555;
+  }
+  
+  .auth button {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 20px;
+  }
+  
+  .signup {
+    color: #ff3e57; /* 회원가입 버튼 색상 */
+  }
+
+  
+  /* 캐러셀 섹션 */
+.carousel-section {
+    margin-top: 30px; /* 섹션 간격을 주기 위해 여백 추가 */
+    color: black;
+    padding: 20px;
+  }
+  
+  .carousel-section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .carousel-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    justify-content: center;
+}
+  
+  .carousel-content {
+    display: flex;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    width: 80%;
+  }
+  
+  .carousel-item {
+    min-width: 300px;
+    margin-right: 10px;
+    background-color: #333;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    height: 240px;
+  }
+  
+  /* 화살표 버튼 공통 스타일 */
+  .carousel-button {
+    background-color: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+  
+  .prev {
+    left: 75px;
+  }
+  
+  .next {
+    right: 75px;
+  }
+
+  /* Login page styles */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.login-form label {
+  margin: 10px 0 5px;
+}
+
+.login-form input {
+  padding: 8px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-form button {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-form button:hover {
+  background-color: #555;
+}
+
+/* Signup 페이지 스타일 */
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.signup-form label {
+  margin: 10px 0 5px;
+}
+
+.signup-form input {
+  padding: 8px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.signup-form button {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.signup-form button:hover {
+  background-color: #555;
+}
