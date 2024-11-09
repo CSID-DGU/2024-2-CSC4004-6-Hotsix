@@ -1,24 +1,39 @@
 // Login 컴포넌트
 function Login() {
-    const [name, setName] = React.useState('');
-    const [email, setEmail] = React.useState('');
+    const [id, setId] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
-    const handleNameChange = (event) => setName(event.target.value);
-    const handleEmailChange = (event) => setEmail(event.target.value);
+    const handleIdChange = (event) => setId(event.target.value);
+    const handlePasswordChange = (event) => setPassword(event.target.value);
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        // 전송할 데이터를 객체로 정의
-        const data = { name, email };
+        const formData = new URLSearchParams();
+        formData.append('id', id);
+        formData.append('password', password);
+        const data = { id, password };
+
+
+        // //서버에 Get 요청 보내기 (model의 attribute 초기화)
+        // React.useEffect(() => {
+        //     fetch('/login/init')
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             // 가져온 초기 데이터를 React 상태에 설정
+        //             setId(data.id || '');
+        //             setPassword(data.password || '');
+        //         })
+        //         .catch(error => console.error('초기 데이터 로드 실패:', error));
+        // }, []);
 
         // 서버의 특정 URL로 POST 요청 보내기
-        fetch('', {
+        fetch('login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data), // 데이터를 JSON 문자열로 변환하여 전송
+            body: formData
         })
             .then(response => {
                 if (!response.ok) {
@@ -34,13 +49,13 @@ function Login() {
             });
     };
   return (
-    React.createElement('div', { className: 'login-container' },
+    React.createElement('div', { className: 'login-container', onSubmit: handleSubmit },
       React.createElement('h2', null, '로그인'),
       React.createElement('form', { className: 'login-form' },
-        React.createElement('label', null, 'Username:'),
-        React.createElement('input', { type: 'text', name: 'username', required: true }),
+        React.createElement('label', null, 'ID : '),
+        React.createElement('input', { type: 'text', name: 'id', value:id, required: true, onChange:handleIdChange}),
         React.createElement('label', null, 'Password:'),
-        React.createElement('input', { type: 'password', name: 'password', required: true }),
+        React.createElement('input', { type: 'password', name: 'password',value:password, required: true,onChange:handlePasswordChange }),
         React.createElement('button', { type: 'submit' }, '로그인')
       )
     )
