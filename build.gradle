@@ -24,16 +24,29 @@ repositories {
 }
 
 dependencies {
+<<<<<<< HEAD
 //	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+=======
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+>>>>>>> c48e998e9f13fc5aaeaf09cce9eb98c8b1002321
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.session:spring-session-core'
 	compileOnly 'org.projectlombok:lombok'
+<<<<<<< HEAD
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+=======
+	annotationProcessor 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+	implementation 'org.hibernate:hibernate-validator:8.0.1.Final'
+>>>>>>> c48e998e9f13fc5aaeaf09cce9eb98c8b1002321
 }
 
 tasks.named('test') {
