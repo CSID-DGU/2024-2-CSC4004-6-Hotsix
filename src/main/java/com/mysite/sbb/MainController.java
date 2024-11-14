@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class MainController {
 
-	@GetMapping("/sbb")
+	@GetMapping("/어디 갈래?")
 	@ResponseBody
 	public String index() {
-		return "안녕하세요 sbb에 오신것을 환영합니다.";
+		return "데이트 코스 추천 플랫폼 \"어디 갈래?\"입니다!";
 	}
 
 	@GetMapping("/")
