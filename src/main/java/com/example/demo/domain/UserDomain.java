@@ -1,10 +1,7 @@
 package com.example.demo.domain;
 
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -18,6 +15,7 @@ import java.util.Date;
 @Setter
 @Getter
 @AllArgsConstructor
+@Entity
 public class UserDomain {
     //userNum (유저 일련번호, PK)
     @Id
