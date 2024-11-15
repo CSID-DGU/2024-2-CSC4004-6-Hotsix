@@ -6,23 +6,22 @@ import com.example.demo.service.UserSer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 @org.springframework.stereotype.Controller
 public class Controller {
     private final UserSer userSer;
 
-//    @GetMapping("/")
-//    public  String root(){return  "redirect:homepage";}
+    @GetMapping("/")
+    public  String root(){return  "redirect:Homepage";}
 
     //홈페이지 이동
-    @GetMapping("/")
-    public String homepage(){
+    @GetMapping("/homePage")
+    public String index(){
         return "index";
     }
 
@@ -57,8 +56,8 @@ public class Controller {
         HttpSession session = httpServletRequest.getSession(true);
         //세션 아이디 설정
 //        session.setAttribute("num",.getNum());
-
         //세션 유지 기간 : 30분
+
         session.setMaxInactiveInterval(1800);
 
         return "redirect:/";
@@ -66,27 +65,14 @@ public class Controller {
 
 
 
-//    //SignUp 페이지 요청
-//    @GetMapping("signUp")
-//    public String SignUp(){
-//        return "signUp";
-//    }
-
-    @PostMapping("signUp")
-    @ResponseBody
-    public ResponseEntity<String> Signup(@RequestBody UserDomain signUpReq, BindingResult bindingResult){
-
-        //회원가입 성공
-        if(userSer.createUser(signUpReq)){
-            return ResponseEntity.ok("회원가입이 완료되었습니다.");
-        }
-        //회원가입 실패
-        else {
-            bindingResult.reject("DuplicatedId","이미 존재하는 아이디입니다.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 아이디입니다.");
-        }
+    //SignUp 페이지 요청
+    @GetMapping("signUp")
+    public String SignUp(){
+        return "signUp";
     }
 
+//    @PostMapping("SignUp")
+//    public String Signup(@ModelAttribute("signUpRequest"))
 
 
 }
