@@ -5,6 +5,8 @@ import com.example.demo.repository.UserRep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class UserSer {
@@ -18,11 +20,15 @@ public class UserSer {
 
         //아이디 중복 체크
         if(!checkIdDuplicated(user.getId())){
-            this.userRep.save(user);  //DB로 전송
+            userRep.save(user);  //DB로 전송
             return true;
         }
         else {return false;}
 
     }
+    public Optional<UserDomain> optionalUserDomain(String id){
+        return userRep.findById(id);
+    }
+
 
 }

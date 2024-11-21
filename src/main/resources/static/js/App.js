@@ -1,17 +1,27 @@
 // Login 컴포넌트
 function Login() {
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
 
-  const handleNameChange = (event) => setName(event.target.value);
-  const handleEmailChange = (event) => setEmail(event.target.value);
+    // 폼 리셋 함수
+    const resetForm = () => {
+        setId('');
+        setPassword('');
+    };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = { name, email };
+    //변수
+    const [id, setId] = React.useState('');
+    const [password, setPassword] = React.useState('');
+
+    //handleChange
+    const handleIdChange = (event) => setId(event.target.value);
+    const handlePasswordChange = (event) => setPassword(event.target.value);
+
+    //handleSubmit
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = { id,password};
 
     // 서버의 특정 URL로 POST 요청 보내기
-    fetch('https://your-server-url.com/api/saveData', {
+    fetch('/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,26 +30,46 @@ function Login() {
     })
     .then(response => {
       if (!response.ok) {
-        throw new Error('네트워크 응답이 올바르지 않습니다');
+          //아이디 또는 비밀번호 오류
+          if(error.response.data === "ID does not exist" || error.response.data === "Invalid Password"){
+              window.alert("아이디 또는 비밀번호가 틀렸습니다.");
+              resetForm();
+          }
+          else {
+              //바인딩 오류
+              window.alert("Error");
+              window.location.href = '/';
+          }
       }
-      return response.json(); // JSON 형태로 응답 받기
+      //로그인 성공 시
+      else {
+          window.location.href = '/';
+          //여기다가 로그인 성공 시 메인 화면 구현하시면 됩니다.
+
+      }
     })
-    .then(data => {
-      console.log('성공:', data); // 요청 성공 시 응답 데이터 처리
-    })
-    .catch(error => {
-      console.error('에러 발생:', error); // 요청 실패 시 에러 처리
-    });
   };
 
   return (
     React.createElement('div', { className: 'login-container' },
       React.createElement('h2', null, '로그인'),
       React.createElement('form', { className: 'login-form' },
-        React.createElement('label', null, 'Username:'),
-        React.createElement('input', { type: 'text', name: 'username', required: true }),
-        React.createElement('label', null, 'Password:'),
-        React.createElement('input', { type: 'password', name: 'password', required: true }),
+          React.createElement('label', null, 'ID: '),
+          React.createElement('input', {
+              type: 'text',
+              name: 'id',
+              // value: id,
+              onChange: handleIdChange,
+              required: true
+          }),
+          React.createElement('label', null, '비밀번호: '),
+          React.createElement('input', {
+              type: 'password',
+              name: 'password',
+              // value: password,
+              onChange: handlePasswordChange,
+              required: true
+          }),
         React.createElement('button', { type: 'submit' }, '로그인')
       )
     )
@@ -90,11 +120,13 @@ function Signup() {
         })
       .then(response => {
           if (response.ok) {
+              window.alert("회원가입이 완료되었습니다!");
               window.location.href = '/'; //가입 성공 응답시 메인 페이지로 이동
-          } else {
+          }
+          else {
              window.alert("이미 존재하는 아이디입니다!");
              // 가입 실패 시 현재 페이지 새로고침
-             resetForm();
+             // resetForm();
           }
       })
       .catch(error => {
