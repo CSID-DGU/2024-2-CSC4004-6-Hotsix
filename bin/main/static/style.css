@@ -5,3 +5,48 @@ textarea {
 input[type=submit] {
 	margin-top: 10px;
 }
+
+/* Navbar custom styles */
+.navbar {
+    margin-bottom: 20px;
+}
+
+/* Card layout custom styles */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+/* Container custom spacing */
+.container {
+    max-width: 1200px;
+}
+
+/* Text alignment and margin adjustments */
+h4 {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+/* Adjust the background and text for cards */
+.card-body {
+    background-color: #6c757d; /* Matches Bootstrap's secondary color */
+    color: white;
+    text-align: center;
+}
+
+/* Buttons styling */
+.btn {
+    border-radius: 20px;
+}
+
+/* Global font settings */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+}
