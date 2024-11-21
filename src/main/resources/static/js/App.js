@@ -1,18 +1,27 @@
 // Login 컴포넌트
 function Login() {
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
 
+    // 폼 리셋 함수
+    const resetForm = () => {
+        setId('');
+        setPassword('');
+    };
 
-  const handleNameChange = (event) => setName(event.target.value);
-  const handleEmailChange = (event) => setEmail(event.target.value);
+    //변수
+    const [id, setId] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = { name, email };
+    //handleChange
+    const handleIdChange = (event) => setId(event.target.value);
+    const handlePasswordChange = (event) => setPassword(event.target.value);
+
+    //handleSubmit
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = { id,password};
 
     // 서버의 특정 URL로 POST 요청 보내기
-    fetch('https://your-server-url.com/api/saveData', {
+    fetch('/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -21,26 +30,46 @@ function Login() {
     })
     .then(response => {
       if (!response.ok) {
-        throw new Error('네트워크 응답이 올바르지 않습니다');
+          //아이디 또는 비밀번호 오류
+          if(error.response.data === "ID does not exist" || error.response.data === "Invalid Password"){
+              window.alert("아이디 또는 비밀번호가 틀렸습니다.");
+              resetForm();
+          }
+          else {
+              //바인딩 오류
+              window.alert("Error");
+              window.location.href = '/';
+          }
       }
-      return response.json(); // JSON 형태로 응답 받기
+      //로그인 성공 시
+      else {
+          window.location.href = '/';
+          //여기다가 로그인 성공 시 메인 화면 구현하시면 됩니다.
+
+      }
     })
-    .then(data => {
-      console.log('성공:', data); // 요청 성공 시 응답 데이터 처리
-    })
-    .catch(error => {
-      console.error('에러 발생:', error); // 요청 실패 시 에러 처리
-    });
   };
 
   return (
     React.createElement('div', { className: 'login-container' },
       React.createElement('h2', null, '로그인'),
       React.createElement('form', { className: 'login-form' },
-        React.createElement('label', null, 'Username:'),
-        React.createElement('input', { type: 'text', name: 'username', required: true }),
-        React.createElement('label', null, 'Password:'),
-        React.createElement('input', { type: 'password', name: 'password', required: true }),
+          React.createElement('label', null, 'ID: '),
+          React.createElement('input', {
+              type: 'text',
+              name: 'id',
+              // value: id,
+              onChange: handleIdChange,
+              required: true
+          }),
+          React.createElement('label', null, '비밀번호: '),
+          React.createElement('input', {
+              type: 'password',
+              name: 'password',
+              // value: password,
+              onChange: handlePasswordChange,
+              required: true
+          }),
         React.createElement('button', { type: 'submit' }, '로그인')
       )
     )
@@ -51,103 +80,112 @@ function Login() {
 function Signup() {
 
 
-    const [formData, setFormData] = useState({
-        id: '',
-        password: '',
-        userName: '',
-        birthDate: '',
-        phoneNum: '',
+    // 폼 리셋 함수
+        const resetForm = () => {
+            setId('');
+            setPassword('');
+            setUserName('');
+            setBirthDate('');
+            setPhoneNum('');
+        };
+
+    //변수
+    const [id, setId] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [userName, setUserName] = React.useState('');
+    const [birthDate, setBirthDate] = React.useState('');
+    const [phoneNum, setPhoneNum] = React.useState('');
+//  const [email, setEmail] = React.useState('');
+
+    //handleChange
+    const handleIdChange = (event) => setId(event.target.value);
+    const handlePasswordChange = (event) => setPassword(event.target.value);
+    const handleUserNameChange = (event) => setUserName(event.target.value);
+    const handleBirthDateChange = (event) => setBirthDate(event.target.value);
+    const handlePhoneNumChange = (event) => setPhoneNum(event.target.value);
+//  const handleEmailChange = (event) => setEmail(event.target.value);
+
+    //handleSubmit
+    const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = { id,password,userName,birthDate,phoneNum };
+
+    // 서버의 특정 URL로 POST 요청 보내기
+    fetch('/signUp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data), // 데이터를 JSON 문자열로 변환하여 전송
+        })
+      .then(response => {
+          if (response.ok) {
+              window.alert("회원가입이 완료되었습니다!");
+              window.location.href = '/'; //가입 성공 응답시 메인 페이지로 이동
+          }
+          else {
+             window.alert("이미 존재하는 아이디입니다!");
+             // 가입 실패 시 현재 페이지 새로고침
+             // resetForm();
+          }
+      })
+      .catch(error => {
+          console.error('에러 발생:', error);
       });
+}
 
-      const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormData({ ...formData, [name]: value });
-      };
+     return (
 
-      const handleSubmit = async (event) => {
-      event.preventDefault();
+            React.createElement('div', { className: 'signup-container' },
+                React.createElement('h2', null, '회원가입'),
+                React.createElement('form', { className: 'signup-form', onSubmit: handleSubmit },
+                    React.createElement('label', null, 'ID: '),
+                    React.createElement('input', {
+                        type: 'text',
+                        name: 'id',
+                        value: id,
+                        onChange: handleIdChange,
+                        required: true
+                    }),
 
-      try {
-        const response = await fetch('signUp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        });
-      //회원 가입 성공 응답시
-      if(response.ok){
-        React.createElement('App',null);       //메인 페이지로 이동
-        }
-      else  {
-        React.createElement('SignUp',null);    //회원 가입 페이지로 새로고침
-      }
+                    React.createElement('label', null, '비밀번호: '),
+                    React.createElement('input', {
+                        type: 'password',
+                        name: 'password',
+                        value: password,
+                        onChange: handlePasswordChange,
+                        required: true
+                    }),
 
+                    React.createElement('label', null, '이름: '),
+                    React.createElement('input', {
+                        type: 'text',
+                        name: 'userName',
+                        value: userName,
+                        onChange: handleUserNameChange,
+                        required: true
+                    }),
 
+                    React.createElement('label', null, '생년월일: '),
+                    React.createElement('input', {
+                        type: 'date',
+                        name: 'birthDate',
+                        value: birthDate,
+                        onChange: handleBirthDateChange,
+                        required: true
+                    }),
 
+                    React.createElement('label', null, '휴대폰 번호: '),
+                    React.createElement('input', {
+                        type: 'text',
+                        name: 'phoneNum',
+                        value: phoneNum,
+                        onChange: handlePhoneNumChange,
+                        required: true
+                    }),
 
-//  //data 선언
-//  const [id, setId] = React.useState('');
-//  const [password, setPassword] = React.useState('');
-//  const [name, setName] = React.useState('');
-//  const [birthDate, setBirthDate] = React.useState('');
-//  const [phoneNum, setPhoneNum] = React.useState('');
-//
-//
-//  //handleChange
-//  const handleIdChange = (event) => setId(event.target.value);
-//  const handlePasswordChange = (event) => setPassword(event.target.value);
-//  const handleNameChange = (event) => setName(event.target.value);
-//  const handleBirthDateChange = (event) => setBirthDate(event.target.value);
-//  const handlePhoneNumChange = (event) => setPhoneNum(event.target.value);
-//
-//  //submit
-//  const handleSubmit = (event) => {
-//    event.preventDefault();
-//    const data = { name, email };
-//
-//    // 서버의 특정 URL로 POST 요청 보내기
-//    fetch('signUp', {
-//      method: 'POST',
-//      headers: {
-//        'Content-Type': 'application/json',
-//      },
-//      body: JSON.stringify(data), // 데이터를 JSON 문자열로 변환하여 전송
-//    })
-//    .then(response => {
-//      if (!response.ok) {
-//        throw new Error('네트워크 응답이 올바르지 않습니다');
-//      }
-//      return response.json(); // JSON 형태로 응답 받기
-//    })
-//    .then(data => {
-//      console.log('성공:', data); // 요청 성공 시 응답 데이터 처리
-//    })
-//    .catch(error => {
-//      console.error('에러 발생:', error); // 요청 실패 시 에러 처리
-//    });
-//  };
-  return (
-    //입력값 id,password,name,birthDate,phoneNum 입력 받도록 수정
-    React.createElement('div', { className: 'signup-container' },
-      React.createElement('h2', null, '회원가입'),
-      React.createElement('form', { className: 'signup-form' },
-
-        React.createElement('label', null, 'ID: '),
-        React.createElement('input', { type: 'text', name: 'id', value={formData.id}, required: true }),
-
-        React.createElement('label', null, '비밀번호: '),
-        React.createElement('input', { type: 'password', name: 'password', value={formData.password}, required: true }),
-
-        React.createElement('label', null, '이름: '),
-        React.createElement('input', { type: 'text', name: 'userName', value={formData.userName}, required: true }),
-
-        React.createElement('label', null, '생년월일: '),
-        React.createElement('input', { type: 'email', name: 'birthDate', value={formData.birthDate}, required: true }),
-
-        React.createElement('label', null, '휴대폰 번호: '),
-        React.createElement('input', { type: 'text', name: 'phoneNum', value={formData.phoneNum}, required: true }),
-
-        React.createElement('button', { type: 'submit' }, '회원가입')
-      )
+                    React.createElement('button', { type: 'submit' }, '회원가입')
+         )
     )
   );
 }
@@ -195,12 +233,12 @@ function MyPage() {
         )
       ),
       React.createElement('div', { className: 'highlight-section' },
-        highlights.map(highlight =>
+        highlights.map(highlight => 
           React.createElement('div', { className: 'highlight', key: highlight.id })
         )
       ),
       React.createElement('div', { className: 'feed' },
-        posts.map(post =>
+        posts.map(post => 
           React.createElement('div', { className: 'feed-item', key: post.id })
         )
       )
@@ -233,12 +271,12 @@ function ContentCarousel({ title, items }) {
     React.createElement('section', { className: 'carousel-section' },
       React.createElement('h2', null, title),
       React.createElement('div', { className: 'carousel-container' },
-        React.createElement('button', {
-          className: 'carousel-button prev',
+        React.createElement('button', { 
+          className: 'carousel-button prev', 
           onClick: (e) => {
             const container = e.target.closest('.carousel-container').querySelector('.carousel-content');
             scroll('left', container);
-          }
+          } 
         }, '‹'),
         React.createElement('div', { className: `carousel-content carousel-content-${title}` },
           items.map((item, index) =>
@@ -247,12 +285,12 @@ function ContentCarousel({ title, items }) {
             )
           )
         ),
-        React.createElement('button', {
-          className: 'carousel-button next',
+        React.createElement('button', { 
+          className: 'carousel-button next', 
           onClick: (e) => {
             const container = e.target.closest('.carousel-container').querySelector('.carousel-content');
             scroll('right', container);
-          }
+          } 
         }, '›')
       )
     )
@@ -263,7 +301,7 @@ function ContentCarousel({ title, items }) {
 // App 컴포넌트
 function App() {
   const [page, setPage] = React.useState(null);
-
+  
   const toggleHome = () => { setPage(null); };
   const toggleLogin = () => { setPage('login'); };
   const toggleSignup = () => { setPage('signup'); };
@@ -287,13 +325,13 @@ function App() {
         onHomeClick: toggleHome,
         onCommunityClick: toggleCommunity // 커뮤니티 클릭 함수 전달
       }),
-      page === 'login' ?
+      page === 'login' ? 
         React.createElement(Login, null) :
-      page === 'signup' ?
+      page === 'signup' ? 
         React.createElement(Signup, null) :
-      page === 'mypage' ?
+      page === 'mypage' ? 
         React.createElement(MyPage, null) :
-      page === 'form' ?
+      page === 'form' ? 
         React.createElement(MyForm, null) :
       page === 'community' ? // 커뮤니티 페이지 렌더링
         React.createElement(Community, null) :
