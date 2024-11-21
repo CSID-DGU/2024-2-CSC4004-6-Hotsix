@@ -6,73 +6,98 @@ import com.example.demo.service.UserSer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @org.springframework.stereotype.Controller
 public class Controller {
     private final UserSer userSer;
 
-    @GetMapping("/")
-    public  String root(){return  "redirect:Homepage";}
+//    @GetMapping("/")
+//    public  String root(){return  "redirect:homepage";}
 
     //홈페이지 이동
-    @GetMapping("/homePage")
-    public String index(){
+    @GetMapping("/")
+    public String homepage(){
         return "index";
     }
 
     //로그인
-    @GetMapping("login")
-    public String login(Model model){
-        model.addAttribute("loginRequest",new UserDomain());
-        return "login";
-    }
+//    @GetMapping("login")
+//    public String login(Model model){
+//        model.addAttribute("loginRequest",new UserDomain());
+//        return "login";
+//    }
     @PostMapping("login")
-    public String login(@ModelAttribute("loginRequest")UserDomain loginRequest,
+    public ResponseEntity<String> login(@RequestBody UserDomain loginRequest,
                         BindingResult bindingResult,
-                        HttpServletRequest httpServletRequest,
-                        Model model
+                        HttpServletRequest httpServletRequest
                         ) {
-//        UserDomain user = userSer.
 
         //검증 오류가 있는 지 먼저 확인
         if (bindingResult.hasErrors()) {
-            return "login";
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Binding Failed");
         }
 
-        if (loginRequest == null) {
+        //입력받은 id에 해당하는 데이터 가져오기
+        Optional<UserDomain> user = userSer.optionalUserDomain(loginRequest.getId());
+
+        //아이디가 없는 경우
+        if (user == null) {
             bindingResult.reject("SignInError", "아이디 또는 비밀번호가 틀렸습니다.");
-            return "login";
-
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID does not exist");
         }
+        //아이디가 존재
+        else {
+            UserDomain userD = user.get();
+            //비밀번호가 틀린 경우
+            if(userD.getPassword() != loginRequest.getPassword()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Password");
+            }
+            else {
+                //로그인 성공 시
+                //기존 세션 파기
+                httpServletRequest.getSession().invalidate();
+                HttpSession session = httpServletRequest.getSession(true);
 
-        //로그인 성공 시
-        //기존 세션 파기
-        httpServletRequest.getSession().invalidate();
-        HttpSession session = httpServletRequest.getSession(true);
-        //세션 아이디 설정
-//        session.setAttribute("num",.getNum());
-        //세션 유지 기간 : 30분
+                //세션 아이디 설정
+                //session.setAttribute("num",.getNum());
 
-        session.setMaxInactiveInterval(1800);
+                //세션 유지 기간 : 30분
+                session.setMaxInactiveInterval(1800);
 
-        return "redirect:/";
+                return ResponseEntity.ok("로그인 성공");
+                }
+            }
     }
 
+//    //SignUp 페이지 요청
+//    @GetMapping("signUp")
+//    public String SignUp(){
+//        return "signUp";
+//    }
 
-
-    //SignUp 페이지 요청
-    @GetMapping("signUp")
-    public String SignUp(){
-        return "signUp";
+    @PostMapping("signUp")
+    @ResponseBody
+    public ResponseEntity<String> Signup(@RequestBody UserDomain signUpReq, BindingResult bindingResult){
+        System.out.println("Received Request: " + signUpReq);
+        //회원가입 성공
+        if(userSer.createUser(signUpReq)){
+            return ResponseEntity.ok("SignUp completed");
+        }
+        //회원가입 실패
+        else {
+            bindingResult.reject("DuplicatedId","이미 존재하는 아이디입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DuplicatedId");
+        }
     }
 
-//    @PostMapping("SignUp")
-//    public String Signup(@ModelAttribute("signUpRequest"))
 
 
 }

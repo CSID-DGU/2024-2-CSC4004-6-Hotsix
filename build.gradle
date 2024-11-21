@@ -31,11 +31,14 @@ dependencies {
 	implementation 'org.springframework.session:spring-session-core'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	compileOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	implementation 'org.hibernate:hibernate-validator:8.0.1.Final'
+////	OPEN API  의존성 추가
+//	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+//	implementation 'com.fasterxml.jackson.core:jackson-databind' // json 파싱
 }
 
 tasks.named('test') {
