@@ -350,61 +350,169 @@ h3 {
 }
 
 /* Community 페이지 스타일 */
-.community-container {
+
+#container.community {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.content-area {
   display: flex;
+  justify-content: space-between;
+}
+
+/* left-side */
+.leftside {
+  flex-basis: 10%;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-  padding: 20px;
+}
+.leftside .card {
+  border: 1px solid #d6d6d6;
+  background-color: #f9f9f9;
+  padding: 15px;
+}
+.leftside .ads img {
+  width: 100%;
+  height: auto;
 }
 
-.sidebar {
-  width: 200px;
-  background-color: #f5f5f5;
-  padding: 20px;
-  border-radius: 8px;
-}
 
-.profile {
+.logged {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  margin-bottom: 20px;
 }
 
+.picture {
+  width: 60px;
+  height: 60px;
+  border-radius: 80%;
+  margin-bottom: 10px;
+}
 
-.profile-links p {
-  margin: 8px 0;
+.nickname {
+  font-size: 16px;
+  font-weight: bold;
   color: #333;
-  cursor: pointer;
+  margin-bottom: 10px;
 }
 
-.main-content {
-  flex: 1;
+.buttons {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 10px;
 }
 
-.board-grid {
+.buttons li {
+  display: inline-block;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 8px 12px;
+  border: 1px solid #d6d6d6;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #444;
+  font-size: 13px;
+  text-align: center;
+}
+
+.button-link:hover {
+  background-color: #f0f0f0;
+}
+
+.menus {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menus a {
+  text-decoration: none;
+  color: #000;
+  font-size: 14px;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+.menus a:hover {
+  background-color: #f0f0f0;
+}
+
+
+
+/* mid */
+.main {
+  flex-basis: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.banner {
+  margin-bottom: 20px;
+  border: 1px solid #d6d6d6;
+}
+.banner a img {
+  width: 100%;
+  height: auto;
+}
+.card-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+  row-gap: 10px;
+}
+.card-container .card {
+  height: 300px;
+  border: 1px solid #d6d6d6;
+  background-color: #f9f9f9;
+  width: 50% - 10px
+  padding: 5px;
 }
 
-.board {
-  background-color: #ffffff;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  text-align: center;
-  font-weight: bold;
-}
-
-.right-sidebar {
-  width: 250px;
+/* right-side */
+.rightside {
+  width: 20%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
-
-.right-sidebar > div {
-  background-color: #f5f5f5;
+.rightside .card {
+  border: 1px solid #d6d6d6;
+  background-color: #f9f9f9;
   padding: 15px;
-  border-radius: 8px;
-  text-align: center;
+}
+.rightside .search {
+  width: 100%;
+  box-sizing: border-box;
+
+/* card 스타일 */
+.card {
+  margin-bottom: 10px;
+  width: 100%
+}
+.board .article, .board .list {
+  display: block;
+  padding: 10px;
+  border-top: 1px solid #e3e3e3;
+  color: #444;
+}
+.board .article p.title {
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.board .article p.small, .board .list p {
+  line-height: 16px;
+  color: #737373;
+  font-size: 12px;
 }
