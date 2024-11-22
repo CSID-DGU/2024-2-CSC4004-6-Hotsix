@@ -123,14 +123,19 @@ function Signup() {
               window.alert("회원가입이 완료되었습니다!");
               window.location.href = '/'; //가입 성공 응답시 메인 페이지로 이동
           }
-          else {
-             window.alert("이미 존재하는 아이디입니다!");
-             // 가입 실패 시 현재 페이지 새로고침
-             // resetForm();
-          }
+//          else if(err.response.data("body : DuplicatedId")) {
+//             window.alert("이미 존재하는 아이디입니다!");
+//             // 가입 실패 시 현재 페이지 새로고침
+//             resetForm();
+//          }
       })
-      .catch(error => {
-          console.error('에러 발생:', error);
+      .catch(err => {
+        if (error.response){
+            window.alert("이미 존재하는 아이디입니다!");
+            // 가입 실패 시 현재 페이지 새로고침
+            resetForm();
+        }
+        console.error('에러 발생:', error);
       });
 }
 
