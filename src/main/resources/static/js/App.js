@@ -1,5 +1,5 @@
 // Header 컴포넌트 수정
-function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick }) {
+function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick }) {
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
   const toggleDropdown = () => {
@@ -7,17 +7,13 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, on
   };
 
   const closeDropdown = (event) => {
-    // 드롭다운 외부를 클릭했을 때만 닫기
     if (!event.target.closest('.profile-icon') && isDropdownOpen) {
       setIsDropdownOpen(false);
     }
   };
 
-  // 컴포넌트 마운트 시 document에 이벤트 리스너 추가
   React.useEffect(() => {
     document.addEventListener('click', closeDropdown);
-
-    // 컴포넌트 언마운트 시 이벤트 리스너 제거
     return () => {
       document.removeEventListener('click', closeDropdown);
     };
@@ -30,7 +26,8 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, on
           React.createElement('img', { src: 'image.jpeg', alt: '어디갈래 로고' })
         ),
         React.createElement('nav', { className: 'nav' },
-          React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); } }, '커뮤니티')
+          React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); } }, '커뮤니티'),
+          React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onSurveyClick(); } }, '설문조사') // 설문조사 추가
         )
       ),
       React.createElement('div', { className: 'right-group' },
@@ -48,6 +45,7 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, on
     )
   );
 }
+
 
 
 
@@ -101,6 +99,8 @@ function Login() {
   );
 }
 
+
+
 // Signup 컴포넌트
 function Signup() {
   return (
@@ -118,6 +118,189 @@ function Signup() {
     )
   );
 }
+
+//SurveyForm 컴포넌트
+function SurveyForm() {
+  const [formData, setFormData] = React.useState({
+    mbti: '',
+    meetingFrequency: '',
+    budgetRange: '',
+    relationshipDate: '',
+    activityPreference: '',
+    mustVisitCourse: '',
+    preferredCourse: '',
+    transportation: '',
+    startTime: '',
+    mustVisitArea: '',
+    preferredArea: '',
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log('Survey Data:', formData);
+    // 서버에 POST 요청 예제
+    fetch('https://your-server-url.com/api/survey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log('성공:', data))
+      .catch((error) => console.error('에러:', error));
+  };
+
+  return React.createElement(
+    'div',
+    { className: 'survey-container' },
+    React.createElement(
+      'form',
+      { className: 'survey-form', onSubmit: handleSubmit },
+      // MBTI 입력
+      React.createElement('label', null, '1. MBTI'),
+      React.createElement('input', {
+        type: 'text',
+        name: 'mbti',
+        value: formData.mbti,
+        onChange: handleChange,
+        placeholder: '예: ENFP',
+        required: true,
+      }),
+
+      // 주당 만남 횟수
+      React.createElement('label', null, '2. 주당 만남 횟수'),
+      React.createElement('input', {
+        type: 'number',
+        name: 'meetingFrequency',
+        value: formData.meetingFrequency,
+        onChange: handleChange,
+        placeholder: '숫자 입력',
+        required: true,
+      }),
+
+      // 평균 예산 범위
+      React.createElement('label', null, '3. 평균 예산 범위'),
+      React.createElement('input', {
+        type: 'text',
+        name: 'budgetRange',
+        value: formData.budgetRange,
+        onChange: handleChange,
+        placeholder: '예: 10만원~20만원',
+        required: true,
+      }),
+
+      // 사귄 날짜
+      React.createElement('label', null, '4. 사귄 날짜'),
+      React.createElement('input', {
+        type: 'date',
+        name: 'relationshipDate',
+        value: formData.relationshipDate,
+        onChange: handleChange,
+        required: true,
+      }),
+
+      // 액티비티 선호 유무
+      React.createElement('label', null, '5. 액티비티 선호 유무'),
+      React.createElement(
+        'select',
+        {
+          name: 'activityPreference',
+          value: formData.activityPreference,
+          onChange: handleChange,
+          required: true,
+        },
+        React.createElement('option', { value: '' }, '선택하세요'),
+        React.createElement('option', { value: 'yes' }, '예'),
+        React.createElement('option', { value: 'no' }, '아니요')
+      ),
+
+      // 필수 코스
+      React.createElement('label', null, '6. 필수 코스'),
+      React.createElement('textarea', {
+        name: 'mustVisitCourse',
+        value: formData.mustVisitCourse,
+        onChange: handleChange,
+        placeholder: '예: 롯데월드, 한강공원',
+        rows: 3,
+        required: true,
+      }),
+
+      // 선호 코스
+      React.createElement('label', null, '7. 선호 코스'),
+      React.createElement('textarea', {
+        name: 'preferredCourse',
+        value: formData.preferredCourse,
+        onChange: handleChange,
+        placeholder: '예: 카페, 레스토랑',
+        rows: 3,
+        required: true,
+      }),
+
+      // 교통 수단
+      React.createElement('label', null, '8. 교통 수단'),
+      React.createElement(
+        'select',
+        {
+          name: 'transportation',
+          value: formData.transportation,
+          onChange: handleChange,
+          required: true,
+        },
+        React.createElement('option', { value: '' }, '선택하세요'),
+        React.createElement('option', { value: 'car' }, '자동차'),
+        React.createElement('option', { value: 'public' }, '대중교통'),
+        React.createElement('option', { value: 'walk' }, '도보')
+      ),
+
+      // 데이트 시작 예정 시간
+      React.createElement('label', null, '9. 데이트 시작 예정 시간'),
+      React.createElement('input', {
+        type: 'time',
+        name: 'startTime',
+        value: formData.startTime,
+        onChange: handleChange,
+        required: true,
+      }),
+
+      // 필수 지역
+      React.createElement('label', null, '10. 필수 지역'),
+      React.createElement('textarea', {
+        name: 'mustVisitArea',
+        value: formData.mustVisitArea,
+        onChange: handleChange,
+        placeholder: '예: 강남, 홍대',
+        rows: 2,
+        required: true,
+      }),
+
+      // 선호 지역
+      React.createElement('label', null, '11. 선호 지역'),
+      React.createElement('textarea', {
+        name: 'preferredArea',
+        value: formData.preferredArea,
+        onChange: handleChange,
+        placeholder: '예: 이태원, 신촌',
+        rows: 2,
+        required: true,
+      }),
+
+      // 저장 버튼
+      React.createElement(
+        'button',
+        { type: 'submit' },
+        '저장'
+      )
+    )
+  );
+}
+
+
+
+
 
 
 // MyPage 컴포넌트
@@ -220,6 +403,8 @@ function Sidebar() {
   );
 }
 
+
+
 // 커뮤니티 컴포넌트
 function Community() {
   return (
@@ -232,12 +417,6 @@ function Community() {
               React.createElement('img', { src: '#', className: 'picture', alt: 'User' }),
               React.createElement('p', { className: 'nickname' }, 'USER NAME'),
               React.createElement('ul', { className: 'buttons' },
-                React.createElement('li', null, 
-                  React.createElement('a', { href: '/my', className: 'button-link' }, '내 정보')
-                ),
-                React.createElement('li', null, 
-                  React.createElement('a', { href: '/user/logout', className: 'button-link' }, '로그아웃')
-                )
               )
             )
           ),
@@ -248,29 +427,9 @@ function Community() {
               React.createElement('a', { href: '/myscrap', className: 'myscrap' }, '내 스크랩')
             )
           ),
-          React.createElement('div', { className: 'card' },
-            React.createElement('div', { className: 'ads' },
-              React.createElement('a', { href: '#' },
-                React.createElement('img', { src: '#', alt: 'Ad 1' })
-              )
-            )
-          ),
-          React.createElement('div', { className: 'card' },
-            React.createElement('div', { className: 'ads' },
-              React.createElement('a', { href: '#' },
-                React.createElement('img', { src: '#', alt: 'Ad 2' })
-              )
-            )
-          )
         ),
         // mid
         React.createElement('div', { className: 'main' },
-          // Banner 
-          React.createElement('div', { className: 'banner' },
-            React.createElement('a', { href: '#' },
-              React.createElement('img', { src: '#', alt: 'Banner ad' })
-            )
-          ),
           // main-card
           React.createElement('div', { className: 'card-container' },
             React.createElement('div', { className: 'card' },
@@ -313,9 +472,6 @@ function Community() {
         ),
         // right-side
         React.createElement('div', { className: 'rightside' },
-          React.createElement('div', { className: 'search' },
-            React.createElement('input', { type: 'text', name: 'keyword', placeholder: 'search community', className: 'text' })
-          ),
           React.createElement('div', { className: 'card' },
             React.createElement('div', { className: 'board' },
               React.createElement('h3', null, React.createElement('a', { href: '#' }, '실시간 인기 글')),
@@ -341,6 +497,8 @@ function Community() {
 }
 
 
+
+
 // App 컴포넌트
 function App() {
   const [page, setPage] = React.useState(null);
@@ -352,6 +510,7 @@ function App() {
   const toggleSignup = () => { setPage('signup'); };
   const toggleMyPage = () => { setPage('mypage'); };
   const toggleCommunity = () => { setPage('community'); };
+  const toggleSurvey = () => { setPage('survey'); }; // 설문조사 페이지 전환
 
   const handleLogin = () => {
     setIsLoggedIn(true); // 로그인 상태 설정
@@ -380,7 +539,8 @@ function App() {
         onSignupClick: toggleSignup,
         onMyPageClick: toggleMyPage,
         onHomeClick: toggleHome,
-        onCommunityClick: toggleCommunity
+        onCommunityClick: toggleCommunity,
+        onSurveyClick: toggleSurvey // 설문조사 페이지 연결
       }),
       page === 'login' ? 
         React.createElement(Login, { onLogin: handleLogin }) : // 로그인 시 handleLogin 호출
@@ -390,12 +550,17 @@ function App() {
         React.createElement(MyPage, null) :
       page === 'community' ? 
         React.createElement(Community, null) :
+      page === 'survey' ? 
+        React.createElement(SurveyForm, null) : // 설문조사 페이지 렌더링
         sections.map((section, index) =>
           React.createElement(ContentCarousel, { key: index, title: section.title, items: section.items })
         )
     )
   );
 }
+
+
+
 
 
 // Myform 컴포넌트
