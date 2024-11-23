@@ -738,13 +738,13 @@ function Community() {
     );
 }
 
-//CommunityBoard 컴포넌트
-function CommunityBoard(){
-
-    return(
-        React.createElement('');
-    );
-}
+////CommunityBoard 컴포넌트
+//function CommunityBoard(){
+//
+//    return(
+//        React.createElement('');
+//    );
+//}
 
 
 
