@@ -220,7 +220,7 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, on
     React.createElement('header', { className: 'header' },
       React.createElement('div', { className: 'left-group' },
         React.createElement('div', { className: 'logo', onClick: onHomeClick },
-          React.createElement('img', { src: 'image.jpeg', alt: '어디갈래 로고' })
+          React.createElement('img', { src: '../asset/Images/image.jpeg', alt: '어디갈래 로고' })
         ),
         React.createElement('nav', { className: 'nav' },
           React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); } }, '커뮤니티'),
@@ -231,7 +231,7 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, on
         React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onLoginClick(); }, className: 'auth-link' }, '로그인'),
         React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onSignupClick(); }, className: 'auth-link' }, '회원가입'),
         React.createElement('div', { className: 'profile-icon', onClick: toggleDropdown },
-          React.createElement('img', { src: 'image.jpeg', alt: '' }),
+          React.createElement('img', { src: '../asset/Images/image.jpeg', alt: '' }),
           isDropdownOpen &&
           React.createElement('div', { className: 'dropdown-menu' },
             React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onMyPageClick(); } }, '마이페이지'),
@@ -633,7 +633,7 @@ function Community() {
                 React.createElement('div', { className: 'leftside' },
                     React.createElement('div', { className: 'card' },
                         React.createElement('form', { className: 'logged' },
-                            React.createElement('img', { src: '#', className: 'picture', alt: 'User' }),
+                            React.createElement('img', { src: '../asset/Images/image.jpeg', className: 'picture', alt: 'User' }),
                             React.createElement('p', { className: 'nickname' }, 'USER NAME'),
                             React.createElement('ul', { className: 'buttons' },
                                 React.createElement('li', null,
@@ -652,27 +652,25 @@ function Community() {
                             React.createElement('a', { href: '/myscrap', className: 'myscrap' }, '내 스크랩')
                         )
                     ),
-                    React.createElement('div', { className: 'card' },
-                        React.createElement('div', { className: 'ads' },
-                            React.createElement('a', { href: '#' },
-                                React.createElement('img', { src: '#', alt: 'Ad 1' })
-                            )
+
+                    React.createElement('div', { className: 'ads' },
+                        React.createElement('a', { href: '#' },
+                            React.createElement('img', { src: '../asset/Images/image.jpeg', alt: 'Ad 1' })
                         )
                     ),
-                    React.createElement('div', { className: 'card' },
-                        React.createElement('div', { className: 'ads' },
-                            React.createElement('a', { href: '#' },
-                                React.createElement('img', { src: '#', alt: 'Ad 2' })
-                            )
+
+                    React.createElement('div', { className: 'ads' },
+                        React.createElement('a', { href: '#' },
+                            React.createElement('img', { src: '../asset/Images/image.jpeg', alt: 'Ad 2' })
                         )
-                    )
+                    ),
                 ),
                 // mid
                 React.createElement('div', { className: 'main' },
                     // Banner
                     React.createElement('div', { className: 'banner' },
                         React.createElement('a', { href: '#' },
-                            React.createElement('img', { src: '#', alt: 'Banner ad' })
+                            React.createElement('img', { src: '../asset/Images/image.jpeg', alt: 'Banner ad' })
                         )
                     ),
                     // main-card
@@ -682,7 +680,12 @@ function Community() {
                                 React.createElement('h3', null, React.createElement('a', { href: '#' }, '자유게시판')),
                                 React.createElement('a', { className: 'list', href: '#' },
                                     React.createElement('time', null, '3분 전'),
-                                    React.createElement('p', null, 'XXXXXX')
+                                    React.createElement('p', null, 'XXXXXX'),
+                                ),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '1분 전'),
+                                    React.createElement('p', null, 'XXXXXX'),
+
                                 ),
                             )
                         ),
@@ -692,7 +695,12 @@ function Community() {
                                 React.createElement('a', { className: 'list', href: '#' },
                                     React.createElement('time', null, '2분 전'),
                                     React.createElement('p', null, 'XXXXXX')
-                                )
+                                ),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '1분 전'),
+                                    React.createElement('p', null, 'XXXXXX'),
+
+                                ),
                             )
                         ),
                         React.createElement('div', { className: 'card' },
@@ -701,7 +709,12 @@ function Community() {
                                 React.createElement('a', { className: 'list', href: '#' },
                                     React.createElement('time', null, '1분 전'),
                                     React.createElement('p', null, 'XXXXXX')
-                                )
+                                ),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '1분 전'),
+                                    React.createElement('p', null, 'XXXXXX'),
+
+                                ),
                             )
                         ),
                         React.createElement('div', { className: 'card' },
@@ -710,7 +723,12 @@ function Community() {
                                 React.createElement('a', { className: 'list', href: '#' },
                                     React.createElement('time', null, '5분 전'),
                                     React.createElement('p', null, 'XXXXXX')
-                                )
+                                ),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '1분 전'),
+                                    React.createElement('p', null, 'XXXXXX'),
+
+                                ),
                             )
                         )
                     )
@@ -726,12 +744,20 @@ function Community() {
                             React.createElement('a', { className: 'article', href: '#' },
                                 React.createElement('p', { className: 'title' }, 'XXX'),
                                 React.createElement('p', { className: 'small' }, 'XXXXXX')
+                            ),
+                            React.createElement('a', { className: 'article', href: '#' },
+                                React.createElement('p', { className: 'title' }, 'XXX'),
+                                React.createElement('p', { className: 'small' }, 'XXXXXX')
                             )
                         )
                     ),
                     React.createElement('div', { className: 'card' },
                         React.createElement('div', { className: 'board' },
                             React.createElement('h3', null, React.createElement('a', { href: '#' }, 'HOT 게시물')),
+                            React.createElement('a', { className: 'list', href: '#' },
+                                React.createElement('time', null, '10분 전'),
+                                React.createElement('p', null, 'XXXXXX')
+                            ),
                             React.createElement('a', { className: 'list', href: '#' },
                                 React.createElement('time', null, '10분 전'),
                                 React.createElement('p', null, 'XXXXXX')
