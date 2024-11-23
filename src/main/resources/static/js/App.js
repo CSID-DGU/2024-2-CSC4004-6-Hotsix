@@ -23,7 +23,7 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onRecommendation
     React.createElement('header', { className: 'header' },
       React.createElement('div', { className: 'left-group' }, 
         React.createElement('div', { className: 'logo', onClick: onHomeClick },
-          React.createElement('img', { src: 'image.jpeg', alt: '어디갈래 로고' })
+          React.createElement('img', { src: '../asset/Images/image.jpeg', alt: '어디갈래 로고' })
         ),
         React.createElement('nav', { className: 'nav' },
           React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); } }, '커뮤니티'),
@@ -35,7 +35,7 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onRecommendation
         React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onLoginClick(); }, className: 'auth-link' }, '로그인'),
         React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onSignupClick(); }, className: 'auth-link' }, '회원가입'),
         React.createElement('div', { className: 'profile-icon', onClick: toggleDropdown },
-          React.createElement('img', { src: 'image.jpeg', alt: '' }),
+          React.createElement('img', { src: '../asset/Images/image.jpeg', alt: '' }),
           isDropdownOpen &&
           React.createElement('div', { className: 'dropdown-menu' },
             React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onMyPageClick(); } }, '마이페이지'),
@@ -629,6 +629,184 @@ function MyForm() {
   );
 }
 
+<<<<<<< HEAD
+=======
+// Sidebar 컴포넌트
+function Sidebar() {
+  return (
+    React.createElement('div', { className: '' },
+      React.createElement('div', { className: '' },
+        React.createElement('div', { className: '' }),
+        React.createElement('h3', null, ''),
+        React.createElement('p', null, '')
+      ),
+      React.createElement('nav', { className: 'sidebar-nav' },
+        React.createElement('a', { href: '#게시판' }, '게시판'),
+        React.createElement('a', { href: '#게시판' }, '게시판'),
+        React.createElement('a', { href: '#게시판' }, '게시판'),
+        React.createElement('a', { href: '#게시판' }, '게시판'),
+        React.createElement('a', { href: '#게시판' }, '게시판')
+      )
+    )
+  );
+}
+
+// Community 컴포넌트
+function Community() {
+    return (
+        React.createElement('div', { id: 'container', className: 'community' },
+            React.createElement('div', { className: 'content-area' },
+                // left-side
+                React.createElement('div', { className: 'leftside' },
+                    React.createElement('div', { className: 'card' },
+                        React.createElement('form', { className: 'logged' },
+                            React.createElement('img', { src: '../asset/Images/image.jpeg', className: 'picture', alt: 'User' }),
+                            React.createElement('p', { className: 'nickname' }, 'USER NAME'),
+                            React.createElement('ul', { className: 'buttons' },
+                                React.createElement('li', null,
+                                    React.createElement('a', { href: '/my', className: 'button-link' }, '내 정보')
+                                ),
+                                React.createElement('li', null,
+                                    React.createElement('a', { href: '/user/logout', className: 'button-link' }, '로그아웃')
+                                )
+                            )
+                        )
+                    ),
+                    React.createElement('div', { className: 'card' },
+                        React.createElement('div', { className: 'menus' },
+                            React.createElement('a', { href: '/myarticle', className: 'myarticle' }, '내가 쓴 글'),
+                            React.createElement('a', { href: '/mycommentarticle', className: 'mycommentarticle' }, '댓글 단 글'),
+                            React.createElement('a', { href: '/myscrap', className: 'myscrap' }, '내 스크랩')
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'ads' },
+                        React.createElement('a', { href: '#' },
+                            React.createElement('img', { src: '../asset/Images/image.jpeg', alt: 'Ad 1' })
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'ads' },
+                        React.createElement('a', { href: '#' },
+                            React.createElement('img', { src: '../asset/Images/image.jpeg', alt: 'Ad 2' })
+                        )
+                    ),
+                ),
+                // mid
+                React.createElement('div', { className: 'main' },
+                    // Banner
+                    React.createElement('div', { className: 'banner' },
+                        React.createElement('a', { href: '#' },
+                            React.createElement('img', { src: '../asset/Images/image.jpeg', alt: 'Banner ad' })
+                        )
+                    ),
+                    // main-card
+                    React.createElement('div', { className: 'card-container' },
+                        React.createElement('div', { className: 'card' },
+                            React.createElement('div', { className: 'board' },
+                                React.createElement('h3', null, React.createElement('a', { href: '#' }, '자유게시판')),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '3분 전'),
+                                    React.createElement('p', null, 'XXXXXX'),
+                                ),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '1분 전'),
+                                    React.createElement('p', null, 'XXXXXX'),
+
+                                ),
+                            )
+                        ),
+                        React.createElement('div', { className: 'card' },
+                            React.createElement('div', { className: 'board' },
+                                React.createElement('h3', null, React.createElement('a', { href: '#' }, '추천 게시판')),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '2분 전'),
+                                    React.createElement('p', null, 'XXXXXX')
+                                ),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '1분 전'),
+                                    React.createElement('p', null, 'XXXXXX'),
+
+                                ),
+                            )
+                        ),
+                        React.createElement('div', { className: 'card' },
+                            React.createElement('div', { className: 'board' },
+                                React.createElement('h3', null, React.createElement('a', { href: '#' }, '공지사항')),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '1분 전'),
+                                    React.createElement('p', null, 'XXXXXX')
+                                ),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '1분 전'),
+                                    React.createElement('p', null, 'XXXXXX'),
+
+                                ),
+                            )
+                        ),
+                        React.createElement('div', { className: 'card' },
+                            React.createElement('div', { className: 'board' },
+                                React.createElement('h3', null, React.createElement('a', { href: '#' }, '이벤트')),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '5분 전'),
+                                    React.createElement('p', null, 'XXXXXX')
+                                ),
+                                React.createElement('a', { className: 'list', href: '#' },
+                                    React.createElement('time', null, '1분 전'),
+                                    React.createElement('p', null, 'XXXXXX'),
+
+                                ),
+                            )
+                        )
+                    )
+                ),
+                // right-side
+                React.createElement('div', { className: 'rightside' },
+                    React.createElement('div', { className: 'search' },
+                        React.createElement('input', { type: 'text', name: 'keyword', placeholder: 'search community', className: 'text' })
+                    ),
+                    React.createElement('div', { className: 'card' },
+                        React.createElement('div', { className: 'board' },
+                            React.createElement('h3', null, React.createElement('a', { href: '#' }, '실시간 인기 글')),
+                            React.createElement('a', { className: 'article', href: '#' },
+                                React.createElement('p', { className: 'title' }, 'XXX'),
+                                React.createElement('p', { className: 'small' }, 'XXXXXX')
+                            ),
+                            React.createElement('a', { className: 'article', href: '#' },
+                                React.createElement('p', { className: 'title' }, 'XXX'),
+                                React.createElement('p', { className: 'small' }, 'XXXXXX')
+                            )
+                        )
+                    ),
+                    React.createElement('div', { className: 'card' },
+                        React.createElement('div', { className: 'board' },
+                            React.createElement('h3', null, React.createElement('a', { href: '#' }, 'HOT 게시물')),
+                            React.createElement('a', { className: 'list', href: '#' },
+                                React.createElement('time', null, '10분 전'),
+                                React.createElement('p', null, 'XXXXXX')
+                            ),
+                            React.createElement('a', { className: 'list', href: '#' },
+                                React.createElement('time', null, '10분 전'),
+                                React.createElement('p', null, 'XXXXXX')
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    );
+}
+
+////CommunityBoard 컴포넌트
+//function CommunityBoard(){
+//
+//    return(
+//        React.createElement('');
+//    );
+//}
+
+
+>>>>>>> main
 
 // 렌더링
 ReactDOM.render(
