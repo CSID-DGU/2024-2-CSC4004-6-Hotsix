@@ -123,14 +123,19 @@ function Signup() {
               window.alert("회원가입이 완료되었습니다!");
               window.location.href = '/'; //가입 성공 응답시 메인 페이지로 이동
           }
-          else {
-             window.alert("이미 존재하는 아이디입니다!");
-             // 가입 실패 시 현재 페이지 새로고침
-             // resetForm();
-          }
+//          else if(err.response.data("body : DuplicatedId")) {
+//             window.alert("이미 존재하는 아이디입니다!");
+//             // 가입 실패 시 현재 페이지 새로고침
+//             resetForm();
+//          }
       })
-      .catch(error => {
-          console.error('에러 발생:', error);
+      .catch(err => {
+        if (error.response){
+            window.alert("이미 존재하는 아이디입니다!");
+            // 가입 실패 시 현재 페이지 새로고침
+            resetForm();
+        }
+        console.error('에러 발생:', error);
       });
 }
 
@@ -190,29 +195,232 @@ function Signup() {
   );
 }
 
-
 // Header 컴포넌트 수정
-function Header({ onLoginClick, onSignupClick, onMyPageClick, onHomeClick, onCommunityClick }) {
+function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick }) {
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const closeDropdown = (event) => {
+    if (!event.target.closest('.profile-icon') && isDropdownOpen) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener('click', closeDropdown);
+    return () => {
+      document.removeEventListener('click', closeDropdown);
+    };
+  }, [isDropdownOpen]);
+
   return (
     React.createElement('header', { className: 'header' },
-      React.createElement('div', { className: 'left-group' }, // 왼쪽 그룹 추가
+      React.createElement('div', { className: 'left-group' },
         React.createElement('div', { className: 'logo', onClick: onHomeClick },
-          React.createElement('img', { src: 'path_to_logo', alt: '어디갈래' })
+          React.createElement('img', { src: 'image.jpeg', alt: '어디갈래 로고' })
         ),
         React.createElement('nav', { className: 'nav' },
           React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); } }, '커뮤니티'),
-          React.createElement('a', { href: '#mypage', onClick: onMyPageClick }, '마이페이지')
+          React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onSurveyClick(); } }, '설문조사') // 설문조사 추가
         )
       ),
-      React.createElement('div', { className: 'auth' },
-        React.createElement('button', { onClick: onLoginClick }, '로그인'),
-        React.createElement('button', { onClick: onSignupClick, className: 'signup' }, '회원가입')
+      React.createElement('div', { className: 'right-group' },
+        React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onLoginClick(); }, className: 'auth-link' }, '로그인'),
+        React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onSignupClick(); }, className: 'auth-link' }, '회원가입'),
+        React.createElement('div', { className: 'profile-icon', onClick: toggleDropdown },
+          React.createElement('img', { src: 'image.jpeg', alt: '' }),
+          isDropdownOpen &&
+          React.createElement('div', { className: 'dropdown-menu' },
+            React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onMyPageClick(); } }, '마이페이지'),
+            React.createElement('a', { href: '#', onClick: () => alert('설정 클릭됨') }, '설정')
+          )
+        )
       )
     )
   );
 }
 
+//SurveyForm 컴포넌트
+function SurveyForm() {
+  const [formData, setFormData] = React.useState({
+    mbti: '',
+    meetingFrequency: '',
+    budgetRange: '',
+    relationshipDate: '',
+    activityPreference: '',
+    mustVisitCourse: '',
+    preferredCourse: '',
+    transportation: '',
+    startTime: '',
+    mustVisitArea: '',
+    preferredArea: '',
+  });
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log('Survey Data:', formData);
+    // 서버에 POST 요청 예제
+    fetch('https://your-server-url.com/api/survey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log('성공:', data))
+      .catch((error) => console.error('에러:', error));
+  };
+
+  return React.createElement(
+    'div',
+    { className: 'survey-container' },
+    React.createElement(
+      'form',
+      { className: 'survey-form', onSubmit: handleSubmit },
+      // MBTI 입력
+      React.createElement('label', null, '1. MBTI'),
+      React.createElement('input', {
+        type: 'text',
+        name: 'mbti',
+        value: formData.mbti,
+        onChange: handleChange,
+        placeholder: '예: ENFP',
+        required: true,
+      }),
+
+      // 주당 만남 횟수
+      React.createElement('label', null, '2. 주당 만남 횟수'),
+      React.createElement('input', {
+        type: 'number',
+        name: 'meetingFrequency',
+        value: formData.meetingFrequency,
+        onChange: handleChange,
+        placeholder: '숫자 입력',
+        required: true,
+      }),
+
+      // 평균 예산 범위
+      React.createElement('label', null, '3. 평균 예산 범위'),
+      React.createElement('input', {
+        type: 'text',
+        name: 'budgetRange',
+        value: formData.budgetRange,
+        onChange: handleChange,
+        placeholder: '예: 10만원~20만원',
+        required: true,
+      }),
+
+      // 사귄 날짜
+      React.createElement('label', null, '4. 사귄 날짜'),
+      React.createElement('input', {
+        type: 'date',
+        name: 'relationshipDate',
+        value: formData.relationshipDate,
+        onChange: handleChange,
+        required: true,
+      }),
+
+      // 액티비티 선호 유무
+      React.createElement('label', null, '5. 액티비티 선호 유무'),
+      React.createElement(
+        'select',
+        {
+          name: 'activityPreference',
+          value: formData.activityPreference,
+          onChange: handleChange,
+          required: true,
+        },
+        React.createElement('option', { value: '' }, '선택하세요'),
+        React.createElement('option', { value: 'yes' }, '예'),
+        React.createElement('option', { value: 'no' }, '아니요')
+      ),
+
+      // 필수 코스
+      React.createElement('label', null, '6. 필수 코스'),
+      React.createElement('textarea', {
+        name: 'mustVisitCourse',
+        value: formData.mustVisitCourse,
+        onChange: handleChange,
+        placeholder: '예: 롯데월드, 한강공원',
+        rows: 3,
+        required: true,
+      }),
+
+      // 선호 코스
+      React.createElement('label', null, '7. 선호 코스'),
+      React.createElement('textarea', {
+        name: 'preferredCourse',
+        value: formData.preferredCourse,
+        onChange: handleChange,
+        placeholder: '예: 카페, 레스토랑',
+        rows: 3,
+        required: true,
+      }),
+
+      // 교통 수단
+      React.createElement('label', null, '8. 교통 수단'),
+      React.createElement(
+        'select',
+        {
+          name: 'transportation',
+          value: formData.transportation,
+          onChange: handleChange,
+          required: true,
+        },
+        React.createElement('option', { value: '' }, '선택하세요'),
+        React.createElement('option', { value: 'car' }, '자동차'),
+        React.createElement('option', { value: 'public' }, '대중교통'),
+        React.createElement('option', { value: 'walk' }, '도보')
+      ),
+
+      // 데이트 시작 예정 시간
+      React.createElement('label', null, '9. 데이트 시작 예정 시간'),
+      React.createElement('input', {
+        type: 'time',
+        name: 'startTime',
+        value: formData.startTime,
+        onChange: handleChange,
+        required: true,
+      }),
+
+      // 필수 지역
+      React.createElement('label', null, '10. 필수 지역'),
+      React.createElement('textarea', {
+        name: 'mustVisitArea',
+        value: formData.mustVisitArea,
+        onChange: handleChange,
+        placeholder: '예: 강남, 홍대',
+        rows: 2,
+        required: true,
+      }),
+
+      // 선호 지역
+      React.createElement('label', null, '11. 선호 지역'),
+      React.createElement('textarea', {
+        name: 'preferredArea',
+        value: formData.preferredArea,
+        onChange: handleChange,
+        placeholder: '예: 이태원, 신촌',
+        rows: 2,
+        required: true,
+      }),
+
+      // 저장 버튼
+      React.createElement(
+        'button',
+        { type: 'submit' },
+        '저장'
+      )
+    )
+  );
+}
 
 // MyPage 컴포넌트
 function MyPage() {
@@ -530,7 +738,13 @@ function Community() {
     );
 }
 
+//CommunityBoard 컴포넌트
+function CommunityBoard(){
 
+    return(
+        React.createElement('');
+    );
+}
 
 
 

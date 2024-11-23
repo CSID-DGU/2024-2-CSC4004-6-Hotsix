@@ -3,14 +3,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 0 20px; /* 양옆 기본 패딩 */
   background-color: #000;
   color: #fff;
-}
-
-.left-group {
-  display: flex;
-  align-items: center;
+  position: fixed; /* 상단 고정 */
+  top: 0; /* 화면의 가장 위에 배치 */
+  left: 0; /* 왼쪽에 고정 */
+  right: 0; /* 오른쪽에 고정 */
+  width: 100%; /* 화면 전체 너비 */
+  height: 60px; /* 높이를 크게 설정 */
+  z-index: 1000; /* 다른 요소보다 위에 배치 */
+  box-sizing: border-box; /* 패딩 포함하여 계산 */
 }
 
 .logo {
@@ -349,19 +352,8 @@ h3 {
   background-color: #ddd;
 }
 
+
 /* Community 페이지 스타일 */
-#container.community {
-  width: 80%;
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.content-area {
-  display: flex;
-  justify-content: space-between;
-}
-
 /* left-side */
 .leftside {
   flex-basis: 10%;
@@ -369,14 +361,11 @@ h3 {
   flex-direction: column;
   gap: 20px;
 }
+
 .leftside .card {
   border: 1px solid #d6d6d6;
   background-color: #f9f9f9;
   padding: 15px;
-}
-.leftside .ads img {
-  width: 100%;
-  height: auto;
 }
 
 
@@ -401,33 +390,6 @@ h3 {
   margin-bottom: 10px;
 }
 
-.buttons {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 10px;
-}
-
-.buttons li {
-  display: inline-block;
-}
-
-.button-link {
-  display: inline-block;
-  padding: 8px 12px;
-  border: 1px solid #d6d6d6;
-  border-radius: 4px;
-  text-decoration: none;
-  color: #444;
-  font-size: 13px;
-  text-align: center;
-}
-
-.button-link:hover {
-  background-color: #f0f0f0;
-}
-
 .menus {
   list-style-type: none;
   display: flex;
@@ -445,6 +407,7 @@ h3 {
 .menus a:hover {
   background-color: #f0f0f0;
 }
+
 
 
 
@@ -515,3 +478,89 @@ h3 {
     color: #737373;
     font-size: 12px;
   }
+
+/* Survey 페이지 스타일 */
+.survey-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* 화면 전체 높이를 채우기 위해 */
+  padding: 80px;
+  background-color: #ffecec;
+  box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+.survey-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px; /* 폼의 최대 너비 설정 */
+  background-color: white;
+  padding: 40px; /* 내부 여백 조정 */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
+}
+
+.survey-form label {
+  margin-bottom: 8px; /* 라벨과 입력 필드 간 간격 */
+  font-size: 14px; /* 라벨 글씨 크기 */
+  font-weight: bold; /* 라벨 강조 */
+  color: #333; /* 글씨 색상 */
+}
+
+.survey-form input,
+.survey-form select,
+.survey-form textarea {
+  padding: 10px; /* 입력 필드 여백 조정 */
+  font-size: 14px; /* 입력 필드 글씨 크기 */
+  margin-bottom: 30px; /* 필드 간 간격 일정하게 */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%; /* 입력 필드가 폼 너비를 채우도록 */
+  height: 40px; /* 모든 필드 높이를 동일하게 설정 */
+  box-sizing: border-box; /* 패딩 포함 크기 계산 */
+}
+
+/* 텍스트 입력 필드 크기 동일화 */
+.survey-form textarea {
+  height: 40px; /* 텍스트 영역 높이도 일반 필드와 동일하게 설정 */
+  resize: none; /* 크기 조정 불가능하게 설정 */
+}
+
+/* 저장 버튼 스타일 */
+.survey-form button {
+  margin-top: 10px; /* 저장 버튼 위 간격 추가 */
+  padding: 12px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px; /* 버튼 글씨 크기 */
+  font-weight: bold; /* 버튼 강조 */
+  transition: background-color 0.3s; /* 마우스 호버 효과 부드럽게 */
+}
+
+.survey-form button:hover {
+  background-color: #555;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .survey-form {
+    padding: 20px; /* 모바일에서는 패딩 축소 */
+  }
+
+  .survey-form input,
+  .survey-form select,
+  .survey-form textarea {
+    font-size: 13px; /* 입력 필드 글씨 크기 축소 */
+  }
+
+  .survey-form button {
+    font-size: 14px; /* 버튼 글씨 크기 축소 */
+  }
+}
+
