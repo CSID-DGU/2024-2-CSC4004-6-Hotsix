@@ -245,52 +245,54 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, on
 
 //SurveyForm 컴포넌트
 function SurveyForm() {
-  const [formData, setFormData] = React.useState({
-    mbti: '',
-    meetingFrequency: '',
-    budgetRange: '',
-    relationshipDate: '',
-    activityPreference: '',
-    mustVisitCourse: '',
-    preferredCourse: '',
-    transportation: '',
-    startTime: '',
-    mustVisitArea: '',
-    preferredArea: '',
-  });
+ const [formData, setFormData] = React.useState({
+   mbti: '',
+   meetingFrequency: '',
+   budgetRange: '',
+   relationshipDate: '',
+   activityPreference: '',
+   mustVisitCourse: '',
+   preferredCourse: '',
+   transportation: '',
+   startTime: '',
+   mustVisitArea: '',
+   preferredArea: '',
+ });
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
+ const handleChange = (event) => {
+   const { name, value } = event.target;
+   setFormData({ ...formData, [name]: value });
+ };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Survey Data:', formData);
-    // 서버에 POST 요청 예제
-    fetch('https://your-server-url.com/api/survey', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => console.log('성공:', data))
-      .catch((error) => console.error('에러:', error));
-  };
+ const handleSubmit = (event) => {
+   event.preventDefault();
+   console.log('Survey Data:', formData);
+   // 서버에 POST 요청 예제
+   fetch('/RecommandDateCourse', {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify(formData),
+   })
+     .then((response) => response.json())
+     .then((data) => console.log('성공:', data))
+     .catch((error) => console.error('에러:', error));
+ };
 
   return React.createElement(
     'div',
     { className: 'survey-container' },
     React.createElement(
       'form',
-      { className: 'survey-form', onSubmit: handleSubmit },
+      { className: 'survey-form'
+     , onSubmit: handleSubmit
+      },
       // MBTI 입력
       React.createElement('label', null, '1. MBTI'),
       React.createElement('input', {
         type: 'text',
         name: 'mbti',
-        value: formData.mbti,
-        onChange: handleChange,
+       value: formData.mbti,
+       onChange: handleChange,
         placeholder: '예: ENFP',
         required: true,
       }),
@@ -300,8 +302,8 @@ function SurveyForm() {
       React.createElement('input', {
         type: 'number',
         name: 'meetingFrequency',
-        value: formData.meetingFrequency,
-        onChange: handleChange,
+       value: formData.meetingFrequency,
+       onChange: handleChange,
         placeholder: '숫자 입력',
         required: true,
       }),
@@ -311,8 +313,8 @@ function SurveyForm() {
       React.createElement('input', {
         type: 'text',
         name: 'budgetRange',
-        value: formData.budgetRange,
-        onChange: handleChange,
+       value: formData.budgetRange,
+       onChange: handleChange,
         placeholder: '예: 10만원~20만원',
         required: true,
       }),
@@ -322,8 +324,8 @@ function SurveyForm() {
       React.createElement('input', {
         type: 'date',
         name: 'relationshipDate',
-        value: formData.relationshipDate,
-        onChange: handleChange,
+       value: formData.relationshipDate,
+       onChange: handleChange,
         required: true,
       }),
 
@@ -333,8 +335,8 @@ function SurveyForm() {
         'select',
         {
           name: 'activityPreference',
-          value: formData.activityPreference,
-          onChange: handleChange,
+         value: formData.activityPreference,
+         onChange: handleChange,
           required: true,
         },
         React.createElement('option', { value: '' }, '선택하세요'),
@@ -346,8 +348,8 @@ function SurveyForm() {
       React.createElement('label', null, '6. 필수 코스'),
       React.createElement('textarea', {
         name: 'mustVisitCourse',
-        value: formData.mustVisitCourse,
-        onChange: handleChange,
+       value: formData.mustVisitCourse,
+       onChange: handleChange,
         placeholder: '예: 롯데월드, 한강공원',
         rows: 3,
         required: true,
@@ -357,8 +359,8 @@ function SurveyForm() {
       React.createElement('label', null, '7. 선호 코스'),
       React.createElement('textarea', {
         name: 'preferredCourse',
-        value: formData.preferredCourse,
-        onChange: handleChange,
+       value: formData.preferredCourse,
+       onChange: handleChange,
         placeholder: '예: 카페, 레스토랑',
         rows: 3,
         required: true,
@@ -370,8 +372,8 @@ function SurveyForm() {
         'select',
         {
           name: 'transportation',
-          value: formData.transportation,
-          onChange: handleChange,
+         value: formData.transportation,
+         onChange: handleChange,
           required: true,
         },
         React.createElement('option', { value: '' }, '선택하세요'),
@@ -385,8 +387,8 @@ function SurveyForm() {
       React.createElement('input', {
         type: 'time',
         name: 'startTime',
-        value: formData.startTime,
-        onChange: handleChange,
+       value: formData.startTime,
+       onChange: handleChange,
         required: true,
       }),
 
@@ -394,8 +396,8 @@ function SurveyForm() {
       React.createElement('label', null, '10. 필수 지역'),
       React.createElement('textarea', {
         name: 'mustVisitArea',
-        value: formData.mustVisitArea,
-        onChange: handleChange,
+       value: formData.mustVisitArea,
+       onChange: handleChange,
         placeholder: '예: 강남, 홍대',
         rows: 2,
         required: true,
@@ -405,8 +407,8 @@ function SurveyForm() {
       React.createElement('label', null, '11. 선호 지역'),
       React.createElement('textarea', {
         name: 'preferredArea',
-        value: formData.preferredArea,
-        onChange: handleChange,
+       value: formData.preferredArea,
+       onChange: handleChange,
         placeholder: '예: 이태원, 신촌',
         rows: 2,
         required: true,
@@ -516,6 +518,7 @@ function App() {
   const toggleMyPage = () => { setPage('mypage'); };
   const toggleForm = () => { setPage('form'); };
   const toggleCommunity = () => { setPage('community'); };  // 커뮤니티 페이지 전환 함수
+  const toggleSurvey = () => { setPage('survey'); }; // 설문조사 페이지 전환
 
   const sections = [
     { title: '사용자 맞춤', items: Array.from({ length: 10 }, (_, i) => ({ title: `컨텐츠 ${i + 1}` })) },
@@ -531,7 +534,8 @@ function App() {
         onSignupClick: toggleSignup,
         onMyPageClick: toggleMyPage,
         onHomeClick: toggleHome,
-        onCommunityClick: toggleCommunity // 커뮤니티 클릭 함수 전달
+        onCommunityClick: toggleCommunity, // 커뮤니티 클릭 함수 전달
+        onSurveyClick: toggleSurvey // 설문조사 페이지 연결
       }),
       page === 'login' ?
         React.createElement(Login, null) :
@@ -543,6 +547,8 @@ function App() {
         React.createElement(MyForm, null) :
       page === 'community' ? // 커뮤니티 페이지 렌더링
         React.createElement(Community, null) :
+      page === 'survey' ?
+        React.createElement(SurveyForm, null) : // 설문조사 페이지 렌더링
         sections.map((section, index) =>
           React.createElement(ContentCarousel, { key: index, title: section.title, items: section.items })
         )
