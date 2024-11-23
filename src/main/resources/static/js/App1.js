@@ -1,5 +1,5 @@
 // Header 컴포넌트 수정
-function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick }) {
+function Header({ onHomeClick, onCommunityClick, onRecommendationCourseClick, onMyPageClick, onLoginClick, onSignupClick }) {
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
   const toggleDropdown = () => {
@@ -30,7 +30,8 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, on
           React.createElement('img', { src: 'image.jpeg', alt: '어디갈래 로고' })
         ),
         React.createElement('nav', { className: 'nav' },
-          React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); } }, '커뮤니티')
+          React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); } }, '커뮤니티'),
+          React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick(); } }, '추천 코스')
         )
       ),
       React.createElement('div', { className: 'right-group' },
@@ -148,6 +149,19 @@ function MyPage() {
           React.createElement('div', { className: 'feed-item', key: post.id })
         )
       )
+    )
+  );
+}
+
+// RecommendationCourse 컴포넌트
+function RecommendationCourse() {
+  const sections = [
+    { title: '사용자 맞춤', items: Array.from({ length: 10 }, (_, i) => ({ title: `컨텐츠 ${i + 1}` })) },
+  ];
+
+  return React.createElement('div', null,
+    sections.map((section, index) =>
+      React.createElement(ContentCarousel, { key: index, title: section.title, items: section.items })
     )
   );
 }
@@ -352,6 +366,7 @@ function App() {
   const toggleSignup = () => { setPage('signup'); };
   const toggleMyPage = () => { setPage('mypage'); };
   const toggleCommunity = () => { setPage('community'); };
+  const toggleRecommendationCourse = () => { setPage ('recommendationcourse'); };
 
   const handleLogin = () => {
     setIsLoggedIn(true); // 로그인 상태 설정
@@ -380,7 +395,9 @@ function App() {
         onSignupClick: toggleSignup,
         onMyPageClick: toggleMyPage,
         onHomeClick: toggleHome,
-        onCommunityClick: toggleCommunity
+        onCommunityClick: toggleCommunity,
+        onRecommendationCourseClick: toggleRecommendationCourse
+
       }),
       page === 'login' ? 
         React.createElement(Login, { onLogin: handleLogin }) : // 로그인 시 handleLogin 호출
@@ -388,11 +405,14 @@ function App() {
         React.createElement(Signup, null) :
       page === 'mypage' ? 
         React.createElement(MyPage, null) :
+      page === 'recommendationcourse' ?
+        React.createElement(RecommendationCourse, null) :
       page === 'community' ? 
         React.createElement(Community, null) :
         sections.map((section, index) =>
           React.createElement(ContentCarousel, { key: index, title: section.title, items: section.items })
         )
+      
     )
   );
 }
