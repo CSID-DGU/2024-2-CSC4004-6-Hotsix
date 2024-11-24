@@ -18,7 +18,7 @@ function Login() {
     //handleSubmit
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = { id,password};
+        const data = { id,password };
 
     // 서버의 특정 URL로 POST 요청 보내기
     fetch('/login', {
@@ -28,37 +28,40 @@ function Login() {
       },
       body: JSON.stringify(data), // 데이터를 JSON 문자열로 변환하여 전송
     })
+    .then((data) => {
+        sessionStorage.setItem("token",data.token); // JWT 저장
+    })
     .then(response => {
-      if (!response.ok) {
-          //아이디 또는 비밀번호 오류
-          if(error.response.data === "ID does not exist" || error.response.data === "Invalid Password"){
-              window.alert("아이디 또는 비밀번호가 틀렸습니다.");
-              resetForm();
-          }
-          else {
-              //바인딩 오류
-              window.alert("Error");
-              window.location.href = '/';
-          }
-      }
-      //로그인 성공 시
-      else {
-          window.location.href = '/';
-          //여기다가 로그인 성공 시 메인 화면 구현하시면 됩니다.
-
-      }
+        if (!response.ok) {
+            return response.json().then((error) => {
+              // 에러 데이터 포함 반환
+              throw new Error(error.message || "Something went wrong");
+                      });
+              }
+        //응답 성공 시
+        window.location.href = '/';
+        return response.json();
+      })
+    .catch((error) => {
+            // 에러 처리
+            if (error.message === "ID does not exist" || error.message === "Invalid Password") {
+                window.alert("아이디 또는 비밀번호가 틀렸습니다.");
+                resetForm();
+            } else {
+                window.alert("Error: " + error.message);
+            }
     })
   };
 
   return (
-    React.createElement('div', { className: 'login-container' },
+    React.createElement('div', { className: 'login-container',onSubmit: handleSubmit },
       React.createElement('h2', null, '로그인'),
       React.createElement('form', { className: 'login-form' },
           React.createElement('label', null, 'ID: '),
           React.createElement('input', {
               type: 'text',
               name: 'id',
-              // value: id,
+              value: id,
               onChange: handleIdChange,
               required: true
           }),
@@ -66,7 +69,7 @@ function Login() {
           React.createElement('input', {
               type: 'password',
               name: 'password',
-              // value: password,
+              value: password,
               onChange: handlePasswordChange,
               required: true
           }),
@@ -220,7 +223,7 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, on
     React.createElement('header', { className: 'header' },
       React.createElement('div', { className: 'left-group' },
         React.createElement('div', { className: 'logo', onClick: onHomeClick },
-          React.createElement('img', { src: 'image.jpeg', alt: '어디갈래 로고' })
+          React.createElement('img', { src: '../asset/Images/image.jpeg', alt: '어디갈래 로고' })
         ),
         React.createElement('nav', { className: 'nav' },
           React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); } }, '커뮤니티'),
@@ -228,10 +231,12 @@ function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, on
         )
       ),
       React.createElement('div', { className: 'right-group' },
+
         React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onLoginClick(); }, className: 'auth-link' }, '로그인'),
         React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onSignupClick(); }, className: 'auth-link' }, '회원가입'),
+
         React.createElement('div', { className: 'profile-icon', onClick: toggleDropdown },
-          React.createElement('img', { src: 'image.jpeg', alt: '' }),
+          React.createElement('img', { src: '../asset/Images/image.jpeg', alt: '' }),  //이부분 사용자 프사 오도록 수정 필요
           isDropdownOpen &&
           React.createElement('div', { className: 'dropdown-menu' },
             React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onMyPageClick(); } }, '마이페이지'),
