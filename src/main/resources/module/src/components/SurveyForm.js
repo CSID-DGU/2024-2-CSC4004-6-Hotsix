@@ -1,5 +1,5 @@
 // src/components/SurveyForm.js
-
+import React from 'react';
 import '../styles/SurveyForm.css';
 
 function SurveyForm() {

@@ -1,6 +1,6 @@
 // src/components/Header.js
 import React from 'react';  
-import '../styles/Header.css'; 
+import '../styles/Header.css';
 
 function Header({ onHomeClick, onCommunityClick, onMyPageClick, onRecommendationCourseClick, onSurveyClick, onLoginClick, onSignupClick }) {
     const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);

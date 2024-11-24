@@ -12,6 +12,8 @@ import ContentCarousel from './components/ContentCarousel';
 function App() {
   const [page, setPage] = React.useState(null);
 
+  // 페이지 이동 함수 정의
+  /*
   const toggleMyPage = () => setPage("mypage");
   const toggleCommunity = () => setPage("community");
   const toggleRecommendationCourse = () => setPage("recommendationcourse");
@@ -33,6 +35,35 @@ function App() {
       {page === 'community' && <Community />}
       {page === 'recommendationcourse' && <RecommendationCourse />}
       {page === 'survey' && <SurveyForm />}
+      {!page && <ContentCarousel title="사용자 맞춤" items={[{ title: '컨텐츠 1' }, { title: '컨텐츠 2' }]} />}
+    </div>
+  );
+  */
+  const toggleHome = () => setPage(null);
+  const toggleLogin = () => setPage('login');
+  const toggleSignup = () => setPage('signup');
+  const toggleMyPage = () => setPage('mypage');
+  const toggleCommunity = () => setPage('community'); // 커뮤니티 페이지 핸들러
+  const toggleRecommendationCourse = () => setPage('recommendation-course'); // 추천 코스 페이지 핸들러
+  const toggleSurvey = () => setPage('survey'); // 설문조사 페이지 핸들러
+
+  return (
+    <div className="App">
+      <Header
+        onHomeClick={toggleHome}
+        onCommunityClick={toggleCommunity}
+        onRecommendationCourseClick={toggleRecommendationCourse}
+        onSurveyClick={toggleSurvey}
+        onLoginClick={toggleLogin}
+        onSignupClick={toggleSignup}
+        onMyPageClick={toggleMyPage}
+      />
+      {page === 'community' && <Community />}
+      {page === 'recommendation-course' && <RecommendationCourse />}
+      {page === 'survey' && <SurveyForm />}
+      {page === 'login' && <Login />}
+      {page === 'signup' && <Signup />}
+      {page === 'mypage' && <MyPage />}
       {!page && <ContentCarousel title="사용자 맞춤" items={[{ title: '컨텐츠 1' }, { title: '컨텐츠 2' }]} />}
     </div>
   );
