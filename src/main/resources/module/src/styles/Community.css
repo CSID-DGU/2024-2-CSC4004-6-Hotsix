@@ -1,0 +1,9 @@
+#container.community {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 70px;
+    box-sizing: border-box;
+  }
+  /* 나머지 커뮤니티 스타일 포함 */
+  

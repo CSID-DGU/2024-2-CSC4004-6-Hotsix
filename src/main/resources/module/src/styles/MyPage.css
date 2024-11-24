@@ -1,0 +1,8 @@
+.mypage {
+    padding: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  /* 나머지 마이페이지 스타일 포함 */
+  

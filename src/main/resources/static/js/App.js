@@ -629,8 +629,6 @@ function MyForm() {
   );
 }
 
-<<<<<<< HEAD
-=======
 // Sidebar 컴포넌트
 function Sidebar() {
   return (
@@ -806,7 +804,6 @@ function Community() {
 //}
 
 
->>>>>>> main
 
 // 렌더링
 ReactDOM.render(

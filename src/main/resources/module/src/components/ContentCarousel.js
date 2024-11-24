@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import '../styles/ContentCarousel.css';
+
 
 function ContentCarousel({ title, items }) {
   const [startIndex, setStartIndex] = useState(0);

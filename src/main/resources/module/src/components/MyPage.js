@@ -1,3 +1,5 @@
+import '../styles/MyPage.css';
+
 function MyPage() {
     const highlights = Array.from({ length: 5 }, (_, i) => ({ id: i + 1 }));
     const posts = Array.from({ length: 9 }, (_, i) => ({ id: i + 1 }));

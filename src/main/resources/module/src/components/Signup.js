@@ -1,4 +1,7 @@
 // src/components/Signup.js
+
+import '../styles/Signup.css';
+
 function Signup() {
     return (
       <div className="signup-container">

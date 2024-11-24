@@ -1,0 +1,12 @@
+.survey-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 80px;
+    background-color: #ffecec;
+    box-sizing: border-box;
+  }
+  /* 나머지 설문조사 스타일 포함 */
+  

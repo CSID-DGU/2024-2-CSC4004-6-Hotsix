@@ -579,17 +579,10 @@ h3 {
 }
 
 .picture {
-<<<<<<< HEAD
-  width: 60px; 
-  height: 60px; 
-  border-radius: 80%; 
-  margin-bottom: 10px; 
-=======
   width: 60px;
   height: 60px;
   border-radius: 50%;
   margin-bottom: 10px;
->>>>>>> main
 }
 
 .nickname {

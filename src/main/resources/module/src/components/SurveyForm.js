@@ -1,4 +1,7 @@
 // src/components/SurveyForm.js
+
+import '../styles/SurveyForm.css';
+
 function SurveyForm() {
     const [formData, setFormData] = React.useState({
       mbti: '', meetingFrequency: '', budgetRange: '', relationshipDate: '',

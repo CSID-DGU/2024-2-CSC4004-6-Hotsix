@@ -1,5 +1,6 @@
 import React from "react";
 import ContentCarousel from "./ContentCarousel";
+import '../styles/RecommendationCourse.css';
 
 function RecommendationCourse() {
     const sections = [

@@ -1,4 +1,7 @@
 // src/components/Login.js
+
+import '../styles/Login.css'; 
+
 function Login() {
     const [name, setName] = React.useState('');
     const [email, setEmail] = React.useState('');
