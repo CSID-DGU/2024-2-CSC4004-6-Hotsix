@@ -2,9 +2,15 @@ package com.example.demo.service;
 
 import com.example.demo.domain.UserDomain;
 import com.example.demo.repository.UserRep;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.util.Date;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -12,6 +18,8 @@ import java.util.Optional;
 public class UserSer {
     private final UserRep userRep;
 
+    private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1시간
     //아이디 중복 확인 함수
     public boolean checkIdDuplicated(String id) {return userRep.existsById(id);}
 
@@ -28,6 +36,39 @@ public class UserSer {
     }
     public Optional<UserDomain> optionalUserDomain(String id){
         return userRep.findById(id);
+    }
+
+    // JWT 생성
+    public String generateToken(String userId) {
+        try {
+            return Jwts.builder()
+                    .setSubject(userId)
+                    .setExpiration(new Date(System.currentTimeMillis() +EXPIRATION_TIME)) // 1시간 유효
+                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // 비밀 키 확인
+                    .compact();
+        } catch (Exception e) {
+            e.printStackTrace(); // 서버 로그에 예외 출력
+            throw new RuntimeException("Token generation failed: " + e.getMessage(), e);
+        }
+    }
+    // JWT 검증 및 파싱
+    public Claims validateToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
+    }
+    // JWT에서 사용자 ID 추출
+    public String extractUserId(String token) {
+        Claims claims = validateToken(token);
+        return claims.getSubject();
+    }
+
+    public String getUserNameById(String id){
+
+        Optional<UserDomain> optionalUser = userRep.findById(id);
+        UserDomain user = optionalUser.get();
+        return user.getUserName();
     }
 
 
