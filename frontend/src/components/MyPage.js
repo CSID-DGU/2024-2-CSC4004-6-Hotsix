@@ -18,7 +18,7 @@ function MyPage() {
               // 필요시 Authorization 헤더 추가
               // 'Authorization': `Bearer ${sessionStorage.getItem('token')}`
           },
-  })
+  } )
       .then(response => {
           if (!response.ok) {
               throw new Error('Failed to fetch user data');

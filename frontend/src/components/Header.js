@@ -2,11 +2,12 @@
 import '../styles/Header.css'; 
 import  useState  from 'react';
 import React from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick }) {
 
+  const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   // const navigate = useNavigate();
@@ -31,7 +32,8 @@ const handleLogout = () => {
   sessionStorage.removeItem("token");
   sessionStorage.removeItem("ID");
   setIsLoggedIn(false);
-  window.location.href = '/';
+  onHomeClick();
+  navigate('/');
 };
 
 React.useEffect(() => {
@@ -44,12 +46,12 @@ React.useEffect(() => {
 return (
   React.createElement('header', { className: 'header' },
     React.createElement('div', { className: 'left-group' },
-      React.createElement('div', { className: 'logo', onClick: onHomeClick },
+      React.createElement('div', { className: 'logo', onClick: (e) => { e.preventDefault(); onHomeClick();  navigate('/'); } },
         React.createElement('img', { src: '../asset/Images/image.jpeg', alt: '어디갈래 로고' })
       ),
       React.createElement('nav', { className: 'nav' },
-        React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); } }, '커뮤니티'),
-        React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onSurveyClick(); } }, '설문조사') // 설문조사 추가
+        React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); navigate('/community'); } }, '커뮤니티'),
+        // React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onSurveyClick(); navigate('/survey'); } }, '설문조사') // 설문조사 대신 추천 서비스 페이지로 렌더링해야함.
       )
     ),
     React.createElement('div', { className: 'right-group' },
@@ -60,13 +62,13 @@ return (
         React.createElement('a', {
             key: 'login', // 고유한 key 추가
             href: '#',
-            onClick: (e) => { e.preventDefault(); onLoginClick(); },
+            onClick: (e) => { e.preventDefault(); onLoginClick(); navigate('/login'); },
             className: 'auth-link'
         }, '로그인'),
         React.createElement('a', {
             key: 'signup', // 고유한 key 추가
             href: '#',
-            onClick: (e) => { e.preventDefault(); onSignupClick(); },
+            onClick: (e) => { e.preventDefault();onSignupClick();  navigate('/signup'); },
             className: 'auth-link'
         }, '회원가입')
       ] : [
@@ -93,7 +95,7 @@ return (
             React.createElement('a', {
                 key: 'mypage', // 고유한 key 추가
                 href: '#',
-                onClick: (e) => { e.preventDefault(); onMyPageClick();}
+                onClick: (e) => { e.preventDefault(); onMyPageClick(); navigate('/mypage');}
                 },
                 '마이페이지'),
             React.createElement('a', {

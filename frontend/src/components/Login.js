@@ -6,9 +6,9 @@ import '../styles/Login.css';
 function Login() {
 
 //   const navigate = useNavigate(); // useNavigate 추가
-  // 폼 리셋 함수
+  // 폼 리셋 함수 (비밀번호만 비우기로 수정)
   const resetForm = () => {
-      setId('');
+      // setId('');
       setPassword('');
   };
 
@@ -60,7 +60,7 @@ return (
   React.createElement('div', { className: 'login-container',onSubmit: handleSubmit },
     React.createElement('h2', null, '로그인'),
     React.createElement('form', { className: 'login-form' },
-        React.createElement('label', null, 'ID: '),
+        React.createElement('label', null, '아이디 '),
         React.createElement('input', {
             type: 'text',
             name: 'id',
@@ -68,7 +68,7 @@ return (
             onChange: handleIdChange,
             required: true
         }),
-        React.createElement('label', null, '비밀번호: '),
+        React.createElement('label', null, '비밀번호 '),
         React.createElement('input', {
             type: 'password',
             name: 'password',
