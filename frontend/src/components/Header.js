@@ -27,12 +27,12 @@ const closeDropdown = (event) => {
   }
 };
 
-// const handleLogout = () => {
-//   sessionStorage.removeItem("token");
-//   sessionStorage.removeItem("ID");
-//   setIsLoggedIn(false);
-//   navigate('/');
-// };
+const handleLogout = () => {
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("ID");
+  setIsLoggedIn(false);
+  window.location.href = '/';
+};
 
 React.useEffect(() => {
   document.addEventListener('click', closeDropdown);
@@ -73,8 +73,8 @@ return (
         React.createElement('a', {
             key: 'logout', // 고유한 key 추가
             href: '#',
-            onClick: (e) => { e.preventDefault(); 
-              // handleLogout(); 
+            onClick: (e) => { e.preventDefault();
+            handleLogout();
             },
             className: 'auth-link'
         }, '로그아웃'),
