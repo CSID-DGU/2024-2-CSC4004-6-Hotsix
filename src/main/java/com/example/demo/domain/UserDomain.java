@@ -30,6 +30,7 @@ public class UserDomain {
     @Size(min = 8,max = 16)
     private String password;
 
+
     //userName (회원 이름)
     private String userName;
 
