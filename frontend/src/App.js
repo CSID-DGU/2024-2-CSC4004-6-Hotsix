@@ -33,11 +33,11 @@ function App() {
     setPage(null); // 로그인 후 홈 화면으로 이동
   };
   
-  const handleLogout = () => {
-    setIsLoggedIn(false); // 로그아웃 상태 설정
-    setUser({ name: '' }); // 사용자 정보 초기화
-    setPage(null); // 로그아웃 후 홈 화면으로 이동
-  };
+//  const handleLogout = () => {
+//    setIsLoggedIn(false); // 로그아웃 상태 설정
+//    setUser({ name: '' }); // 사용자 정보 초기화
+//    setPage(null); // 로그아웃 후 홈 화면으로 이동
+//  };
   
  
   const sections = [
