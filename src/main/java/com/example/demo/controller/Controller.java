@@ -69,6 +69,7 @@ public class Controller {
         else {
             // 로그인 성공 시 JWT 발급
             String token = null;
+            boolean isFirstLogin = true;
             try {
                 token = userSer.generateToken(user.getId());
             } catch (Exception e) {
@@ -91,7 +92,11 @@ public class Controller {
 
 
 
-            return ResponseEntity.ok().body(Map.of("token", token)); // 클라이언트에 토큰 반환
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "token", token,
+                            "isFirstLogin", isFirstLogin
+                    ));
 
 //            return ResponseEntity.ok("로그인 성공");
 

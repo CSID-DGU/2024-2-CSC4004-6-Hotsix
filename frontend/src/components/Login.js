@@ -1,11 +1,11 @@
 // src/components/Login.js
 import React from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css'; 
 
 function Login() {
 
-//   const navigate = useNavigate(); // useNavigate 추가
+  const navigate = useNavigate();
   // 폼 리셋 함수 (비밀번호만 비우기로 수정)
   const resetForm = () => {
       // setId('');
@@ -45,9 +45,13 @@ function Login() {
           }
           else {
               // 성공 처리
-              const responseData = await response.json();
+              responseData = await response.json();
               sessionStorage.setItem("token", responseData.token); // JWT 저장
               sessionStorage.setItem("ID",id);  //Id 저장
+              
+              if(responseData.isFirstLogin  == true){
+                  navigate('/survey');
+              }
               window.location.href = '/';
           }
       }

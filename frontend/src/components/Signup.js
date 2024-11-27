@@ -58,7 +58,7 @@ function Signup() {
       if (response.ok) {
         // 회원가입 성공
         window.alert('회원가입이 완료되었습니다!');
-        navigate('/survey'); // 설문조사 페이지로 이동
+        navigate('/');// 메인 페이지로 이동
       } else {
         // 실패 응답 처리
         const errorData = await response.json();
