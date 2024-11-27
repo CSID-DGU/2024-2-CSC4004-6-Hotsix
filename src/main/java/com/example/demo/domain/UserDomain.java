@@ -38,13 +38,17 @@ public class UserDomain {
 
     //phoneNum (전화번호)
     private String phoneNum;
+    
+    //프로필 사진 경로
+    private String profileImagePath;
 
-    public UserDomain(String id,String password,String userName,Date birthDate,String phoneNum){
+    public UserDomain(String id,String password,String userName,Date birthDate,String phoneNum,String profileImagePath){
         this.id = id;
         this.password = password;
         this.userName = userName;
         this.birthDate = birthDate;
         this.phoneNum = phoneNum;
+        this.profileImagePath = profileImagePath;
     }
     public UserDomain(){}
 }
