@@ -105,20 +105,20 @@ public class Controller {
 //        return "signUp";
 //    }
 
-    @PostMapping("signUp")
-    @ResponseBody
-    public ResponseEntity<String> Signup(@RequestBody UserDomain signUpReq, BindingResult bindingResult){
-        System.out.println("Received Request: " + signUpReq);
-        //회원가입 성공
-        if(userSer.createUser(signUpReq)){
-            return ResponseEntity.ok("SignUp completed");
+        @PostMapping("signUp")
+        @ResponseBody
+        public ResponseEntity<?> Signup(@RequestBody UserDomain signUpReq, BindingResult bindingResult){
+            System.out.println("Received Request: " + signUpReq);
+            //회원가입 성공
+            if(userSer.createUser(signUpReq)){
+                return ResponseEntity.ok("SignUp completed");
+            }
+            //회원가입 실패
+            else {
+                bindingResult.reject("DuplicatedId","이미 존재하는 아이디입니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "DuplicatedId"));
+            }
         }
-        //회원가입 실패
-        else {
-            bindingResult.reject("DuplicatedId","이미 존재하는 아이디입니다.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("DuplicatedId");
-        }
-    }
 
     @GetMapping("user/{id}")
     public ResponseEntity<?> getUserById(@PathVariable String id) {
