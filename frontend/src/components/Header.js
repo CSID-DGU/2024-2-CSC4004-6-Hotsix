@@ -5,7 +5,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick }) {
+function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick,onRecommendationCourseClick }) {
 
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -52,13 +52,18 @@ return (
       ),
       React.createElement('nav', { className: 'nav' },
         React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); navigate('/community'); } }, '커뮤니티'),
-        // React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onSurveyClick(); navigate('/survey'); } }, '설문조사') // 설문조사 대신 추천 서비스 페이지로 렌더링해야함.
-      )
+          isLoggedIn ?
+          //로그인 되어 있는 경우
+          [
+            React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/recommendation-course'); }}, '사용자 맞춤 코스 추천')
+          ] : 
+          //로그인 안되어 있는 경우
+          [
+            React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/login'); }}, '사용자 맞춤 코스 추천')
+          ]
+      ),
     ),
     React.createElement('div', { className: 'right-group' },
-
-
-
       !isLoggedIn ? [
         React.createElement('a', {
             key: 'login', // 고유한 key 추가
@@ -109,7 +114,7 @@ return (
           )
        ]
       )
-    )
+  )
   );
 }
   
