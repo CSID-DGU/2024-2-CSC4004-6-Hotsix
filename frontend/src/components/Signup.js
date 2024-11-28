@@ -6,7 +6,7 @@ import '../styles/Message.css';
 // import SurveyForm from './SurveyForm';   
 import { useNavigate } from 'react-router-dom';
 
-function Signup() {
+function Signup(onHomeClick) {
 
     //navigate 변수
     const navigate = useNavigate();

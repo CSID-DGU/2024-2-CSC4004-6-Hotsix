@@ -43,18 +43,18 @@ function Login() {
               resetForm();
               return;
           }
-          else {
               // 성공 처리
-              responseData = await response.json();
+              const responseData = await response.json();
               sessionStorage.setItem("token", responseData.token); // JWT 저장
               sessionStorage.setItem("ID",id);  //Id 저장
               
-              if(responseData.isFirstLogin  == true){
+              if(responseData.isFirstLogin){
                   navigate('/survey');
               }
-              window.location.href = '/';
-          }
-      }
+              else{
+                navigate('/');
+              }
+            }
       catch(error) {
           console.error("Unexpected error:", error);
           window.alert("Unexpected error occurred. Please try again.");

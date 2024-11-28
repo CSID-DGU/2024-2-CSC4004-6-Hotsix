@@ -44,10 +44,16 @@ function App() {
           <Route path='/survey' element = {< SurveyForm/>} />
           <Route path='/signup' element = {< Signup/>} />
           <Route path='/mypage' element = {< MyPage/>} />
-          {/*<Route path='/' element = {< />} />*/}
+          <Route path='/'       element = {
+          <>
+            {sections.map((section, index) => (
+              <ContentCarousel key={index} title={section.title} items={section.items} />
+            ))}
+          </>}/>
         </Routes>
         <Header
           isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
           user={user}
           onLoginClick={toggleLogin}
           onHomeClick={toggleHome}

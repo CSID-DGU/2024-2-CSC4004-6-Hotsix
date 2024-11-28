@@ -39,17 +39,22 @@ public class UserDomain {
 
     //phoneNum (전화번호)
     private String phoneNum;
-    
+
+    //isFirstLogin
+    private Boolean isFirstLogin;
+
     //프로필 사진 경로
     private String profileImagePath;
 
-    public UserDomain(String id,String password,String userName,Date birthDate,String phoneNum,String profileImagePath){
+    public UserDomain(String id,String password,String userName,Date birthDate,String phoneNum,String profileImagePath,boolean isFirstLogin){
         this.id = id;
         this.password = password;
         this.userName = userName;
         this.birthDate = birthDate;
         this.phoneNum = phoneNum;
+        this.isFirstLogin = isFirstLogin;
         this.profileImagePath = profileImagePath;
+
     }
     public UserDomain(){}
 }

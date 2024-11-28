@@ -28,6 +28,7 @@ public class UserSer {
 
         //아이디 중복 체크
         if(!checkIdDuplicated(user.getId())){
+            user.setIsFirstLogin(true);
             userRep.save(user);  //DB로 전송
             return true;
         }
@@ -70,6 +71,15 @@ public class UserSer {
         UserDomain user = optionalUser.get();
         return user.getUserName();
     }
+    public void firstLogin(UserDomain user){
 
+        Optional<UserDomain> userOpt = userRep.findById(user.getId());
+
+       UserDomain user1 = userOpt.get();
+
+       user1.setIsFirstLogin(false);
+
+       userRep.save(user1);
+    }
 
 }

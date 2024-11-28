@@ -5,18 +5,19 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-function Header({ onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick }) {
+function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick }) {
 
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = React.useState(!!sessionStorage.getItem("ID"));
   // const navigate = useNavigate();
 
-  // 로그인 상태 확인
-  React.useEffect(() => {
-      const Id = sessionStorage.getItem("ID");
-      setIsLoggedIn(!!Id);
-  }, []);
+// 로그인 상태 확인
+React.useEffect(() => {
+  const Id = sessionStorage.getItem("ID");
+  console.log("Session ID found:", Id);
+  setIsLoggedIn(!!Id);
+}, [window.location.pathname]); // URL 변경 시 상태 동기화
 
   const toggleDropdown = () => {
       setIsDropdownOpen(!isDropdownOpen);
