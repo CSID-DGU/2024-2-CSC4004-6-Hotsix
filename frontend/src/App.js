@@ -63,17 +63,6 @@ function App() {
           onSignupClick={toggleSignup}
           onMyPageClick={toggleMyPage}
         />
-        {/* 이제 더이상 page값이 결정되면 렌더링 할 필요가 없음 */}
-        {/* {page === 'login' && <Login/>} 로그인 시 handleLogin 호출 */}
-        {/* {page === 'community' && <Community />} */}
-        {/* {page === 'recommendation-course' && <RecommendationCourse />} */}
-        {/* {page === 'survey' && <SurveyForm />} */}
-        {/* {page === 'signup' && <Signup />} */}
-        {/* {page === 'mypage' && <MyPage />} */}
-        {!page &&
-          sections.map((section, index) => (
-            <ContentCarousel key={index} title={section.title} items={section.items} />
-          ))}
       </BrowserRouter>
     </div>
     );

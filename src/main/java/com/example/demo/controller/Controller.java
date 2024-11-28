@@ -22,26 +22,13 @@ import java.util.Optional;
 public class Controller {
     private final UserSer userSer;
 
-//    @GetMapping("/")
-//    public  String root(){return  "redirect:homepage";}
-
-    //홈페이지 이동
-//    @GetMapping("/")
-//    public String homepage(){
-//        return "index";
-//    }
     // 모든 경로를 index.html로 매핑 (정적 파일 제외)
     @GetMapping("/{path:[^\\.]*}")
     public String forward() {
         return "forward:/index.html";
     }
 
-    //로그인
-//    @GetMapping("login")
-//    public String login(Model model){
-//        model.addAttribute("loginRequest",new UserDomain());
-//        return "login";
-//    }
+
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody UserDomain loginRequest,
                                    BindingResult bindingResult,
@@ -118,9 +105,9 @@ public class Controller {
 
             String Dir =
                     //이 부분 본인 프로젝트 디렉토리 경로로 변경
-                    "/Users/jinmyeonghun/Desktop/3-2/공소/2024-2-CSC4004-6-Hotsix/" +
+                    "C:\\Users\\pc\\Desktop\\Hotsix\\" +
                     //여기는 공통 경로
-                    "src/main/resources/static/userProfile/";
+                    "src\\main\\resources\\static\\userProfile\\";
             String fileName = profile.getOriginalFilename();
 
             // UserDomain 객체 생성
@@ -156,12 +143,16 @@ public class Controller {
             }
         }
 
-    @GetMapping("user/{id}")
+    @GetMapping("userNameAndUserProfile/{id}")
     public ResponseEntity<?> getUserById(@PathVariable String id) {
 
         String userName = userSer.getUserNameById(id);
+        String userProfile = userSer.getProfileImagePathById(id);
 
-        return ResponseEntity.ok().body(Map.of("userName", userName));
+        return ResponseEntity.ok().body(Map.of(
+                "userName", userName,
+                "profileImagePath",userProfile
+        ));
 
     }
     @GetMapping("userProfile/{id}")

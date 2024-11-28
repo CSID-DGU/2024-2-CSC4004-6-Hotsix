@@ -9,9 +9,9 @@ function MyPage() {
 
   const [userName, setUserName] = useState('');
   const id = sessionStorage.getItem("ID"); // 저장된 사용자 ID 가져오기
-
+  const [profileImagePath, setProfileImagePath] = React.useState("");
   if(id){
-      fetch(`/user/${id}`, { // API 요청
+      fetch(`/userNameAndUserProfile/${id}`, { // API 요청
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
@@ -26,6 +26,7 @@ function MyPage() {
           return response.json();
       })
       .then(data => {
+          setProfileImagePath(data.profileImagePath);
           setUserName(data.userName); // 사용자 이름 설정
       })
       .catch(error => {
@@ -39,7 +40,11 @@ function MyPage() {
 return (
   React.createElement('div', { className: 'mypage' },
     React.createElement('div', { className: 'profile-section' },
-      React.createElement('div', { className: 'profile-picture' }),
+      React.createElement('img', {  
+        className: 'profile-picture' , 
+        src:`/asset/Images/userProfile/${profileImagePath}`,
+        alt: '/asset/Images/altImage/alt.png'}
+      ),
       React.createElement('div', { className: 'profile-info' },
         React.createElement('h2', { className: 'username' }, 
           userName
