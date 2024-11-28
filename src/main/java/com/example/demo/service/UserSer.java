@@ -8,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -70,6 +71,12 @@ public class UserSer {
         Optional<UserDomain> optionalUser = userRep.findById(id);
         UserDomain user = optionalUser.get();
         return user.getUserName();
+    }
+    public String getProfileImagePathById(String id){
+
+        Optional<UserDomain> optionalUser = userRep.findById(id);
+        UserDomain user = optionalUser.get();
+        return user.getProfileImagePath();
     }
     public void firstLogin(UserDomain user){
 

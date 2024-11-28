@@ -9,7 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -104,15 +108,50 @@ public class Controller {
 
         @PostMapping("signUp")
         @ResponseBody
-        public ResponseEntity<?> Signup(@RequestBody UserDomain signUpReq, BindingResult bindingResult){
-            System.out.println("Received Request: " + signUpReq);
+        public ResponseEntity<?> Signup(@RequestParam("id") String id,
+                                        @RequestParam("password") String password,
+                                        @RequestParam("userName") String userName,
+                                        @RequestParam("birthDate") String birthDate,
+                                        @RequestParam("phoneNum") String phoneNum,
+                                        @RequestParam("profileImagePath") MultipartFile profile
+                                       ){
+
+            String Dir =
+                    //이 부분 본인 프로젝트 디렉토리 경로로 변경
+                    "/Users/jinmyeonghun/Desktop/3-2/공소/2024-2-CSC4004-6-Hotsix/" +
+                    //여기는 공통 경로
+                    "src/main/resources/static/userProfile/";
+            String fileName = profile.getOriginalFilename();
+
+            // UserDomain 객체 생성
+            UserDomain user = new UserDomain();
+            user.setId(id);
+            user.setPassword(password);
+            user.setUserName(userName);
+            user.setBirthDate(Date.valueOf(birthDate));
+            user.setPhoneNum(phoneNum);
+            user.setProfileImagePath(fileName);
+
+            // 디렉토리 확인 및 생성
+            File directory = new File(Dir);
+            if (!directory.exists()) {
+                directory.mkdirs(); // 디렉토리 생성
+            }
+
+            try {
+                // 파일 저장
+                profile.transferTo(new File(Dir + fileName));
+
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed: " + e.getMessage());
+            }
+
             //회원가입 성공
-            if(userSer.createUser(signUpReq)){
+            if(userSer.createUser(user)){
                 return ResponseEntity.ok("SignUp completed");
             }
             //회원가입 실패
             else {
-                bindingResult.reject("DuplicatedId","이미 존재하는 아이디입니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "DuplicatedId"));
             }
         }
@@ -120,10 +159,17 @@ public class Controller {
     @GetMapping("user/{id}")
     public ResponseEntity<?> getUserById(@PathVariable String id) {
 
-
         String userName = userSer.getUserNameById(id);
 
         return ResponseEntity.ok().body(Map.of("userName", userName));
+
+    }
+    @GetMapping("userProfile/{id}")
+    public ResponseEntity<?> getUserProfileById(@PathVariable String id) {
+
+        String profileImagePath = userSer.getProfileImagePathById(id);
+
+        return ResponseEntity.ok().body(Map.of("profileImagePath", profileImagePath));
 
     }
 }

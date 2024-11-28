@@ -20,6 +20,7 @@ function Signup(onHomeClick) {
           setUserName('');
           setBirthDate('');
           setPhoneNum('');
+          setProfileImagePath('');
       };
 
   //변수
@@ -28,7 +29,7 @@ function Signup(onHomeClick) {
   const [userName, setUserName] = React.useState('');
   const [birthDate, setBirthDate] = React.useState('');
   const [phoneNum, setPhoneNum] = React.useState('');
-//  const [email, setEmail] = React.useState('');
+  const [profileImagePath, setProfileImagePath] = React.useState(null);
 
   //handleChange
   const handleIdChange = (event) => setId(event.target.value);
@@ -36,23 +37,32 @@ function Signup(onHomeClick) {
   const handleUserNameChange = (event) => setUserName(event.target.value);
   const handleBirthDateChange = (event) => setBirthDate(event.target.value);
   const handlePhoneNumChange = (event) => setPhoneNum(event.target.value);
+  const handleProfileImagePathChange = (event) => setProfileImagePath(event.target.files[0]);
 //  const handleEmailChange = (event) => setEmail(event.target.value);
 
   //handleSubmit
   const handleSubmit = async (event) => {
     event.preventDefault();
   
-    // 입력 데이터 객체 생성
-    const data = { id, password, userName, birthDate, phoneNum };
+    // // 입력 데이터 객체 생성
+    // const data = { id, password, userName, birthDate, phoneNum };
   
+    // FormData 객체 생성
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('password', password);
+    formData.append('userName', userName);
+    formData.append('birthDate', birthDate);
+    formData.append('phoneNum', phoneNum);
+    formData.append('profileImagePath', profileImagePath); // 프로필 이미지 추가
     try {
       // 서버로 POST 요청 보내기
       const response = await fetch('/signUp', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data), // 데이터를 JSON 문자열로 변환하여 전송
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // },
+        body: formData, 
       });
   
       if (response.ok) {
@@ -131,7 +141,13 @@ function Signup(onHomeClick) {
                       onChange: handlePhoneNumChange,
                       required: true
                   }),
-
+                  React.createElement('label', null, '프로필 이미지'),
+                  React.createElement('input', {
+                      type: 'file',
+                      name: 'profileImagePath',
+                      onChange: handleProfileImagePathChange,
+                      required: true // 프로필 이미지를 필수로 설정
+                    }),
                   React.createElement('button', { type: 'submit' }, '회원가입')
        )
   )
