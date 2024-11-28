@@ -93,7 +93,7 @@ return (
         },
         React.createElement('img', {
             key: 'profile-img', // 고유한 key 추가
-            src: '../asset/Images/image.jpeg',
+            src: '../../userProfile/test.png ',
             alt: ''
         }),
         isDropdownOpen &&
