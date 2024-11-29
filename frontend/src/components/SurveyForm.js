@@ -45,16 +45,48 @@ function SurveyForm() {
       { className: 'survey-form'
      , onSubmit: handleSubmit
       },
-      // MBTI 입력
-      React.createElement('label', null, '1. MBTI'),
-      React.createElement('input', {
-        type: 'text',
-        name: 'mbti',
-       value: formData.mbti,
-       onChange: handleChange,
-        placeholder: '예: ENFP',
-        required: true,
-      }),
+      // // MBTI 입력
+      // React.createElement('label', null, '1. MBTI'),
+      // React.createElement('input', {
+      //   type: 'text',
+      //   name: 'mbti',
+      //  value: formData.mbti,
+      //  onChange: handleChange,
+      //   placeholder: '예: ENFP',
+      //   required: true,
+      // }),
+      
+      // MBTI 선택
+      React.createElement('label', null, 'MBTI 선택'),
+      React.createElement(
+        'select',
+        {
+          name: 'mbti',
+          value: formData.mbti,
+          onChange: handleChange,
+          placeholder: '예: ENFP',
+          required: true,
+        },
+        
+        React.createElement('option', { value: '' }, '선택하세요'),
+        React.createElement('option', { value: 'INFP' }, 'INFP'),
+        React.createElement('option', { value: 'INFJ' }, 'INFJ'),
+        React.createElement('option', { value: 'INTP' }, 'INTP'),
+        React.createElement('option', { value: 'INTJ' }, 'INTJ'),
+        React.createElement('option', { value: 'ENFP' }, 'ENFP'),
+        React.createElement('option', { value: 'ENFJ' }, 'ENFJ'),
+        React.createElement('option', { value: 'ENTP' }, 'ENTP'),
+        React.createElement('option', { value: 'ENTJ' }, 'ENTJ'),
+        React.createElement('option', { value: 'ISFP' }, 'ISFP'),
+        React.createElement('option', { value: 'ISFJ' }, 'ISFJ'),
+        React.createElement('option', { value: 'ISTP' }, 'ISTP'),
+        React.createElement('option', { value: 'ISTJ' }, 'ISTJ'),
+        React.createElement('option', { value: 'ESFP' }, 'ESFP'),
+        React.createElement('option', { value: 'ESFJ' }, 'ESFJ'),
+        React.createElement('option', { value: 'ESTP' }, 'ESTP'),
+        React.createElement('option', { value: 'ESTJ' }, 'ESTJ')
+      ),
+
   
       // 주당 만남 횟수
       React.createElement('label', null, '2. 주당 만남 횟수'),
@@ -67,16 +99,43 @@ function SurveyForm() {
         required: true,
       }),
   
-      // 평균 예산 범위
-      React.createElement('label', null, '3. 평균 예산 범위'),
-      React.createElement('input', {
-        type: 'text',
-        name: 'budgetRange',
-       value: formData.budgetRange,
-       onChange: handleChange,
-        placeholder: '예: 10만원~20만원',
-        required: true,
-      }),
+      // // 평균 예산 범위
+      // React.createElement('label', null, '3. 평균 예산 범위  (단위:만원)'),
+      // React.createElement('input', {
+      //   type: 'number',
+      //   name: 'budgetRange',
+      //  value: formData.budgetRange,
+      //  onChange: handleChange,
+      //   placeholder: '예: 10 ~ 20',
+      //   required: true,
+      // }),
+      React.createElement(
+        'div',
+        { className: 'budget-range' },
+        React.createElement('label', null, '3. 평균 예산 범위 (단위: 만원)'),
+        React.createElement(
+          'div',
+          { className: 'budget-inputs' },
+          React.createElement('input', {
+            type: 'number',
+            name: 'minBudget',
+            value: formData.minBudget || '',
+            onChange: handleChange,
+            placeholder: '최소 예산',
+            required: true,
+          }),
+          React.createElement('span', { className: 'separator' }, ' ~ '),
+          React.createElement('input', {
+            type: 'number',
+            name: 'maxBudget',
+            value: formData.maxBudget || '',
+            onChange: handleChange,
+            placeholder: '최대 예산',
+            required: true,
+          })
+        )
+      ),
+      
   
       // 사귄 날짜
       React.createElement('label', null, '4. 사귄 날짜'),
@@ -90,7 +149,7 @@ function SurveyForm() {
   
       // 액티비티 선호 유무
       React.createElement('label', null, '5. 액티비티 선호 유무'),
-      React.createElement(
+      React.createElement( 
         'select',
         {
           name: 'activityPreference',

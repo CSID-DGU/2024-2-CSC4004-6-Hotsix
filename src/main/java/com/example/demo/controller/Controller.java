@@ -105,7 +105,8 @@ public class Controller {
 
             String Dir =
                     //이 부분 본인 프로젝트 디렉토리 경로로 변경
-                    "C:\\Users\\pc\\Desktop\\Hotsix\\" +
+                    //"C:\\Users\\pc\\Desktop\\Hotsix\\" +
+                    
                     //여기는 공통 경로
                     "src\\main\\resources\\static\\userProfile\\";
             String fileName = profile.getOriginalFilename();
