@@ -1,13 +1,16 @@
 // src/App.js
 import React from 'react';
-import Header from './components/Header';
-import Login from './components/Login';
-import Signup from './components/Signup';
-import SurveyForm from './components/SurveyForm';
-import MyPage from './components/MyPage';
-import Community from './components/Community';
-import RecommendationCourse from './components/RecommendationCourse';
-import ContentCarousel from './components/ContentCarousel';
+import Header from './components/Header.js';
+import Login from './components/Login.js';
+import Signup from './components/Signup.js';
+import SurveyForm from './components/SurveyForm.js';
+import MyPage from './components/MyPage.js';
+import Community from './components/Community.js';
+import RecommendationCourse from './components/RecommendationCourse.js';
+import ContentCarousel from './components/ContentCarousel.js';
+
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   const [page, setPage] = React.useState(null);
@@ -23,19 +26,6 @@ function App() {
   const toggleRecommendationCourse = () => setPage('recommendation-course'); // 추천 코스 페이지 핸들러
   const toggleSurvey = () => setPage('survey'); // 설문조사 페이지 핸들러
 
-  
-  const handleLogin = () => {
-    setIsLoggedIn(true); // 로그인 상태 설정
-    setUser({ name: '홍길동' }); // 예제 사용자 정보 설정
-    setPage(null); // 로그인 후 홈 화면으로 이동
-  };
-  
-  const handleLogout = () => {
-    setIsLoggedIn(false); // 로그아웃 상태 설정
-    setUser({ name: '' }); // 사용자 정보 초기화
-    setPage(null); // 로그아웃 후 홈 화면으로 이동
-  };
-  
  
   const sections = [
     { title: '사용자 맞춤', items: Array.from({ length: 10 }, (_, i) => ({ title: `컨텐츠 ${i + 1}` })) },
@@ -46,30 +36,35 @@ function App() {
 
   return (
     <div className="App">
-      <Header
-        isLoggedIn={isLoggedIn}
-        user={user}
-        onLogoutClick={handleLogout}
-        onLoginClick={toggleLogin}
-        onHomeClick={toggleHome}
-        onCommunityClick={toggleCommunity}
-        onRecommendationCourseClick={toggleRecommendationCourse}
-        onSurveyClick={toggleSurvey}
-        onSignupClick={toggleSignup}
-        onMyPageClick={toggleMyPage}
-      />
-      {page === 'login' && <Login onLogin={handleLogin} />} {/* 로그인 시 handleLogin 호출 */}
-      {page === 'community' && <Community />}
-      {page === 'recommendation-course' && <RecommendationCourse />}
-      {page === 'survey' && <SurveyForm />}
-      {page === 'signup' && <Signup />}
-      {page === 'mypage' && <MyPage />}
-      {!page &&
-        sections.map((section, index) => (
-          <ContentCarousel key={index} title={section.title} items={section.items} />
-        ))}
+      <BrowserRouter>
+        <Routes>
+          <Route path='/login' element = {<Login />} />
+          <Route path='/community' element = {<Community />} />
+          <Route path='/recommendation-course' element = {< RecommendationCourse/>} />
+          <Route path='/survey' element = {< SurveyForm/>} />
+          <Route path='/signup' element = {< Signup/>} />
+          <Route path='/mypage' element = {< MyPage/>} />
+          <Route path='/'       element = {
+          <>
+            {sections.map((section, index) => (
+              <ContentCarousel key={index} title={section.title} items={section.items} />
+            ))}
+          </>}/>
+        </Routes>
+        <Header
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
+          user={user}
+          onLoginClick={toggleLogin}
+          onHomeClick={toggleHome}
+          onCommunityClick={toggleCommunity}
+          onRecommendationCourseClick={toggleRecommendationCourse}
+          onSurveyClick={toggleSurvey}
+          onSignupClick={toggleSignup}
+          onMyPageClick={toggleMyPage}
+        />
+      </BrowserRouter>
     </div>
-  );
-}
-
+    );
+  }
 export default App;

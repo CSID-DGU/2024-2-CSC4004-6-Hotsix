@@ -12,6 +12,5 @@ public interface UserRep extends JpaRepository<UserDomain,Long> {
     boolean existsById(String id);
     Optional<UserDomain> findById(String id);
     Optional<UserDomain> findByUserNum(Long num);
-
 }
 

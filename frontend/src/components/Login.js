@@ -1,53 +1,89 @@
 // src/components/Login.js
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Login.css'; 
 
-// Login 컴포넌트
 function Login() {
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
 
-  const handleNameChange = (event) => setName(event.target.value);
-  const handleEmailChange = (event) => setEmail(event.target.value);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = { name, email };
-
-    // 서버의 특정 URL로 POST 요청 보내기
-    fetch('https://your-server-url.com/api/saveData', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data), // 데이터를 JSON 문자열로 변환하여 전송
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('네트워크 응답이 올바르지 않습니다');
-      }
-      return response.json(); // JSON 형태로 응답 받기
-    })
-    .then(data => {
-      console.log('성공:', data); // 요청 성공 시 응답 데이터 처리
-    })
-    .catch(error => {
-      console.error('에러 발생:', error); // 요청 실패 시 에러 처리
-    });
+  const navigate = useNavigate();
+  // 폼 리셋 함수 (비밀번호만 비우기로 수정)
+  const resetForm = () => {
+      // setId('');
+      setPassword('');
   };
 
-  return (
-    React.createElement('div', { className: 'login-container' },
-      React.createElement('h2', null, '로그인'),
-      React.createElement('form', { className: 'login-form' },
-        React.createElement('label', null, 'Username:'),
-        React.createElement('input', { type: 'text', name: 'username', required: true }),
-        React.createElement('label', null, 'Password:'),
-        React.createElement('input', { type: 'password', name: 'password', required: true }),
-        React.createElement('button', { type: 'submit' }, '로그인')
-      )
+  //변수
+  const [id, setId] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  //handleChange
+  const handleIdChange = (event) => setId(event.target.value);
+  const handlePasswordChange = (event) => setPassword(event.target.value);
+
+  //handleSubmit
+  const handleSubmit = async (event) => {
+      event.preventDefault();
+      // const data = { id,password };
+
+      try {
+          const response = await fetch('/login', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({id, password}),
+          });
+          // 응답 상태 확인
+          if (!response.ok) {
+              const errorData = await response.json();
+              if (errorData.error === "ID does not exist" || errorData.error === "Invalid Password") {
+                  window.alert("아이디 또는 비밀번호가 틀렸습니다.");
+              } else {
+                  console.error("Error:", errorData.error);
+                  window.alert("Error: " + errorData.error);
+              }
+              resetForm();
+              return;
+          }
+              // 성공 처리
+              const responseData = await response.json();
+              sessionStorage.setItem("token", responseData.token); // JWT 저장
+              sessionStorage.setItem("ID",id);  //Id 저장
+              
+              if(responseData.isFirstLogin){
+                  navigate('/survey');
+              }
+              else{
+                navigate('/');
+              }
+            }
+      catch(error) {
+          console.error("Unexpected error:", error);
+          window.alert("Unexpected error occurred. Please try again.");
+      }
+  }
+return (
+  React.createElement('div', { className: 'login-container',onSubmit: handleSubmit },
+    React.createElement('h2', null, '로그인'),
+    React.createElement('form', { className: 'login-form' },
+        React.createElement('label', null, '아이디 '),
+        React.createElement('input', {
+            type: 'text',
+            name: 'id',
+            value: id,
+            onChange: handleIdChange,
+            required: true
+        }),
+        React.createElement('label', null, '비밀번호 '),
+        React.createElement('input', {
+            type: 'password',
+            name: 'password',
+            value: password,
+            onChange: handlePasswordChange,
+            required: true
+        }),
+      React.createElement('button', { type: 'submit' }, '로그인')
     )
-  );
+  )
+);
 }
   
   export default Login;
