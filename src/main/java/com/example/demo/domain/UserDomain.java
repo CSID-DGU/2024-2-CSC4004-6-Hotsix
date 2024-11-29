@@ -1,29 +1,7 @@
 package com.example.demo.domain;
 
-<<<<<<< HEAD
-public class UserDomain {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    private String username;
-
-    private String password;
-
-    @Column(unique = true)
-    private String email;
-
-    @Column(unique = true)
-    private String phoneNum;
-
-    private String birthDate;
-}
-=======
-
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -37,6 +15,7 @@ import java.util.Date;
 @Setter
 @Getter
 @AllArgsConstructor
+@Entity
 public class UserDomain {
     //userNum (유저 일련번호, PK)
     @Id
@@ -51,6 +30,7 @@ public class UserDomain {
     @Size(min = 8,max = 16)
     private String password;
 
+
     //userName (회원 이름)
     private String userName;
 
@@ -60,14 +40,22 @@ public class UserDomain {
     //phoneNum (전화번호)
     private String phoneNum;
 
-    public UserDomain(String id,String password,String userName,Date birthDate,String phoneNum){
+    //isFirstLogin
+    private Boolean isFirstLogin;
+
+    //프로필 사진 경로
+    private String profileImagePath;
+
+    public UserDomain(String id,String password,String userName,Date birthDate,String phoneNum,String profileImagePath,boolean isFirstLogin){
         this.id = id;
         this.password = password;
         this.userName = userName;
         this.birthDate = birthDate;
         this.phoneNum = phoneNum;
+        this.isFirstLogin = isFirstLogin;
+        this.profileImagePath = profileImagePath;
+
     }
     public UserDomain(){}
 }
 
->>>>>>> c48e998e9f13fc5aaeaf09cce9eb98c8b1002321
