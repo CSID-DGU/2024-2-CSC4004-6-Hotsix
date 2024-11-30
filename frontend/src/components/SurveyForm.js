@@ -162,19 +162,19 @@ function SurveyForm() {
         React.createElement('option', { value: 'no' }, '아니요')
       ),
   
-      // 필수 코스
-      React.createElement('label', null, '6. 필수 코스'),
-      React.createElement('textarea', {
-        name: 'mustVisitCourse',
-       value: formData.mustVisitCourse,
-       onChange: handleChange,
-        placeholder: '예: 롯데월드, 한강공원',
-        rows: 3,
-        required: true,
-      }),
+      // // 필수 코스
+      // React.createElement('label', null, '6. 필수 코스'),
+      // React.createElement('textarea', {
+      //   name: 'mustVisitCourse',
+      //  value: formData.mustVisitCourse,
+      //  onChange: handleChange,
+      //   placeholder: '예: 롯데월드, 한강공원',
+      //   rows: 3,
+      //   required: true,
+      // }),
   
       // 선호 코스
-      React.createElement('label', null, '7. 선호 코스'),
+      React.createElement('label', null, '6. 선호 코스'),
       React.createElement('textarea', {
         name: 'preferredCourse',
        value: formData.preferredCourse,
@@ -185,7 +185,7 @@ function SurveyForm() {
       }),
   
       // 교통 수단
-      React.createElement('label', null, '8. 교통 수단'),
+      React.createElement('label', null, '7. 교통 수단'),
       React.createElement(
         'select',
         {
@@ -201,7 +201,7 @@ function SurveyForm() {
       ),
   
       // 데이트 시작 예정 시간
-      React.createElement('label', null, '9. 데이트 시작 예정 시간'),
+      React.createElement('label', null, '8. 데이트 시작 예정 시간'),
       React.createElement('input', {
         type: 'time',
         name: 'startTime',
@@ -210,19 +210,19 @@ function SurveyForm() {
         required: true,
       }),
   
-      // 필수 지역
-      React.createElement('label', null, '10. 필수 지역'),
-      React.createElement('textarea', {
-        name: 'mustVisitArea',
-       value: formData.mustVisitArea,
-       onChange: handleChange,
-        placeholder: '예: 강남, 홍대',
-        rows: 2,
-        required: true,
-      }),
+      // // 필수 지역
+      // React.createElement('label', null, '10. 필수 지역'),
+      // React.createElement('textarea', {
+      //   name: 'mustVisitArea',
+      //  value: formData.mustVisitArea,
+      //  onChange: handleChange,
+      //   placeholder: '예: 강남, 홍대',
+      //   rows: 2,
+      //   required: true,
+      // }),
   
       // 선호 지역
-      React.createElement('label', null, '11. 선호 지역'),
+      React.createElement('label', null, '9. 선호 지역'),
       React.createElement('textarea', {
         name: 'preferredArea',
        value: formData.preferredArea,
