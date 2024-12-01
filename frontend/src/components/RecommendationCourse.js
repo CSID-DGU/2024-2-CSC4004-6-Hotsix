@@ -36,41 +36,41 @@ function RecommendationCourse() {
           'div',
           { className: 'form-page' },
           React.createElement('h2', null, '선호도 조사 - 사용자 취향'),
-          React.createElement(
-            'label',
-            null,
-            'MBTI:',
-            React.createElement(
-              'select',
-              {
-                name: 'mbti',
-                value: formData.mbti,
-                onChange: handleChange,
-                className: 'dropdown',
-              },
-              React.createElement('option', { value: '' }, '선택하세요'),
-              [
-                'INFP',
-                'INFJ',
-                'INTP',
-                'INTJ',
-                'ENFP',
-                'ENFJ',
-                'ENTP',
-                'ENTJ',
-                'ISFP',
-                'ISFJ',
-                'ISTP',
-                'ISTJ',
-                'ESFP',
-                'ESFJ',
-                'ESTP',
-                'ESTJ',
-              ].map((type) =>
-                React.createElement('option', { key: type, value: type }, type)
-              )
-            )
-          ),
+          // React.createElement(
+          //   'label',
+          //   null,
+          //   'MBTI:',
+          //   React.createElement(
+          //     'select',
+          //     {
+          //       name: 'mbti',
+          //       value: formData.mbti,
+          //       onChange: handleChange,
+          //       className: 'dropdown',
+          //     },
+          //     React.createElement('option', { value: '' }, '선택하세요'),
+          //     [
+          //       'INFP',
+          //       'INFJ',
+          //       'INTP',
+          //       'INTJ',
+          //       'ENFP',
+          //       'ENFJ',
+          //       'ENTP',
+          //       'ENTJ',
+          //       'ISFP',
+          //       'ISFJ',
+          //       'ISTP',
+          //       'ISTJ',
+          //       'ESFP',
+          //       'ESFJ',
+          //       'ESTP',
+          //       'ESTJ',
+          //     ].map((type) =>
+          //       React.createElement('option', { key: type, value: type }, type)
+          //     )
+          //   )
+          // ),
           React.createElement(
             'label',
             { className: 'inline-label' },
@@ -150,22 +150,22 @@ function RecommendationCourse() {
           'div',
           { className: 'form-page' },
           React.createElement('h2', null, '선호도 조사 - 지역 및 코스'),
-          React.createElement(
-            'label',
-            null,
-            '선호 지역:',
-            React.createElement('input', {
-              type: 'text',
-              name: 'preferredRegions',
-              value: formData.preferredRegions,
-              onChange: (e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  preferredRegions: e.target.value.split(','),
-                })),
-              placeholder: '예: 이태원, 신촌',
-            })
-          ),
+          // React.createElement(
+          //   'label',
+          //   null,
+          //   '선호 지역:',
+          //   React.createElement('input', {
+          //     type: 'text',
+          //     name: 'preferredRegions',
+          //     value: formData.preferredRegions,
+          //     onChange: (e) =>
+          //       setFormData((prev) => ({
+          //         ...prev,
+          //         preferredRegions: e.target.value.split(','),
+          //       })),
+          //     placeholder: '예: 이태원, 신촌',
+          //   })
+          // ),
           React.createElement(
             'label',
             null,
@@ -191,7 +191,7 @@ function RecommendationCourse() {
               name: 'mustVisitRegion',
               value: formData.mustVisitRegion,
               onChange: handleChange,
-              placeholder: '예: 강남, 홍대',
+              placeholder: '예: 강남, 홍대 (한 장소만)',
             })
           )
         );

@@ -83,11 +83,13 @@ function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyP
             isLoggedIn ?
             //로그인 되어 있는 경우
             [
-              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/recommendation-course'); }}, '사용자 맞춤 코스 추천')
+              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/recommendation-course'); }}, '사용자 맞춤 코스 추천'),
+              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); navigate('/bingo'); },},'빙고 게임')
             ] : 
             //로그인 안되어 있는 경우
             [
-              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/login'); }}, '사용자 맞춤 코스 추천')
+              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/login'); }}, '사용자 맞춤 코스 추천'),
+              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); navigate('/login'); },},'빙고 게임')
             ]
         ),
       ),
