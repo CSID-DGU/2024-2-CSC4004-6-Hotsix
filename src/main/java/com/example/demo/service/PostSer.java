@@ -5,9 +5,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.example.demo.DTO.PostDTO;
 import com.example.demo.domain.PostDomain;
 import com.example.demo.repository.PostRep;
+import com.example.demo.repository.UserRep;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +35,10 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class PostSer {
 
-    private final PostRep postRep;
+	private final PostRep postRep;
+	private final UserRep userRep;
 
-    @SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private Specification<PostDomain> search(String kw) {
 		return new Specification<>() {
 			private static final long serialVersionUID = 1L;
@@ -53,12 +57,121 @@ public class PostSer {
 			}
 		};
 	}
-    public Page<PostDomain> getPosts(int page, int size){
-        List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createDate"));
-        Pageable pageable = PageRequest.of(page,size, Sort.by(sorts));
+	public Page<PostDomain> getPosts(int page, int size){
+		List<Sort.Order> sorts = new ArrayList<>();
+		sorts.add(Sort.Order.desc("createDate"));
+		Pageable pageable = PageRequest.of(page,size, Sort.by(sorts));
 
-        return postRep.findAll(pageable);
-    }
+		return postRep.findAll(pageable);
+	}
+
+	public PostDomain createPost(PostDTO postDTO) {
+		// 检查作者是否存在
+		UserDomain author = userRep.findById(postDTO.getAuthorId())
+				.orElseThrow(() -> new RuntimeException("Author not found"));
+
+		// 创建帖子
+		PostDomain post = new PostDomain();
+		post.setCategory(postDTO.getCategory());
+		post.setContent(postDTO.getContent());
+		post.setCreateDate(LocalDateTime.now());
+		post.setModifyDate(LocalDateTime.now());
+		post.setLikes(0);
+		post.setSubject(postDTO.getSubject());
+		post.setAuthor(author);
+
+		return postRep.save(post);
+	}
+
+	public void updatePost(Long postId, PostDTO postDTO) {
+		PostDomain post = postRep.findById(postId)
+				.orElseThrow(() -> new RuntimeException("Post not found"));
+
+		post.setSubject(postDTO.getSubject());
+		post.setContent(postDTO.getContent());
+		post.setCategory(postDTO.getCategory());
+		post.setModifyDate(LocalDateTime.now());
+
+		postRep.save(post);
+	}
+
+	public void deletePost(Long postId) {
+		postRep.deleteById(postId);
+	}
+
+	public void addLike(Long postId) {
+		PostDomain post = postRep.findById(postId)
+				.orElseThrow(() -> new RuntimeException("Post not found"));
+
+		post.setLikes(post.getLikes() + 1);
+		postRep.save(post);
+	}
+
+	public void removeLike(Long postId) {
+		PostDomain post = postRep.findById(postId)
+				.orElseThrow(() -> new RuntimeException("Post not found"));
+
+		if (post.getLikes() > 0) {
+			post.setLikes(post.getLikes() - 1);
+		}
+
+		postRep.save(post);
+	}
+
+	public List<PostDTO> getPostsByCategory(String category, String userId) {
+		List<PostDomain> posts = postRep.findByCategory(category); // 获取 PostDomain 列表
+		return posts.stream().map(post -> {
+			PostDTO dto = new PostDTO();
+			dto.setId(post.getPostId());
+			dto.setSubject(post.getSubject());
+			dto.setContent(post.getContent());
+			dto.setCategory(post.getCategory());
+			dto.setLikes(post.getLikes());
+			dto.setCreateDate(post.getCreateDate());
+
+			// 调用 isLikedByUser 方法判断是否点过赞
+			dto.setIsLiked(userId != null && isLikedByUser(post.getPostId(), userId));
+
+			if (post.getAuthor() != null) {
+				dto.setAuthorId(post.getAuthor().getUserNum());
+				dto.setAuthorName(post.getAuthor().getUserName());
+			}
+			return dto;
+		}).collect(Collectors.toList());
+	}
+
+
+	public int getLikeCount(Long postId) {
+		PostDomain post = postRep.findById(postId)
+				.orElseThrow(() -> new RuntimeException("Post not found"));
+		return post.getLikes();
+	}
+
+	public void toggleLike(Long postId, String userId) {
+		PostDomain post = postRep.findById(postId)
+				.orElseThrow(() -> new RuntimeException("Post not found"));
+		UserDomain user = userRep.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		if (post.getVoter().contains(user)) {
+			post.getVoter().remove(user);
+			post.setLikes(post.getLikes() - 1);
+		} else {
+			post.getVoter().add(user);
+			post.setLikes(post.getLikes() + 1);
+		}
+
+		postRep.save(post);
+	}
+
+	public boolean isLikedByUser(Long postId, String userId) {
+		PostDomain post = postRep.findById(postId)
+				.orElseThrow(() -> new RuntimeException("Post not found"));
+		UserDomain user = userRep.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		return post.getVoter().contains(user);
+	}
+
 
 }

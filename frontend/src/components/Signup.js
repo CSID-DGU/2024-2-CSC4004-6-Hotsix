@@ -20,6 +20,7 @@ function Signup(onHomeClick) {
           setUserName('');
           setBirthDate('');
           setPhoneNum('');
+          setUserLocation('');
           setProfileImagePath('');
       };
 
@@ -29,6 +30,11 @@ function Signup(onHomeClick) {
   const [userName, setUserName] = React.useState('');
   const [birthDate, setBirthDate] = React.useState('');
   const [phoneNum, setPhoneNum] = React.useState('');
+  const [userLocation,setUserLocation] = React.useState('');
+    //시,도,군 변수
+    const [city, setCity] = React.useState('');
+    const [district, setDistrict] = React.useState('');
+    const [street, setStreet] = React.useState('');
   const [profileImagePath, setProfileImagePath] = React.useState(null);
 
   //handleChange
@@ -37,16 +43,34 @@ function Signup(onHomeClick) {
   const handleUserNameChange = (event) => setUserName(event.target.value);
   const handleBirthDateChange = (event) => setBirthDate(event.target.value);
   const handlePhoneNumChange = (event) => setPhoneNum(event.target.value);
+  const handleUserLocationChange = () => setUserLocation(`${city} ${district} ${street}`);
   const handleProfileImagePathChange = (event) => setProfileImagePath(event.target.files[0]);
 //  const handleEmailChange = (event) => setEmail(event.target.value);
 
+    //시,군,구
+    const handleCityChange = (e) => {
+        setCity(e.target.value);
+        handleUserLocationChange();
+    };
+
+    const handleDistrictChange = (e) => {
+        setDistrict(e.target.value);
+        handleUserLocationChange();
+    };
+
+    const handleStreetChange = (e) => {
+        setStreet(e.target.value);
+        handleUserLocationChange();
+    };
+
   //handleSubmit
   const handleSubmit = async (event) => {
+    
     event.preventDefault();
-  
+
     // // 입력 데이터 객체 생성
     // const data = { id, password, userName, birthDate, phoneNum };
-  
+
     // FormData 객체 생성
     const formData = new FormData();
     formData.append('id', id);
@@ -54,6 +78,7 @@ function Signup(onHomeClick) {
     formData.append('userName', userName);
     formData.append('birthDate', birthDate);
     formData.append('phoneNum', phoneNum);
+    formData.append('userLocation', userLocation);
     formData.append('profileImagePath', profileImagePath); // 프로필 이미지 추가
     try {
       // 서버로 POST 요청 보내기
@@ -62,9 +87,9 @@ function Signup(onHomeClick) {
         // headers: {
         //   'Content-Type': 'application/json',
         // },
-        body: formData, 
+        body: formData,
       });
-  
+
       if (response.ok) {
         // 회원가입 성공
         window.alert('회원가입이 완료되었습니다!');
@@ -76,6 +101,7 @@ function Signup(onHomeClick) {
           window.alert('이미 존재하는 아이디입니다!');
           resetForm(); // 폼 초기화
         } else {
+            console.log('userLocation:', userLocation);
           window.alert('회원가입 중 문제가 발생했습니다.');
         }
       }
@@ -141,6 +167,39 @@ function Signup(onHomeClick) {
                       onChange: handlePhoneNumChange,
                       required: true
                   }),
+                  React.createElement('label', null, '거주지 '),
+                  React.createElement('div',{class : 'Address-container'},
+                    React.createElement('div',{class:'Input-container'},
+                      React.createElement('p',{class : 'AddressMessage'},'시⋅도'),
+                      React.createElement('input', {
+                          class: 'Address-component',
+                          type: 'text',
+                          name: 'userLocation',
+                          value: city,
+                          onChange: handleCityChange,
+                          required: true
+                      },),),
+                    React.createElement('div',{class:'Input-container'},
+                      React.createElement('p',{class : 'AddressMessage'},'구'),
+                      React.createElement('input', {
+                          class: 'Address-component',
+                          type: 'text',
+                          name: 'userLocation',
+                          value: district,
+                          onChange: handleDistrictChange,
+                          required: true
+                      },),),
+                    React.createElement('div',{class:'Input-container'},
+                      React.createElement('p',{class : 'AddressMessage'},'도로'),
+                      React.createElement('input', {
+                          class: 'Address-component',
+                          type: 'text',
+                          name: 'userLocation',
+                          value: street,
+                          onChange: handleStreetChange,
+                          required: true
+                      },),)
+                ),
                   React.createElement('label', null, '프로필 이미지'),
                   React.createElement('input', {
                       type: 'file',
@@ -149,9 +208,9 @@ function Signup(onHomeClick) {
                       required: true // 프로필 이미지를 필수로 설정
                     }),
                   React.createElement('button', { type: 'submit' }, '회원가입')
-       )
-  )
-);
+           )
+        )
+    );
 }
   
   export default Signup;

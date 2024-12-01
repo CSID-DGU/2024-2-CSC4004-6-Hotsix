@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.UserDomain;
+import com.example.demo.repository.UserRep;
 import com.example.demo.service.UserSer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -14,12 +16,18 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @org.springframework.stereotype.Controller
 public class Controller {
+    @Autowired
+    private UserRep userRepository;
+
     private final UserSer userSer;
 
     // 모든 경로를 index.html로 매핑 (정적 파일 제외)
@@ -93,55 +101,91 @@ public class Controller {
         }
     }
 
-        @PostMapping("signUp")
-        @ResponseBody
-        public ResponseEntity<?> Signup(@RequestParam("id") String id,
-                                        @RequestParam("password") String password,
-                                        @RequestParam("userName") String userName,
-                                        @RequestParam("birthDate") String birthDate,
-                                        @RequestParam("phoneNum") String phoneNum,
-                                        @RequestParam("profileImagePath") MultipartFile profile
-                                       ){
+    @PostMapping("signUp")
+    @ResponseBody
+    public ResponseEntity<?> Signup(@RequestParam("id") String id,
+                                    @RequestParam("password") String password,
+                                    @RequestParam("userName") String userName,
+                                    @RequestParam("birthDate") String birthDate,
+                                    @RequestParam("phoneNum") String phoneNum,
+                                    @RequestParam("userLocation") String userLocation,
+                                    @RequestParam("profileImagePath") MultipartFile profile
+    ){
 
-            String Dir =
+
+        System.out.println("userLocation : " + userLocation);
+        String Dir =
 //                    이 부분 본인 프로젝트 디렉토리 경로로 변경
 
 //                     명훈 디렉토리 경로1
-                   "C:\\Users\\pc\\Desktop\\Hotsix\\" +
+                "C:\\Users\\pc\\Desktop\\Hotsix\\" +
 //                    명훈 디렉토리 경로2
-
+//                "\\Users\\jinmyeonghun\\Desktop\\3-2\\공소\\2024-2-CSC4004-6-Hotsix\\" +
 //
-                    //여기는 공통 경로
-                    "src\\main\\resources\\static\\asset\\Images\\userProfile\\";
+                        //여기는 공통 경로
+                        "src\\main\\resources\\static\\asset\\Images\\userProfile\\";
 
-            String fileName = profile.getOriginalFilename();
+        String fileName = profile.getOriginalFilename();
 
-            // UserDomain 객체 생성
-            UserDomain user = new UserDomain();
-            user.setId(id);
-            user.setPassword(password);
-            user.setUserName(userName);
-            user.setBirthDate(Date.valueOf(birthDate));
-            user.setPhoneNum(phoneNum);
-            user.setProfileImagePath(fileName);
+        // UserDomain 객체 생성
+        UserDomain user = new UserDomain();
+        user.setId(id);
+        user.setPassword(password);
+        user.setUserName(userName);
+        user.setBirthDate(Date.valueOf(birthDate));
+        user.setPhoneNum(phoneNum);
+        user.setProfileImagePath(fileName);
+        user.setUserLocation(userLocation);
 
-            try {
-                // 파일 저장
-                profile.transferTo(new File(Dir + fileName));
+        try {
+            // 파일 저장
+            profile.transferTo(new File(Dir + fileName));
 
-            } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed: " + e.getMessage());
-            }
-
-            //회원가입 성공
-            if(userSer.createUser(user)){
-                return ResponseEntity.ok("SignUp completed");
-            }
-            //회원가입 실패
-            else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "DuplicatedId"));
-            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed: " + e.getMessage());
         }
+
+        //회원가입 성공
+        if(userSer.createUser(user)){
+            return ResponseEntity.ok("SignUp completed");
+        }
+        //회원가입 실패
+        else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "DuplicatedId"));
+        }
+    }
+
+    @PostMapping("survey/{id}")
+    public ResponseEntity<?> survey(@RequestBody UserDomain user,
+                                    @PathVariable String id
+                                    ){
+        Optional<UserDomain> userOptional = userSer.optionalUserDomain(id);
+        UserDomain foundUser = userOptional.get();
+
+        foundUser.setMbti(user.getMbti());
+        foundUser.setMeetingFrequency(user.getMeetingFrequency());
+        foundUser.setExpectedBudgetRange(user.getExpectedBudgetRange());
+        foundUser.setRelationshipDate(user.getRelationshipDate());
+        foundUser.setActivityPreference(user.getActivityPreference());
+        foundUser.setPreferredCourse(user.getPreferredCourse());
+        foundUser.setStartTime(user.getStartTime());
+        foundUser.setPreferredArea(user.getPreferredArea());
+        foundUser.setTransportType(user.getTransportType());
+
+//        user.setMbti(mbti);
+//        user.setWeeklyMeetingCount(Integer.parseInt(meetingFrequency));
+//        user.setExpectedBudget(expectedBudgetRange);
+//        user.setDatingDate(Date.valueOf(relationshipDate));
+//        user.setIsPreferedActivity(Boolean.valueOf(activityPreference));
+//        user.setPreferedDateCourse(preferredCourse);
+//        user.setDateStartTime(LocalDateTime.parse(startTime));
+//        user.setPreferedLocation(preferredArea);
+
+
+//        UserRep.save(user);
+        userSer.saveSurveyResult(foundUser);
+        return ResponseEntity.ok("Save Completed");
+    }
 
     @GetMapping("userNameAndUserProfile/{id}")
     public ResponseEntity<?> getUserById(@PathVariable String id) {
@@ -153,6 +197,14 @@ public class Controller {
                 "userName", userName,
                 "profileImagePath",userProfile
         ));
+
+    }
+    @GetMapping("userName/{id}")
+    public ResponseEntity<?> getUserNameById(@PathVariable String id) {
+
+        String userName = userSer.getUserNameById(id);
+
+        return ResponseEntity.ok().body(Map.of("userName", userName));
 
     }
     @GetMapping("userProfile/{id}")

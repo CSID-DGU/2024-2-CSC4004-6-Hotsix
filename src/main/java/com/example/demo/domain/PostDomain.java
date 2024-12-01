@@ -20,7 +20,7 @@ import lombok.Setter;
 public class PostDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long postId;
 
     @Column(length = 200)
     private String subject;
@@ -28,16 +28,25 @@ public class PostDomain {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "create_date")
     private LocalDateTime createDate;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<ReplyDomain> replyList;
 
     @ManyToOne
+    @JoinColumn(name = "author_user_num")
     private UserDomain author;
 
     private LocalDateTime modifyDate;
 
     @ManyToMany
     Set<UserDomain> voter;
+
+    @Column(length = 50)
+    private String category;
+
+    @Column(name = "likes")
+    private Integer likes;
+
 }

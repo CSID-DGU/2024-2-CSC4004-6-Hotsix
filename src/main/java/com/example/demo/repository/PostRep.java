@@ -12,6 +12,7 @@ import java.awt.print.Pageable;
 import java.util.List;
 
 public interface PostRep extends JpaRepository<PostDomain,Long>{
+    List<PostDomain> findByCategory(String category);
 //    PostDomain findBySubject(String subject);
 //
 //    PostDomain findBySubjectAndContent(String subject, String content);

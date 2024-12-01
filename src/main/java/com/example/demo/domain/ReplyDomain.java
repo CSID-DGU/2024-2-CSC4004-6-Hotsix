@@ -18,7 +18,7 @@ import lombok.Setter;
 public class ReplyDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long replyId;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -26,9 +26,11 @@ public class ReplyDomain {
     private LocalDateTime createDate;
 
     @ManyToOne
+    @JoinColumn(name = "post_id") // 외래키
     private PostDomain post;
 
     @ManyToOne
+    @JoinColumn(name = "author_user_num") // 외래키
     private UserDomain author;
 
     private LocalDateTime modifyDate;

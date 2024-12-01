@@ -45,12 +45,18 @@
 .Address-container{
   display: flex;           /* flexbox 레이아웃을 사용 */
   justify-content: space-between; /* 각 input 사이의 간격을 균등하게 배치 */
-  flex-wrap: wrap; 
+  /* flex-wrap: wrap;  */
+}
+
+.Input-container{
+  display: flex;
+  flex-wrap: wrap;
 }
 .Address-component{
-  width: 10%;        /* input을 가로로 꽉 채우기 */
+  width: 80%;        /* input을 가로로 꽉 채우기 */
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  height: 10px;
 }

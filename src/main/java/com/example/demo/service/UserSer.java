@@ -36,6 +36,11 @@ public class UserSer {
         else {return false;}
 
     }
+    //설문 조사 결과 저장 메소드
+    public void saveSurveyResult(UserDomain user){
+        userRep.save(user);
+    }
+
     public Optional<UserDomain> optionalUserDomain(String id){
         return userRep.findById(id);
     }
