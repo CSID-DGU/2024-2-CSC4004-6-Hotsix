@@ -25,6 +25,7 @@
   padding: 8px;
   font-size: 14px;
   margin-bottom: 15px;
+  margin-top: -5px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
@@ -40,4 +41,16 @@
 
 .signup-form button:hover {
   background-color: #555;
+}
+.Address-container{
+  display: flex;           /* flexbox 레이아웃을 사용 */
+  justify-content: space-between; /* 각 input 사이의 간격을 균등하게 배치 */
+  flex-wrap: wrap; 
+}
+.Address-component{
+  width: 10%;        /* input을 가로로 꽉 채우기 */
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }

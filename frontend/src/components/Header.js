@@ -128,7 +128,7 @@ function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyP
               key: 'profile-img', // 고유한 key 추가
               // 절대경로 : resources/static/ 에서 시작
               src:  `/asset/Images/userProfile/${profileImagePath}`,
-              alt: '/asset/Images/altImage/alt.png'
+              alt: 'No Image'
           }),
           isDropdownOpen &&
           React.createElement('div', { className: 'dropdown-menu', key: 'dropdown-menu' }, // 고유한 key 추가

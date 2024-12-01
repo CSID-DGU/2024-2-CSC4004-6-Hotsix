@@ -104,11 +104,16 @@ public class Controller {
                                        ){
 
             String Dir =
-                    //이 부분 본인 프로젝트 디렉토리 경로로 변경
-                    //"C:\\Users\\pc\\Desktop\\Hotsix\\" +
-                    
+//                    이 부분 본인 프로젝트 디렉토리 경로로 변경
+
+//                     명훈 디렉토리 경로1
+                   "C:\\Users\\pc\\Desktop\\Hotsix\\" +
+//                    명훈 디렉토리 경로2
+
+//
                     //여기는 공통 경로
-                    "src\\main\\resources\\static\\userProfile\\";
+                    "src\\main\\resources\\static\\asset\\Images\\userProfile\\";
+
             String fileName = profile.getOriginalFilename();
 
             // UserDomain 객체 생성
@@ -119,12 +124,6 @@ public class Controller {
             user.setBirthDate(Date.valueOf(birthDate));
             user.setPhoneNum(phoneNum);
             user.setProfileImagePath(fileName);
-
-            // 디렉토리 확인 및 생성
-            File directory = new File(Dir);
-            if (!directory.exists()) {
-                directory.mkdirs(); // 디렉토리 생성
-            }
 
             try {
                 // 파일 저장
