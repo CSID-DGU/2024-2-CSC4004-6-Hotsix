@@ -1,0 +1,62 @@
+.survey-form {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 150px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.survey-form h2 {
+  margin-top: -20px;
+  margin-bottom: 60px;
+}
+
+.survey-form label {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.survey-form input,
+.survey-form select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.next-button {
+  margin-left: auto;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+.inline-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  transform: scale(1.5);
+  margin-top: 30px;
+}

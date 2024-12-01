@@ -1,0 +1,336 @@
+/* 页面整体布局 */
+#container.community {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  padding-top: 70px;
+  box-sizing: border-box;
+}
+
+.content-area {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* 左侧菜单 */
+.leftside {
+  flex-basis: 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.leftside .card {
+  border: 1px solid #d6d6d6;
+  background-color: #f9f9f9;
+  padding: 15px;
+}
+
+.logged {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.picture {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.nickname {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.menus {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menus a {
+  text-decoration: none;
+  color: #000;
+  font-size: 16px;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+.menus a:hover {
+  background-color: #f0f0f0;
+}
+
+/* 中间区域的卡片布局 */
+.main {
+  flex-basis: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 卡片容器 */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 两列布局 */
+  gap: 20px;
+  row-gap: 10px;
+}
+
+/* 卡片样式 */
+.card {
+  height: auto;
+  width: -10px;
+  border: 1px solid #d6d6d6;
+  background-color: #f9f9f9;
+  padding: 20px;
+  box-sizing: border-box;
+  cursor: pointer; /* 鼠标悬停样式 */
+  transition: box-shadow 0.3s ease; /* 增加悬停效果 */
+}
+
+.card:hover {
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* 卡片悬停时阴影效果 */
+  background-color: #f0f8ff;
+}
+
+/* 卡片标题 */
+.card h3 {
+  font-size: 24px; /* 增大标题字体 */
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* 最新帖子列表 */
+.latest-posts {
+  margin-top: 10px;
+}
+
+.latest-post-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eaeaea;
+  font-size: 18px; /* 增大字体 */
+}
+
+.latest-post-item:last-child {
+  border-bottom: none;
+}
+
+.post-row {
+  display: flex;
+  justify-content: space-between; /* 标题、作者、日期左右对齐 */
+  align-items: center; /* 垂直居中对齐 */
+  padding: 10px 0; /* 增加上下间距 */
+  font-size: 16px; /* 调整字体大小 */
+}
+
+.post-title {
+  flex-basis: 40%;
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+}
+
+.post-author {
+  flex-basis: 30%;
+  text-align: center;
+  font-size: 16px;
+  color: #737373;
+}
+
+.post-date {
+  flex-basis: 30%;
+  text-align: right;
+  font-size: 16px;
+  color: #999;
+}
+
+
+/* 鼠标悬停效果 */
+.latest-post-item:hover .post-title {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* 列表视图样式 */
+.post-list {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.post-item {
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.post-item:hover {
+  background-color: #f9f9f9;
+}
+
+/* 第一行：标题 */
+.post-title-row {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px; /* 与第二行间隔 */
+  white-space: nowrap; /* 单行显示 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 第二行：点赞图标、发帖人ID和日期 */
+.post-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 作者部分 */
+.author-section {
+  flex-basis: 50%; /* 中间对齐 */
+  text-align: left; /* 左对齐 */
+}
+
+/* 日期部分 */
+.date-section {
+  flex-basis: 30%; /* 右对齐 */
+  text-align: right;
+}
+
+.post-item h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* 详细视图样式 */
+.card.large-card {
+  width: 100%;
+  padding: 30px;
+  margin-bottom: 20px;
+  border: 1px solid #d6d6d6;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card.large-card h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.card.large-card .content {
+  height: 350px;
+  margin-top: 20px;
+  font-size: 20px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.back-button {
+  position: relative;
+  top: 10px;
+  left: 10px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
+.board-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* 右侧内容 */
+.rightside {
+  flex-basis: 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rightside .card {
+  border: 1px solid #d6d6d6;
+  background-color: #f9f9f9;
+  padding: 15px;
+}
+
+.board .article,
+.board .list {
+  display: block;
+  padding: 10px;
+  border-top: 1px solid #e3e3e3;
+  color: #444;
+}
+
+.board .article p.title {
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.board .article p.small,
+.board .list p {
+  line-height: 16px;
+  color: #737373;
+  font-size: 12px;
+}
+
+
+/* 点赞按钮样式 */
+.like-section {
+  flex-basis: 20%; /* 左对齐，宽度固定 */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* 点赞图标样式 */
+.like-icon {
+  font-size: 24px; /* 图标大小 */
+  color: #737373; /* 默认颜色 */
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.like-icon:hover {
+  color: #007bff; /* 悬停时颜色变化 */
+  transform: scale(1.2); /* 悬停时放大效果 */
+}
+
+.like-icon.liked {
+  color: #007bff; /* 点赞后高亮颜色 */
+}
+
+
+.like-count {
+  margin-left: 10px;
+  font-size: 16px;
+  color: #333;
+}
