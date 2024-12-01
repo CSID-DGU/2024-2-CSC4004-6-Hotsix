@@ -306,24 +306,26 @@ function Community() {
               </div>
             </div>
           ) : view === 'detail' ? (
-            <div className="card large-card">
+            <div className="post-list-container">
               <button className="back-button" onClick={goBack}>
                 Back
               </button>
-              <h2 className="board-title">{selectedPost.subject}</h2>
-              <p>
-                <strong>Author:</strong> {selectedPost.authorName || 'Unknown'}
-              </p>
-              <p>
-                <strong>Date:</strong> {new Date(selectedPost.createDate).toLocaleString()}
-              </p>
-              <div className="content">{selectedPost.content}</div>
-              <div className="like-section">
-                <i
-                  className={`fas fa-thumbs-up like-icon ${selectedPost.liked ? 'liked' : ''}`}
-                  onClick={() => toggleLikeHandler(selectedPost.id, true)} // 调用通用函数
-                ></i>
-                <span className="like-count">{selectedPost.likeCount}</span>
+              <div className="card large-card">
+                <h2 className="board-title">{selectedPost.subject}</h2>
+                <p>
+                  <strong>Author:</strong> {selectedPost.authorName || 'Unknown'}
+                </p>
+                <p>
+                  <strong>Date:</strong> {new Date(selectedPost.createDate).toLocaleString()}
+                </p>
+                <div className="content">{selectedPost.content}</div>
+                <div className="like-section">
+                  <i
+                    className={`fas fa-thumbs-up like-icon ${selectedPost.liked ? 'liked' : ''}`}
+                    onClick={() => toggleLikeHandler(selectedPost.id, true)} // 调用通用函数
+                  ></i>
+                  <span className="like-count">{selectedPost.likeCount}</span>
+                </div>
               </div>
             </div>
           ) : null}
