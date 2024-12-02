@@ -18,34 +18,34 @@ function Community() {
     공지사항: '공지사항',
     이벤트: '이벤트',
   };
+  
+   //유저 이름 가져오기
+   const [userName, setUserName] = useState('');
+   const id = sessionStorage.getItem("ID");
+   React.useEffect(() => {
+         if(id){
+           fetch(`/userName/${id}`, { // API 요청
+               method: 'GET',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+       } )
+           .then(response => {
+               if (!response.ok) {
+                   throw new Error('Failed to fetch user data');
+               }
+               return response.json();
+           })
+           .then(data => {
+               setUserName(data.userName); // 사용자 이름 설정
+           })
+           .catch(error => {
+               console.error('Error fetching user data:', error);
+           })
+         }
+       }, [id]);
 
-    //유저 이름 가져오기
-    const [userName, setUserName] = useState('');
-    const id = sessionStorage.getItem("ID");
-    React.useEffect(() => {
-          if(id){
-            fetch(`/userName/${id}`, { // API 요청
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-        } )
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user data');
-                }
-                return response.json();
-            })
-            .then(data => {
-                setUserName(data.userName); // 사용자 이름 설정
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-            })
-          }
-        }, [id]);
-
-  useEffect(() => {
+ useEffect(() => {
   const fetchPosts = () => {
     axios
       .get(`/posts`, { params: { boardName: currentBoard } }) // 获取当前板块的帖子
