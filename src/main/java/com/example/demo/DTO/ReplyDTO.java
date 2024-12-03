@@ -2,9 +2,14 @@ package com.example.demo.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
-public class ReplyDTO {
+public class ReplyDto {
+    private Long id;
     private String content;
-    private Long postId;    // 回复对应的 Post ID
-    private Long authorId;  // 回复的作者 ID
+    private LocalDateTime createDate;
+    private LocalDateTime modifyDate;
+    private Long authorUserNum;
+    private String authorName;
 }

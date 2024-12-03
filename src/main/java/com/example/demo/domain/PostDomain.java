@@ -1,60 +1,76 @@
 package com.example.demo.domain;
 
+import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
-
-import com.example.demo.domain.UserDomain;
-import com.example.demo.domain.ReplyDomain;
-
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 
 //테이블 이름
-@Table(name = "post")
-@Getter
-@Setter
 @Entity
+@Table(name = "post")
+@Data
 public class PostDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "post_id")
+    private Long postId;
+
+    @Column(name = "category", nullable = false)
+    private String category;
+
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;
 
     @Column(length = 200)
     private String subject;
 
-    @Column(columnDefinition = "TEXT")
-    private String content;
-
+    @Column(name = "modify_date")
+    private LocalDateTime modifyDate;
+    
     @Column(name = "create_date")
     private LocalDateTime createDate;
+    
+    @Column(nullable = false)
+    private Integer likes = 0;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<ReplyDomain> replyList;
-
-    @ManyToOne
-    @JoinColumn(name = "author_user_num")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_user_num", referencedColumnName = "user_num")
     private UserDomain author;
 
-    private LocalDateTime modifyDate;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<ReplyDomain> replies;
 
-    @ManyToMany
-    Set<UserDomain> voter;
-
-    @Column(length = 50)
-    private String category;
-
-    @Column(name = "likes")
-    private Integer likes;
-
-    public LocalDateTime getCreateDate() {
-        return createDate;
+    public Long getPostId() {
+        return postId;
     }
 
-    public UserDomain getAuthor() {
-        return author;
+    public String getCategory() { 
+        return category; 
+    }
+    public void setCategory(String category) { 
+        this.category = category; 
+    }
+
+    public String getContent() { 
+        return content; 
+    }
+    public void setContent(String content) { 
+        this.content = content; 
+    }
+
+    public String getSubject() { 
+        return subject; 
+    }
+    public void setSubject(String subject) { 
+        this.subject = subject; 
+    }
+
+    public LocalDateTime getModifyDate() { 
+        return modifyDate; 
+    }
+    public void setModifyDate(LocalDateTime modifyDate) { 
+        this.modifyDate = modifyDate; 
     }
 
     public Integer getLikes() {
@@ -65,7 +81,19 @@ public class PostDomain {
         this.likes = likes;
     }
 
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
+    public void incrementLikes() {
+        this.likes++;
     }
+
+    public void decrementLikes() {
+        if (this.likes > 0) {
+            this.likes--;
+        }
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createDate = LocalDateTime.now();
+    }
+
 }
