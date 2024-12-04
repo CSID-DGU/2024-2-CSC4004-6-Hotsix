@@ -89,16 +89,25 @@ function RecommendationCourse() {
             )
           ),
           React.createElement(
-            'label',
-            null,
-            '선호하는 데이트 코스:',
-            React.createElement('input', {
-              type: 'text',
-              name: 'favoriteCourse',
-              value: formData.favoriteCourse,
-              onChange: handleChange,
-              placeholder: '예: 카페, 레스토랑',
-            })
+            'div',
+            { className: 'form-page' },
+            React.createElement('h2', null, '선호도 조사 - 지역 및 코스'),
+            React.createElement(
+              'label',
+              null,
+              '필수 코스:',
+              React.createElement('input', {
+                type: 'text',
+                name: 'mustVisitCourses',
+                value: formData.mustVisitCourses,
+                onChange: (e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    mustVisitCourses: e.target.value.split(','),
+                  })),
+                placeholder: '예: 롯데월드, 한강공원',
+              })
+            ),
           )
         );
       case 3:
@@ -147,40 +156,28 @@ function RecommendationCourse() {
             })
           )
         );
-      case 4:
-        return React.createElement(
-          'div',
-          { className: 'form-page' },
-          React.createElement('h2', null, '선호도 조사 - 지역 및 코스'),
-          React.createElement(
-            'label',
-            null,
-            '필수 코스:',
-            React.createElement('input', {
-              type: 'text',
-              name: 'mustVisitCourses',
-              value: formData.mustVisitCourses,
-              onChange: (e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  mustVisitCourses: e.target.value.split(','),
-                })),
-              placeholder: '예: 롯데월드, 한강공원',
-            })
-          ),
-          React.createElement(
-            'label',
-            null,
-            '필수 지역:',
-            React.createElement('input', {
-              type: 'text',
-              name: 'mustVisitRegion',
-              value: formData.mustVisitRegion,
-              onChange: handleChange,
-              placeholder: '예: 강남, 홍대 (한 장소만)',
-            })
-          )
-        );
+      // case 4:
+      //   return React.createElement(
+      //     'div',
+      //     { className: 'form-page' },
+      //     React.createElement('h2', null, '선호도 조사 - 지역 및 코스'),
+      //     React.createElement(
+      //       'label',
+      //       null,
+      //       '필수 코스:',
+      //       React.createElement('input', {
+      //         type: 'text',
+      //         name: 'mustVisitCourses',
+      //         value: formData.mustVisitCourses,
+      //         onChange: (e) =>
+      //           setFormData((prev) => ({
+      //             ...prev,
+      //             mustVisitCourses: e.target.value.split(','),
+      //           })),
+      //         placeholder: '예: 롯데월드, 한강공원',
+      //       })
+      //     ),
+      //   );
       default:
         return null;
     }
@@ -194,19 +191,19 @@ function RecommendationCourse() {
       'div',
       { className: 'navigation-buttons' },
       currentPage > 1 &&
-        React.createElement('button', { onClick: handleBack }, '뒤로'),
+        React.createElement('button', { className: 'prev-button', onClick: handleBack }, '뒤로'),
       currentPage < 4 && currentPage > 1 &&
         React.createElement(
           'button',
           { className: 'next-button', onClick: handleNext },
           '다음'
         ),
-      currentPage === 4 &&
-        React.createElement(
-          'button',
-          { onClick: () => console.log(formData) },
-          '제출'
-        )
+      // currentPage === 4 &&
+      //   React.createElement(
+      //     'button',
+      //     { className: 'commit-button', onClick: () => console.log(formData) },
+      //     '제출'
+      //   )
     )
   );
 }

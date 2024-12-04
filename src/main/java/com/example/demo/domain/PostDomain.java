@@ -1,6 +1,7 @@
 package com.example.demo.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import com.example.demo.domain.ReplyDomain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 
 //테이블 이름
@@ -19,41 +21,63 @@ import lombok.Setter;
 @Setter
 @Entity
 public class PostDomain {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
     private Long postId;
+
+    @Column(name = "category", nullable = false)
+    private String category;
+
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;
 
     @Column(length = 200)
     private String subject;
 
-    @Column(columnDefinition = "TEXT")
-    private String content;
+    @Column(name = "modify_date")
+    private LocalDateTime modifyDate;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<ReplyDomain> replyList;
+    @Column(nullable = false)
+    private Integer likes = 0;
 
-    @ManyToOne
-    @JoinColumn(name = "author_user_num")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_user_num", referencedColumnName = "user_num")
     private UserDomain author;
 
-    private LocalDateTime modifyDate;
-
-    @ManyToMany
-    Set<UserDomain> voter;
-
-    @Column(length = 50)
-    private String category;
-
-    @Column(name = "likes")
-    private Integer likes;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReplyDomain> replies;
 
     //사진 저장
-    @Convert(converter = StringListConverter.class) // JSON 변환기 사용
-    @Column(columnDefinition = "TEXT") // MySQL에서는 TEXT 타입으로 저장
-    private List<String> postImages;
+    @ElementCollection
+    @CollectionTable(name = "post_images", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(columnDefinition = "TEXT")
+    private List<String> postImages = new ArrayList<>();
 
-    public PostDomain(){}
+
+    @PreRemove
+    private void preRemove() {
+        if (postImages != null) {
+            postImages.clear();
+        }
+    }
+
+    public void incrementLikes() {
+        this.likes++;
+    }
+
+    public void decrementLikes() {
+        if (this.likes > 0) {
+            this.likes--;
+        }
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createDate = LocalDateTime.now();
+    }
 }

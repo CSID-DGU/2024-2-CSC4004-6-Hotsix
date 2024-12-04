@@ -12,6 +12,8 @@ import java.net.http.HttpResponse;
 public class OpenAIApi {
 
     //API KEY 작성 필요
+    private static final String API_KEY = "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";
+
     public String ask(String prompt) throws JSONException {
         String responseBody = "";
         String formattedPrompt = String.format("다음 키워드를 받고 데이트 코스를 추천해주세요. 장소 이름만 말해주세요. 또한 답변은 한국어로 해주세요: %s", prompt);

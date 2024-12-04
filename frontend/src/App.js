@@ -46,9 +46,7 @@ function App() {
           <Route path='/mypage' element = {< MyPage/>} />
           <Route path='/'       element = {
           <>
-            {sections.map((section, index) => (
-              <ContentCarousel key={index} title={section.title} items={section.items} />
-            ))}
+            <ContentCarousel />
           </>}/>
         </Routes>
         <Header

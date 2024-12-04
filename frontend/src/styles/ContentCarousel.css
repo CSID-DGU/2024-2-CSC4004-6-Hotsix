@@ -1,12 +1,15 @@
 .carousel-section {
-  margin-top: 100px;
+  margin-top: 120px;
   color: black;
   padding: 20px;
+  position: relative; /* 제목 고정 위치 기준 설정 */
 }
 
 .carousel-section h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 18px !important; /* 제목 크기 */
+  position: absolute !important; /* 고정 위치 */
+  top: -30px !important; /* 상단 위치를 위로 이동 */
+  left: 22% !important; /* 수평 중앙 정렬 */
 }
 
 .carousel-container {
@@ -21,11 +24,12 @@
   display: flex;
   overflow-x: hidden;
   scroll-behavior: smooth;
-  width: 80%;
+  width: 60%;
 }
 
 .carousel-item {
   min-width: 200px; /* 최소 너비를 줄임 */
+  height: 150px; /* 높이를 줄임 */
   margin-right: 10px;
   background-color: #333;
   border-radius: 8px;
@@ -34,20 +38,7 @@
   justify-content: center;
   font-size: 20px;
   color: white;
-  height: 180px; /* 높이를 줄임 */
 }
-
-.custom-title {
-  position: absolute;
-  top: -25px; /* 컨텐츠 박스 위에 배치 */
-  font-size: 14px; /* 글자 크기 */
-  color: gray; /* 글자 색상 */
-  text-align: center;
-  width: 100%; /* 박스 너비와 맞춤 */
-  z-index: 2; /* 다른 요소 위로 표시 */
-  font-weight: bold; /* 폰트를 두껍게 설정 */
-}
-
 
 /* 화살표 버튼 공통 스타일 */
 .carousel-button {

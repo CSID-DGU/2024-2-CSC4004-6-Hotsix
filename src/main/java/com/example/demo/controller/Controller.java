@@ -215,4 +215,14 @@ public class Controller {
         return ResponseEntity.ok().body(Map.of("profileImagePath", profileImagePath));
 
     }
+    @GetMapping("/userNum/{id}")
+    public ResponseEntity<?> getUserNumById(@PathVariable String id) {
+        Long userNum = userSer.getUserNumById(id); // 通过 id 获取 userNum
+        if (userNum != null) {
+            return ResponseEntity.ok(userNum); // 返回 userNum
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("User not found"); // 如果找不到用户，则返回 404 错误
+        }
+    }
 }

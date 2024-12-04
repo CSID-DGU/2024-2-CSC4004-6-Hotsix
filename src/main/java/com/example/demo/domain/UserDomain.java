@@ -26,6 +26,7 @@ public class UserDomain {
     //userNum (유저 일련번호, PK)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_num")
     private Long userNum;
 
     //id (회원 아이디)

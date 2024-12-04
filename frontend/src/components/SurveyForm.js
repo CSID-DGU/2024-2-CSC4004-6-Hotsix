@@ -51,21 +51,6 @@ function SurveyForm() {
 
 
 
-    //  const [formData, setFormData] = React.useState({
-    //   mbti: '',
-    //   meetingFrequency: '',
-    //   expectedBudgetRange: '',
-    //   relationshipDate: '',
-    //   activityPreference: '',
-    //   preferredCourse: '',
-    //   transportation: '',
-    //   startTime: '',
-    //   mustVisitArea: '',
-    //   preferredArea: '',
-    //  });
-
-
-
   const handleSubmit = async (event) => {
    event.preventDefault();
 
@@ -183,16 +168,6 @@ const formData1 = {
         required: true,
       }),
   
-      // // 평균 예산 범위
-      // React.createElement('label', null, '3. 평균 예산 범위  (단위:만원)'),
-      // React.createElement('input', {
-      //   type: 'number',
-      //   name: 'budgetRange',
-      //  value: formData.budgetRange,
-      //  onChange: handleChange,
-      //   placeholder: '예: 10 ~ 20',
-      //   required: true,
-      // }),
       React.createElement(
         'div',
         { className: 'budget-range' },
@@ -231,20 +206,20 @@ const formData1 = {
         required: true,
       }),
   
-      // 액티비티 선호 유무
-      React.createElement('label', null, '5. 액티비티 선호 유무'),
-      React.createElement( 
-        'select',
-        {
-          name: 'activityPreference',
-         value: activityPreference,
-         onChange: handleActivityPreferenceChange,
-          required: true,
-        },
-        React.createElement('option', { value: '' }, '선택하세요'),
-        React.createElement('option', { value: 'true' }, '예'),
-        React.createElement('option', { value: 'false' }, '아니요')
-      ),
+      // // 액티비티 선호 유무
+      // React.createElement('label', null, '5. 액티비티 선호 유무'),
+      // React.createElement( 
+      //   'select',
+      //   {
+      //     name: 'activityPreference',
+      //    value: activityPreference,
+      //    onChange: handleActivityPreferenceChange,
+      //     required: true,
+      //   },
+      //   React.createElement('option', { value: '' }, '선택하세요'),
+      //   React.createElement('option', { value: 'true' }, '예'),
+      //   React.createElement('option', { value: 'false' }, '아니요')
+      // ),
   
       // // 필수 코스
       // React.createElement('label', null, '6. 필수 코스'),
