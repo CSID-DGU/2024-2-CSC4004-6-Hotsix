@@ -194,7 +194,7 @@ function RecommendationCourse() {
       'div',
       { className: 'navigation-buttons' },
       currentPage > 1 &&
-        React.createElement('button', { onClick: handleBack }, '뒤로'),
+        React.createElement('button', { className: 'prev-button', onClick: handleBack }, '뒤로'),
       currentPage < 4 && currentPage > 1 &&
         React.createElement(
           'button',
@@ -204,7 +204,7 @@ function RecommendationCourse() {
       currentPage === 4 &&
         React.createElement(
           'button',
-          { onClick: () => console.log(formData) },
+          { className: 'commit-button', onClick: () => console.log(formData) },
           '제출'
         )
     )

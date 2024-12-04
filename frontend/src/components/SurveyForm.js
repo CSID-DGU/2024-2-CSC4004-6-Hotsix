@@ -231,20 +231,20 @@ const formData1 = {
         required: true,
       }),
   
-      // 액티비티 선호 유무
-      React.createElement('label', null, '5. 액티비티 선호 유무'),
-      React.createElement( 
-        'select',
-        {
-          name: 'activityPreference',
-         value: activityPreference,
-         onChange: handleActivityPreferenceChange,
-          required: true,
-        },
-        React.createElement('option', { value: '' }, '선택하세요'),
-        React.createElement('option', { value: 'true' }, '예'),
-        React.createElement('option', { value: 'false' }, '아니요')
-      ),
+      // // 액티비티 선호 유무
+      // React.createElement('label', null, '5. 액티비티 선호 유무'),
+      // React.createElement( 
+      //   'select',
+      //   {
+      //     name: 'activityPreference',
+      //    value: activityPreference,
+      //    onChange: handleActivityPreferenceChange,
+      //     required: true,
+      //   },
+      //   React.createElement('option', { value: '' }, '선택하세요'),
+      //   React.createElement('option', { value: 'true' }, '예'),
+      //   React.createElement('option', { value: 'false' }, '아니요')
+      // ),
   
       // // 필수 코스
       // React.createElement('label', null, '6. 필수 코스'),
@@ -258,7 +258,7 @@ const formData1 = {
       // }),
   
       // 선호 코스
-      React.createElement('label', null, '6. 선호 코스'),
+      React.createElement('label', null, '5. 선호 코스'),
       React.createElement('textarea', {
         name: 'preferredCourse',
        value: preferredCourse,
@@ -269,7 +269,7 @@ const formData1 = {
       }),
   
       // 교통 수단
-      React.createElement('label', null, '7. 교통 수단'),
+      React.createElement('label', null, '6. 교통 수단'),
       React.createElement(
         'select',
         {
@@ -285,7 +285,7 @@ const formData1 = {
       ),
   
       // 데이트 시작 예정 시간
-      React.createElement('label', null, '8. 데이트 시작 예정 시간'),
+      React.createElement('label', null, '7. 데이트 시작 예정 시간'),
       React.createElement('input', {
         type: 'time',
         name: 'startTime',
@@ -296,7 +296,7 @@ const formData1 = {
 
   
       // 선호 지역
-      React.createElement('label', null, '9. 선호 지역'),
+      React.createElement('label', null, '8. 선호 지역'),
       React.createElement('textarea', {
         name: 'preferredArea',
        value: preferredArea,

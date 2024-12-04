@@ -118,9 +118,11 @@ public class Controller {
 //                    이 부분 본인 프로젝트 디렉토리 경로로 변경
 
 //                     명훈 디렉토리 경로1
-                "C:\\Users\\pc\\Desktop\\Hotsix\\" +
+                // "C:\\Users\\pc\\Desktop\\Hotsix\\" +
 //                    명훈 디렉토리 경로2
-//                "\\Users\\jinmyeonghun\\Desktop\\3-2\\공소\\2024-2-CSC4004-6-Hotsix\\" +
+               "\\Users\\jinmyeonghun\\Desktop\\3-2\\공소\\2024-2-CSC4004-6-Hotsix\\" +
+//                      윤열 디렉토리 경로 1
+// "C:\\Users\\yoony\\OneDrive\\Desktop\\3-2\\공소\\공소1203\\2024-2-CSC4004-6-Hotsix\\" +
 //
                         //여기는 공통 경로
                         "src\\main\\resources\\static\\asset\\Images\\userProfile\\";
