@@ -38,3 +38,5 @@ out/
 node_modules
 node_modules
 node_modules
+
+src/main/java/com/example/demo/OpenAIApi.java
