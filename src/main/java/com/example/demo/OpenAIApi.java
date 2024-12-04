@@ -11,6 +11,7 @@ import java.net.http.HttpResponse;
 
 public class OpenAIApi {
 
+    //API KEY 작성 필요
     public String ask(String prompt) throws JSONException {
         String responseBody = "";
         String formattedPrompt = String.format("다음 키워드를 받고 데이트 코스를 추천해주세요. 장소 이름만 말해주세요. 또한 답변은 한국어로 해주세요: %s", prompt);
@@ -33,7 +34,7 @@ public class OpenAIApi {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("https://api.openai.com/v1/chat/completions"))
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + API_KEY)
+//                    .header("Authorization", "Bearer " + API_KEY)
                     .POST(HttpRequest.BodyPublishers.ofString(jsonBody.toString()))
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
