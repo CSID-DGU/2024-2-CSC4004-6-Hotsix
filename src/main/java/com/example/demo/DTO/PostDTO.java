@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Setter
@@ -17,6 +18,8 @@ public class PostDTO {
     private LocalDateTime createDate;
     private int likes;         // 点赞数
     private boolean isLiked;   // 是否已点赞
+    //사진 저장
+    private List<String> postImages;
 
     public void setIsLiked(boolean b) {
         this.isLiked = b;

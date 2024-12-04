@@ -26,6 +26,8 @@ public class PostController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addPost(@RequestBody PostDTO postDTO) {
+
+
         return ResponseEntity.ok(postSer.createPost(postDTO));
     }
 

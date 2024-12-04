@@ -22,28 +22,30 @@ function Community() {
     //유저 이름 가져오기
     const [userName, setUserName] = useState('');
     const id = sessionStorage.getItem("ID");
+
     React.useEffect(() => {
-          if(id){
-            fetch(`/userName/${id}`, { // API 요청
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+      if(id){
+        fetch(`/userName/${id}`, { // API 요청
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
         } )
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user data');
-                }
-                return response.json();
-            })
-            .then(data => {
-                setUserName(data.userName); // 사용자 이름 설정
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-            })
-          }
-        }, [id]);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        })
+        .then(data => {
+            setUserName(data.userName); // 사용자 이름 설정
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        })
+      }
+    }, [id]);
+
 
   useEffect(() => {
   const fetchPosts = () => {
@@ -110,26 +112,55 @@ function Community() {
   };
 
 
-  // 创建帖子
+  // Post add
   const createPost = (postData) => {
-    axios
-      .post('/post/add', postData)
-      .then((response) => {
-        alert('Post created successfully!');
-        fetchBoardPosts(currentBoard); // 刷新当前板块
-      })
-      .catch((error) => {
-        console.error('Failed to create post:', error);
-      });
-  };
+    fetch('/post/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', 
+      },
+      body: JSON.stringify(postData),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json(); 
+    })
+    .then((data) => {
+      alert('게시글 작성이 완료되었습니다!');
+      fetchBoardPosts(currentBoard); 
+      
+      const responseData = data; // 서버 응답 데이터 저장
+      console.log('Response Data:', responseData);
+    })
+    .catch((error) => {
+      console.error('Failed to create post:', error);
+    });
+  }
+  // const createPost = (postData) => {
+  //   axios
+  //     .post('/post/add', postData)
+  //     .then((response) => {
+  //       alert('게시글 작성이 완료되었습니다!');
+  //       fetchBoardPosts(currentBoard); // 刷新当前板块
+  //     })
+  //     .then((response) =>{
+  //       responseData = response.data;
+  //       response.json();
+  //     })
+  //     .catch((error) => {
+  //       console.error('Failed to create post:', error);
+  //     });
+  // };
 
-  // 删除帖子
+  // Post delete
   const deletePost = (postId) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
       axios
         .delete(`/post/delete/${postId}`)
         .then(() => {
-          alert('Post deleted successfully!');
+          alert('게시글 삭제가 완료되었습니다!');
           fetchBoardPosts(currentBoard); // 刷新当前板块
         })
         .catch((error) => {
@@ -143,7 +174,7 @@ function Community() {
     axios
       .put(`/post/update/${postId}`, updatedData)
       .then(() => {
-        alert('Post updated successfully!');
+        alert('게시글이 수정되었습니다!');
         fetchPostDetail(postId); // 刷新详情视图
       })
       .catch((error) => {
@@ -156,7 +187,7 @@ function Community() {
     axios
       .post('/reply/add', replyData)
       .then((response) => {
-        alert('Reply added successfully!');
+        alert('댓글이 작성되었습니다!');
         fetchPostDetail(selectedPost.id); // 刷新帖子详情
       })
       .catch((error) => {
@@ -187,7 +218,7 @@ function Community() {
     setLikeLoading(true);
 
     if (!sessionStorage.getItem('ID')) {
-      alert('Please log in to like posts.');
+      alert('로그인이 필요합니다!');
       setLikeLoading(false);
       return;
     }
@@ -246,7 +277,7 @@ function Community() {
           <div className="card">
             <form className="logged">
               <img src="#" className="picture" alt="User" />
-              <p className="nickname">USER NAME</p>
+              <p className="nickname">{userName}</p>
             </form>
           </div>
           <div className="card">
@@ -331,7 +362,9 @@ function Community() {
                 ))}
               </div>
             </div>
-          ) : view === 'detail' ? (
+          ) : 
+          //게시글 클릭 시 view
+          view === 'detail' ? (
             <div className="post-list-container">
               <button className="back-button" onClick={goBack}>
                 Back
@@ -357,7 +390,7 @@ function Community() {
           ) : null}
         </div>
 
-        {/* 右侧内容 */}
+        {}
         <div className="rightside">
           <div className="card">
             <div className="board">

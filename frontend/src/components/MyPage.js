@@ -10,6 +10,7 @@ function MyPage() {
   const [userName, setUserName] = useState('');
   const id = sessionStorage.getItem("ID"); // 저장된 사용자 ID 가져오기
   const [profileImagePath, setProfileImagePath] = React.useState("");
+  const fallbackImagePath = "/asset/Images/altImage/alt.png"; // 대체 이미지 경로
   if(id){
       fetch(`/userNameAndUserProfile/${id}`, { // API 요청
           method: 'GET',
@@ -42,8 +43,10 @@ return (
     React.createElement('div', { className: 'profile-section' },
       React.createElement('img', {  
         className: 'profile-picture' , 
-        src:`/asset/Images/userProfile/${profileImagePath}`,
-        alt: '/asset/Images/altImage/alt.png'}
+        src: profileImagePath ? `/asset/Images/userProfile/` + profileImagePath : fallbackImagePath,
+        onError: (e) => { e.target.src = fallbackImagePath; }, // 이미지 로드 실패 시 대체 이미지로 변경
+        alt: 'No Image'
+        }
       ),
       React.createElement('div', { className: 'profile-info' },
         React.createElement('h2', { className: 'username' }, 

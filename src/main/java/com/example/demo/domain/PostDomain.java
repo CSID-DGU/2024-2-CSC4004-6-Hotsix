@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import com.example.demo.Converter.StringListConverter;
 import com.example.demo.domain.UserDomain;
 import com.example.demo.domain.ReplyDomain;
 
@@ -49,4 +50,10 @@ public class PostDomain {
     @Column(name = "likes")
     private Integer likes;
 
+    //사진 저장
+    @Convert(converter = StringListConverter.class) // JSON 변환기 사용
+    @Column(columnDefinition = "TEXT") // MySQL에서는 TEXT 타입으로 저장
+    private List<String> postImages;
+
+    public PostDomain(){}
 }

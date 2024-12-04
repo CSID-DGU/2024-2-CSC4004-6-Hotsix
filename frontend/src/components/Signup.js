@@ -80,6 +80,7 @@ function Signup(onHomeClick) {
     formData.append('phoneNum', phoneNum);
     formData.append('userLocation', userLocation);
     formData.append('profileImagePath', profileImagePath); // 프로필 이미지 추가
+    
     try {
       // 서버로 POST 요청 보내기
       const response = await fetch('/signUp', {

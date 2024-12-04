@@ -79,6 +79,7 @@ public class PostSer {
 		post.setLikes(0);
 		post.setSubject(postDTO.getSubject());
 		post.setAuthor(author);
+		post.setPostImages(postDTO.getPostImages());
 
 		return postRep.save(post);
 	}
