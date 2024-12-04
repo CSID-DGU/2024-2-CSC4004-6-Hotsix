@@ -10,7 +10,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class OpenAIApi {
-    private static final String API_KEY = "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";
+//    private static final String API_KEY = "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";
 
     public String ask(String prompt) throws JSONException {
         String responseBody = "";
