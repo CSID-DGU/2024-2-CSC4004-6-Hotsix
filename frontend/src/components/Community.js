@@ -363,12 +363,21 @@ function Community() {
             </div>
           ) : view === 'list' ? (
             <div className="post-list-container">
-              <div class="button-container">
-                <button className="back-button" onClick={goBack}>Back</button>
-                <button className="post-button" onClick={() => setIsPosting(true)}>Post</button>
+              <div className="button-container">
+                <button className="back-button" onClick={goBack}>
+                  Back
+                </button>
+                <button
+                  className="post-button"
+                  onClick={() => setIsPosting(true)}
+                >
+                  Post
+                </button>
               </div>
               <h2 className="board-title">{currentBoard}</h2>
-              {isPosting && (
+
+              {/* 显示 createPost-form 时隐藏 post-list */}
+              {isPosting ? (
                 <div className="createPost-form">
                   <input
                     type="text"
@@ -385,12 +394,21 @@ function Community() {
                     className="input-field"
                   ></textarea>
                   <div className="createPost-button">
-                    <button onClick={createPost} className="submit-post-btn">
+                    <button
+                      onClick={createPost}
+                      className="submit-post-btn"
+                    >
                       Submit
+                    </button>
+                    <button
+                      onClick={() => setIsPosting(false)}
+                      className="cancel-post-btn"
+                    >
+                      Cancel
                     </button>
                   </div>
                 </div>
-              )}
+              ) : (
                 <div className="post-list">
                   {posts.map((post) => (
                     <div
@@ -404,25 +422,32 @@ function Community() {
                       <div className="post-meta-row">
                         <div className="like-section">
                           <i
-                            className={`fas fa-thumbs-up like-icon ${post.liked ? 'liked' : ''}`}
+                            className={`fas fa-thumbs-up like-icon ${
+                              post.liked ? "liked" : ""
+                            }`}
                             onClick={(e) => {
                               e.stopPropagation();
                               toggleLikeHandler(post.id, false); // 点赞
                             }}
                           ></i>
-                          <span className="like-count">{likes[post.id] || 0}</span>
+                          <span className="like-count">
+                            {likes[post.id] || 0}
+                          </span>
                         </div>
                         <div className="author-section">
-                          <span>By: {post.authorName || 'Unknown'}</span>
+                          <span>By: {post.authorName || "Unknown"}</span>
                         </div>
                         <div className="date-section">
-                          <span>{new Date(post.createDate).toLocaleDateString()}</span>
+                          <span>
+                            {new Date(post.createDate).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              )}
+            </div>
           ) : view === 'detail' ? (
             <div className="post-list-container">
               <button className="back-button" onClick={goBack}>Back</button>
