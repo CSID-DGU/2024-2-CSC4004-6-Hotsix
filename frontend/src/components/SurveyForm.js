@@ -93,10 +93,9 @@ const formData1 = {
         body: JSON.stringify(formData1),
       })
       if(response.ok){
-        window.alert('설문 조사가 끝났습니다!');
+        window.alert('제출되었습니다!');
         navigate('/');// 메인 페이지로 이동
       }
-      
       else{
         window.alert('문제가 발생했습니다.잠시 후 다시 시도해주세요!');
       }

@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
 import '../styles/RecommendationCourse.css';
+import { useNavigate } from 'react-router-dom';
+
 
 function RecommendationCourse() {
   const [currentPage, setCurrentPage] = useState(1);
+
+  //session ID 확인
+  const id = sessionStorage.getItem("ID");
+
+  //navigate
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    mbti: '',
     prefersActivity: false,
     favoriteCourse: '',
     transportation: '',
     startTime: '',
     budget: '',
-    preferredRegions: [],
-    mustVisitCourses: [],
+    mustVisitCourses: '',
     mustVisitRegion: '',
   });
 
@@ -42,6 +49,28 @@ function RecommendationCourse() {
     }));
     handleNext(); // 선택 후 다음 페이지로 이동
   };
+  //선호도 조사 제출
+    const submitResult () => async (event){
+      event.preventDefault();
+      
+      try {
+        const response = await fetch(`recommendationCourse/${id}`,{
+          method: `POST`,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        })
+        if(response.ok){
+          window.alert('제출되었습니다!');       
+        }
+        else{
+          window.alert('문제가 발생했습니다.잠시 후 다시 시도해주세요!');
+        }
+      } catch (error) {
+        // 네트워크 오류 처리
+        console.error('Error occurred:', error);
+        window.alert('서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.');
+      }
+  }
 
   // 페이지 렌더링 함수
   const renderPage = () => {
@@ -156,28 +185,6 @@ function RecommendationCourse() {
             })
           )
         );
-      // case 4:
-      //   return React.createElement(
-      //     'div',
-      //     { className: 'form-page' },
-      //     React.createElement('h2', null, '선호도 조사 - 지역 및 코스'),
-      //     React.createElement(
-      //       'label',
-      //       null,
-      //       '필수 코스:',
-      //       React.createElement('input', {
-      //         type: 'text',
-      //         name: 'mustVisitCourses',
-      //         value: formData.mustVisitCourses,
-      //         onChange: (e) =>
-      //           setFormData((prev) => ({
-      //             ...prev,
-      //             mustVisitCourses: e.target.value.split(','),
-      //           })),
-      //         placeholder: '예: 롯데월드, 한강공원',
-      //       })
-      //     ),
-      //   );
       default:
         return null;
     }
@@ -192,18 +199,23 @@ function RecommendationCourse() {
       { className: 'navigation-buttons' },
       currentPage > 1 &&
         React.createElement('button', { className: 'prev-button', onClick: handleBack }, '뒤로'),
-      currentPage < 4 && currentPage > 1 &&
+      currentPage < 3 && currentPage > 1 &&
         React.createElement(
           'button',
           { className: 'next-button', onClick: handleNext },
           '다음'
         ),
-      // currentPage === 4 &&
-      //   React.createElement(
-      //     'button',
-      //     { className: 'commit-button', onClick: () => console.log(formData) },
-      //     '제출'
-      //   )
+      currentPage === 3 &&
+        React.createElement(
+          'button',
+          { className: 'commit-button', onClick: () => {
+            // 제출 시 동작
+              submitResult();
+              console.log(formData)
+            } 
+          },
+          '제출'
+        )
     )
   );
 }

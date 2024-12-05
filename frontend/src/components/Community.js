@@ -272,7 +272,7 @@ function Community() {
       });
   };
 
-  // Like a post
+  // 좋아요 누르기
   const toggleLikeHandler = (postId, isDetail = false) => {
     if (likeLoading) return; // Prevent duplicate clicks
     setLikeLoading(true);
