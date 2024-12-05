@@ -122,8 +122,12 @@ public class PostController {
     @GetMapping("/category/{category}")
     public List<PostDTO> getPostsByCategory(@PathVariable String category) {
         List<PostDomain> posts = postSer.findPostsByCategory(category);
-        return posts.stream().map(postSer::convertToDto).toList();
+        return posts.stream()
+                    .sorted((p1, p2) -> p2.getPostDate().compareTo(p1.getPostDate()))
+                    .map(postSer::convertToDto)
+                    .toList();
     }
+
 
     @GetMapping("/category/{category}/latest")
     public List<PostDTO> getLatestPostsByCategory(@PathVariable String category) {

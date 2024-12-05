@@ -76,6 +76,11 @@ public class PostDomain {
         }
     }
 
+    public LocalDateTime getPostDate() {
+        return this.createDate; // 或者 this.modifyDate
+    }
+
+
     @PrePersist
     public void prePersist() {
         this.createDate = LocalDateTime.now();

@@ -316,25 +316,34 @@ function Community() {
   const fetchPostDetail = async (postId) => {
     setLoading(true);
     try {
+      // 保存当前导航栈状态
+      setNavigationStack((prev) => [...prev, { view, currentBoard, posts }]);
+
+      // 获取帖子详情
       const postResponse = await axios.get(`/posts/${postId}`);
       const postDTO = postResponse.data.postDTO;
-      const postImagesName = postDTO.postImagesNames || [];
-      
-      setPostImages(postImagesName);
+
+      // 获取点赞状态
+      const likeStatusResponse = await axios.get(`/posts/${postId}/like-status`, {
+            params: { userId: userNum },
+      });
+      const { isLiked, likeCount } = likeStatusResponse.data;
+
+      // 设置详情页的帖子状态
       setSelectedPost({
-        ...postDTO,
-        liked: postDTO.liked,
-        likeCount: postDTO.likes,
-        postImagesName, // 包含图片数组
+          ...postDTO,
+          liked: isLiked,
+          likeCount: likeCount,
       });
 
       setView("detail");
     } catch (error) {
-      console.error("Failed to fetch post detail:", error);
+        console.error("Failed to fetch post detail or like status:", error);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
+
 
 
 
@@ -379,7 +388,6 @@ function Community() {
 
       setView(lastState.view);
       setCurrentBoard(lastState.currentBoard || null);
-      setPosts(lastState.posts || []);
 
       if (lastState.view === 'list') {
         fetchPostsByCategory(lastState.currentBoard); 
