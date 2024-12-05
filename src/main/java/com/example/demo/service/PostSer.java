@@ -152,7 +152,7 @@ public class PostSer {
 //                     명훈 디렉토리 경로1
 //				"C:\\Users\\pc\\Desktop\\Hotsix\\" +
 //                    명훈 디렉토리 경로2
-                "\\Users\\jinmyeonghun\\Desktop\\3-2\\공소\\2024-2-CSC4004-6-Hotsix\\" +
+                "C:\\Users\\hsson\\IdeaProjects\\2024-2-CSC4004-6-Hotsix\\" +
 //
 						//여기는 공통 경로
 						"src\\main\\resources\\static\\asset\\Images\\postImage\\";

@@ -8,7 +8,7 @@ import MyPage from './components/MyPage.js';
 import Community from './components/Community.js';
 import RecommendationCourse from './components/RecommendationCourse.js';
 import ContentCarousel from './components/ContentCarousel.js';
-
+import ChatWindow from './components/ChatWindow';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -47,6 +47,7 @@ function App() {
           <Route path='/'       element = {
           <>
             <ContentCarousel />
+            <ChatWindow />
           </>}/>
         </Routes>
         <Header
