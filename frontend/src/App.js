@@ -7,8 +7,10 @@ import SurveyForm from './components/SurveyForm.js';
 import MyPage from './components/MyPage.js';
 import Community from './components/Community.js';
 import RecommendationCourse from './components/RecommendationCourse.js';
+import RecommendationResult from './components/RecommendationResult.js';
+import Bingo from './components/Bingo.js';
 import ContentCarousel from './components/ContentCarousel.js';
-import ChatWindow from './components/ChatWindow';
+import ChatWindow from './components/ChatWindow.js';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -24,6 +26,8 @@ function App() {
   const toggleMyPage = () => setPage('mypage');
   const toggleCommunity = () => setPage('community'); // 커뮤니티 페이지 핸들러
   const toggleRecommendationCourse = () => setPage('recommendation-course'); // 추천 코스 페이지 핸들러
+  const toggleRecommendationResult = () => setPage('recommendation-course-result'); // 추천 코스 페이지 핸들러
+  const toggleBingo = () => setPage('bingo'); //빙고
   const toggleSurvey = () => setPage('survey'); // 설문조사 페이지 핸들러
 
  
@@ -41,6 +45,8 @@ function App() {
           <Route path='/login' element = {<Login />} />
           <Route path='/community' element = {<Community />} />
           <Route path='/recommendation-course' element = {< RecommendationCourse/>} />
+          <Route path='/recommendation-course-result' element = {< RecommendationResult/>} />
+          <Route path='/bingo' element = {<Bingo/>} />
           <Route path='/survey' element = {< SurveyForm/>} />
           <Route path='/signup' element = {< Signup/>} />
           <Route path='/mypage' element = {< MyPage/>} />
@@ -58,6 +64,8 @@ function App() {
           onHomeClick={toggleHome}
           onCommunityClick={toggleCommunity}
           onRecommendationCourseClick={toggleRecommendationCourse}
+          // onRecommendationResultClick={toggleRecommendationResult}
+          // onBingoClick={toggleBingo}
           onSurveyClick={toggleSurvey}
           onSignupClick={toggleSignup}
           onMyPageClick={toggleMyPage}

@@ -75,18 +75,6 @@ function ContentCarousel() {
       if (container.scrollLeft < 0) {
         container.scrollLeft = totalWidth - container.clientWidth; // 끝으로 이동
       }
-    };
-
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // 스크롤 함수 (컨텐츠 박스 하나씩 이동)
-  const scroll = (direction) => {
-    const container = containerRef.current;
-    const scrollAmount = container.offsetWidth / items.length; // 컨텐츠 박스 하나 크기
-    if (direction === "left") {
-      container.scrollLeft -= scrollAmount;
     } else {
       container.scrollLeft += scrollAmount; // 오른쪽으로 스크롤
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import ChatMessage from "./ChatMessage";
-import ChatInput from "./ChatInput";
+import ChatMessage from "./ChatMessage.js";
+import ChatInput from "./ChatInput.js";
 
 const ChatWindow = () => {
   const [messages, setMessages] = useState([]);

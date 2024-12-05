@@ -61,7 +61,8 @@ function RecommendationCourse() {
           headers: { 'Content-Type': 'application/json' },
         },)
         if(response.ok){
-          window.alert('제출되었습니다!');       
+          window.alert('제출되었습니다!'); 
+          navigate('/recommendation-course-result'); // 추천 코스 결과 페이지로 이동     
         }
         else{
           window.alert('문제가 발생했습니다.잠시 후 다시 시도해주세요!');
@@ -73,15 +74,6 @@ function RecommendationCourse() {
         window.alert('서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.');
       }
   }
-
-  // 지역 선택 핸들러
-  const handleRegionSelect = (region) => {
-    setFormData((prev) => ({
-      ...prev,
-      preferredRegions: [...prev.preferredRegions, region],
-    }));
-    handleNext(); // 선택 후 다음 페이지로 이동
-  };
 
   // 페이지 렌더링 함수
   const renderPage = () => {
@@ -216,7 +208,7 @@ function RecommendationCourse() {
           { className: 'next-button', onClick: handleNext },
           '다음'
         ),
-      currentPage === 4 &&
+      currentPage === 3 &&
         React.createElement(
           'button',
           { className: 'commit-button', onClick: () => {
