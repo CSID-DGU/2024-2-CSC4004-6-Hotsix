@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -227,12 +228,21 @@ public class Controller {
     }
     @PostMapping("recommendationCourse/{id}")
     public ResponseEntity<?> saveRecommendationResult (@PathVariable String id,
-                                                       @RequestParam("prefersActivity")boolean prefersActivity,
-                                                       @RequestParam("favoriteCourse")String favoriteCourse,
-                                                       @RequestParam("transportation")
-                                                        ){
+                                                       @RequestBody UserDomain userDomain
+                                                       ){
         UserDomain user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + id));
-        user.setActivityPreference(requestUser.getActivityPreference());
+
+        user.setActivityPreference(userDomain.getActivityPreference());
+        user.setTransportType(userDomain.getTransportType());
+        user.setStartTime(userDomain.getStartTime());
+        user.setRequiredCourse(userDomain.getRequiredCourse());
+        user.setRequiredLocation(userDomain.getRequiredLocation());
+        user.setDayBudgetRange(userDomain.getDayBudgetRange());
+
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok("선호도 조사 완료");
     }
 }

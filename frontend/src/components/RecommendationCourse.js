@@ -13,13 +13,12 @@ function RecommendationCourse() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    prefersActivity: false,
-    favoriteCourse: '',
-    transportation: '',
+    requiredLocation: '',
+    activityPreference: false,
+    dayBudgetRange: '',
+    requiredCourse: '',
+    transportType: '',
     startTime: '',
-    budget: '',
-    mustVisitCourses: '',
-    mustVisitRegion: '',
   });
 
   // 지역 리스트
@@ -34,38 +33,41 @@ function RecommendationCourse() {
 
   // 폼 데이터 업데이트
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-  };
+      const { name, value, type, checked } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+      console.log('Updated formData (handleChange):', formData);
+    };
 
   // 지역 선택 핸들러
   const handleRegionSelect = (region) => {
     setFormData((prev) => ({
       ...prev,
-      preferredRegions: [...prev.preferredRegions, region],
+      requiredLocation : region,
     }));
+    console.log('Updated formData (handleRegionSelect):', formData);
     handleNext(); // 선택 후 다음 페이지로 이동
   };
   //선호도 조사 제출
-    const submitResult () => async (event){
-      event.preventDefault();
-      
+    const submitResult =  async () => {
+      console.log('Submitting formData:', formData);
       try {
+        
         const response = await fetch(`recommendationCourse/${id}`,{
           method: `POST`,
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
-        })
+          headers: { 'Content-Type': 'application/json' },
+        },)
         if(response.ok){
           window.alert('제출되었습니다!');       
         }
         else{
           window.alert('문제가 발생했습니다.잠시 후 다시 시도해주세요!');
         }
-      } catch (error) {
+      }
+      catch (error) {
         // 네트워크 오류 처리
         console.error('Error occurred:', error);
         window.alert('서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.');
@@ -88,7 +90,7 @@ function RecommendationCourse() {
                 'button',
                 {
                   key: region,
-                  className: 'region-button',
+                  className: `region-button`,
                   onClick: () => handleRegionSelect(region),
                 },
                 region
@@ -111,8 +113,8 @@ function RecommendationCourse() {
               React.createElement('span', null, '예:'),
               React.createElement('input', {
                 type: 'checkbox',
-                name: 'prefersActivity',
-                checked: formData.prefersActivity,
+                name: 'activityPreference',
+                checked: formData.activityPreference,
                 onChange: handleChange,
               })
             )
@@ -127,12 +129,12 @@ function RecommendationCourse() {
               '필수 코스:',
               React.createElement('input', {
                 type: 'text',
-                name: 'mustVisitCourses',
-                value: formData.mustVisitCourses,
+                name: 'requiredCourse',
+                value: formData.requiredCourse,
                 onChange: (e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    mustVisitCourses: e.target.value.split(','),
+                    requiredCourse: e.target.value,
                   })),
                 placeholder: '예: 롯데월드, 한강공원',
               })
@@ -178,8 +180,8 @@ function RecommendationCourse() {
             '당일 예산 (단위:만원):',
             React.createElement('input', {
               type: 'number',
-              name: 'budget',
-              value: formData.budget,
+              name: 'dayBudgetRange',
+              value: formData.dayBudgetRange,
               onChange: handleChange,
               placeholder: '예: 5',
             })
