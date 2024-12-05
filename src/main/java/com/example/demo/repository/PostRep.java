@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PostRep extends JpaRepository<PostDomain, Long> {
+public interface    PostRep extends JpaRepository<PostDomain, Long> {
     @Query("SELECT p FROM PostDomain p JOIN FETCH p.author WHERE p.postId = :postId")
     Optional<PostDomain> findWithAuthorById(@Param("postId") Long postId);
 

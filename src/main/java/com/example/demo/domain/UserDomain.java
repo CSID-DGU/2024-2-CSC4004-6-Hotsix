@@ -94,7 +94,7 @@ public class UserDomain {
     private String preferredCourse;
 
     //교통수단
-    private  String transportType;
+    private String transportType;
 
     //데이트 시작 시간
     private LocalTime startTime;
@@ -113,8 +113,6 @@ public class UserDomain {
     private String dayBudgetRange;
 
 
-
-
     public UserDomain(String id,String password,String userName,Date birthDate,String phoneNum,String profileImagePath,boolean isFirstLogin){
         this.id = id;
         this.password = password;
@@ -126,5 +124,13 @@ public class UserDomain {
 
     }
     public UserDomain(){}
+
+    public void setTransportType(String transportType) {
+        this.transportType = transportType;
+    }
+
+    public String getTrangsportType() {
+        return transportType;
+    }
 }
 
