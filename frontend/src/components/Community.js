@@ -35,6 +35,10 @@ function Community() {
     이벤트: '이벤트',
   };
 
+  // Dynamically generate image paths
+  const getPostImagePath = (filename) => `/uploads/postImage/${filename}`;
+
+
   // 유저 이름 가져오기
   const [userName, setUserName] = useState('');
   const id = sessionStorage.getItem('ID');
@@ -611,17 +615,18 @@ function Community() {
                 <p><strong>작성자 :</strong> {selectedPost.authorName || 'Unknown'}</p>
                 <p><strong>작성일 :</strong> {new Date(selectedPost.createDate).toLocaleString()}</p>
                 <hr></hr>
-                {postImages && postImages.length > 0 &&(
-                  <div className="image-gallery">
-                    {postImages.map((image, index) => ( 
-                      <img
-                        key={index}
-                        src={`/asset/Images/postImage/${image}`}
-                        alt={`Post Image ${index + 1}`}
-                        className="post-image"
-                      />
-                    ))}
-                  </div>
+                {selectedPost?.postImagesNames && selectedPost.postImagesNames.length > 0 && (
+                    <div className="image-gallery">
+                        {selectedPost.postImagesNames.map((image, index) => (
+                            <img
+                                key={index}
+                                src={getPostImagePath(image)} // 动态生成图片路径
+                                alt={`Post Image ${index + 1}`}
+                                className="post-image"
+                                onError={(e) => e.target.src = '/asset/Images/altImage/alt.png'} // 默认图片
+                            />
+                        ))}
+                    </div>
                 )}
                 <div className="content">{selectedPost.content}</div>
                 <div className="like-section">
