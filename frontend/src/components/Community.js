@@ -672,19 +672,11 @@ function Community() {
           <div className="card">
             <div className="board">
               <h3><a href="#">실시간 인기 글</a></h3>
-              <a className="article" href="#">
-                <p className="title">XXX</p>
-                <p className="small">XXXXXX</p>
-              </a>
             </div>
           </div>
           <div className="card">
             <div className="board">
               <h3><a href="#">HOT 게시물</a></h3>
-              <a className="list" href="#">
-                <time>10분 전</time>
-                <p>AAAAAAAA</p>
-              </a>
             </div>
           </div>
         </div>
