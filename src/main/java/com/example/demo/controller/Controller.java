@@ -234,7 +234,7 @@ public class Controller {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + id));
 
         user.setActivityPreference(userDomain.getActivityPreference());
-        user.setTransportType(userDomain.getTransportType());
+        user.setTransportType(userDomain.getTrangsportType());
         user.setStartTime(userDomain.getStartTime());
         user.setRequiredCourse(userDomain.getRequiredCourse());
         user.setRequiredLocation(userDomain.getRequiredLocation());

@@ -154,7 +154,7 @@ function RecommendationCourse() {
               'select',
               {
                 name: 'transportation',
-                value: formData.transportation,
+                value: formData.transportType,
                 onChange: handleChange,
               },
               React.createElement('option', { value: '' }, '선택하세요'),
