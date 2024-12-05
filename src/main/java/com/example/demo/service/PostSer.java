@@ -2,15 +2,18 @@ package com.example.demo.service;
 
 import com.example.demo.domain.PostDomain;
 import com.example.demo.domain.UserDomain;
+import com.example.demo.domain.PostVoterDomain;
 import com.example.demo.dto.PostDto;
 import com.example.demo.repository.PostRep;
 import com.example.demo.repository.UserRep;
+import com.example.demo.repository.PostVoterRep;
 import com.example.demo.exception.ResourceNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.criteria.*;
 
@@ -27,6 +30,7 @@ public class PostSer {
 
 	private final PostRep postRep;
     private final UserRep userRep;
+    private final PostVoterRep postVoterRep;
 
 	// @SuppressWarnings("unused")
 	// private Specification<PostDomain> search(String kw) {
@@ -115,20 +119,64 @@ public class PostSer {
         return postRep.findTop4ByCategoryOrderByCreateDateDesc(category);
     }
 
-    public int likePost(Long postId) {
+    @Transactional
+    public int likePost(Long postId, Long userId) {
         PostDomain post = postRep.findById(postId)
-            .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+            .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+        UserDomain user = userRep.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // 检查是否已点赞
+        if (postVoterRep.existsByPostAndVoter(post, user)) {
+            throw new IllegalStateException("User has already liked this post.");
+        }
+
+        // 保存点赞记录
+        PostVoterDomain postVoter = new PostVoterDomain();
+        postVoter.setPost(post);
+        postVoter.setVoter(user);
+        postVoterRep.save(postVoter);
+
+        // 更新帖子点赞数
         post.incrementLikes();
         postRep.save(post);
+
         return post.getLikes();
     }
 
-    public int unlikePost(Long postId) {
+    @Transactional
+    public int unlikePost(Long postId, Long userId) {
         PostDomain post = postRep.findById(postId)
-            .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+            .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+        UserDomain user = userRep.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // 检查是否已点赞
+        if (!postVoterRep.existsByPostAndVoter(post, user)) {
+            throw new IllegalStateException("User has not liked this post.");
+        }
+
+        // 删除点赞记录
+        postVoterRep.deleteByPostAndVoter(post, user);
+
+        // 更新帖子点赞数
         post.decrementLikes();
         postRep.save(post);
+
         return post.getLikes();
     }
-	
+
+
+    @Transactional
+    public boolean isPostLikedByUser(Long postId, Long userId) {
+        PostDomain post = postRep.findById(postId)
+            .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+        UserDomain user = userRep.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // 使用正确的方法调用
+        return postVoterRep.existsByPostAndVoter(post, user);
+    }
+
+
 }

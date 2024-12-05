@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
+import java.util.Map; 
+import java.util.HashMap; 
 
 @RestController
 @RequestMapping("/posts")
@@ -67,16 +69,29 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/like")
-    public ResponseEntity<String> likePost(@PathVariable Long postId) {
-        int likes = postSer.likePost(postId);
-        return ResponseEntity.ok("Post liked successfully. Current likes: " + likes);
+    public ResponseEntity<String> likePost(@PathVariable Long postId, @RequestParam Long userId) {
+        postSer.likePost(postId, userId);
+        return ResponseEntity.ok("Post liked successfully.");
     }
 
     @PostMapping("/{postId}/unlike")
-    public ResponseEntity<String> unlikePost(@PathVariable Long postId) {
-        int likes = postSer.unlikePost(postId);
-        return ResponseEntity.ok("Post unliked successfully. Current likes: " + likes);
+    public ResponseEntity<String> unlikePost(@PathVariable Long postId, @RequestParam Long userId) {
+        int likes = postSer.unlikePost(postId, userId);
+        return ResponseEntity.ok("Post unliked successfully.");
     }
+
+    @GetMapping("/{postId}/like-status")
+    public ResponseEntity<Map<String, Object>> getLikeStatus(@PathVariable Long postId, @RequestParam Long userId) {
+        boolean isLiked = postSer.isPostLikedByUser(postId, userId);
+        int likeCount = postSer.getPostById(postId).getLikes();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("isLiked", isLiked);
+        response.put("likeCount", likeCount);
+
+        return ResponseEntity.ok(response);
+    }
+
 
     
 }

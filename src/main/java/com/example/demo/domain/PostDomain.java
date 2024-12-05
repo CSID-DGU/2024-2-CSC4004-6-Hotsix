@@ -73,18 +73,12 @@ public class PostDomain {
         this.modifyDate = modifyDate; 
     }
 
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Integer likes) {
-        this.likes = likes;
-    }
-
+    // 自定义方法：点赞
     public void incrementLikes() {
         this.likes++;
     }
 
+    // 自定义方法：取消点赞
     public void decrementLikes() {
         if (this.likes > 0) {
             this.likes--;
