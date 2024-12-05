@@ -11,13 +11,12 @@ const ChatInput = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className="chat-input">
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(event) => setInputValue(event.target.value)}
-        placeholder="Type your message..."
-      />
-      <button type="submit">Send</button>
+        <input
+            type="text"
+            value={inputValue}
+            onChange={(event) => setInputValue(event.target.value)}
+            placeholder="Loading..."
+          />
     </form>
   );
 };

@@ -15,7 +15,7 @@ import java.net.http.HttpResponse;
 
 public class OpenAIApi {
 
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
 
     // GPT API 호출 메서드: 장소 추천
     public String ask(String prompt) throws JSONException {
@@ -24,7 +24,8 @@ public class OpenAIApi {
         // GPT 요청 프롬프트 구성
         String formattedPrompt = String.format(
                 "내가 'key : value' 형태의 데이터를 줄거야. requestType: 'user_recommendations'가 있으면 너가 그 데이터를 토대로 나에게 하루 데이트 장소를 추천해줘. 총 5개를 말해주고 장소만 단어로 말해줘. 다른 건 말하지 말고. 출력 예시는 다음과 같아. [예시) 경복궁, 북촌마을, 청와대 ] 말할 때 맨 앞에 번호 붙이는 건 빼줘." +
-                        "requestType: 'date_ideas'가 있으면 너가 그 데이터를 토대로 나에게 '여자친구가 좋아할 로맨틱한 레스토랑'을 추천해줘. 총 5개를 말해주고 레스토랑 이름만 말해줘. 다른 건 말하지 말고. 출력 예시는 다음과 같아. [예시) 롯데타워 81바, 아이파크몰 아웃백, 오길칠 비스트로] 말할 때 맨 앞에 번호 붙이는 건 빼줘. 그리고 한국어로 말해줘. 조건: %s", prompt
+                        "requestType: 'date_ideas'가 있으면 너가 그 데이터를 토대로 나에게 '여자친구가 좋아할 로맨틱한 레스토랑'을 추천해줘. 총 5개를 말해주고 한글 9글자 이하인 레스토랑 이름만 말해줘. 다른 건 말하지 말고. 출력 예시는 다음과 같아. [예시) 롯데타워 81바, 아이파크몰 아웃백, 오길칠 비스트로] 말할 때 맨 앞에 번호 붙이는 건 빼줘." +
+                        "requestType: 'popluar_spot'이 있으면 너가 그 데이터를 토대로 나에게 '대중적으로 인기가 많은 장소'를 추천해줘. 총 5개를 말해주고 한글 9글자 이하인 장소 이름만 말해줘. 다른 건 말하지 말고. 출력 예시는 다음과 같아. [예시) 경복궁, 광화문 광장, 청와대] 말할 때 맨 앞에 번호 붙이는 건 빼줘. 그리고 한국어로 말해줘. 조건: %s", prompt
         );
 
         JSONObject jsonBody = new JSONObject();

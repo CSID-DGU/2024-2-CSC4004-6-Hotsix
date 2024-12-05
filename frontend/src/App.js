@@ -20,7 +20,7 @@ function App() {
   // sections 상태 관리
   const [sections, setSections] = useState([
     { title: "사용자 맞춤", items: [] }, // 초기에는 비어있음
-    { title: "기념일 기념", items: Array.from({ length: 10 }, (_, i) => ({ title: `추천 ${i + 1}` })) },
+    { title: "기념일 기념", items: Array.from({ length: 10 }, (_, i) => ({ title: `광화문 ${i + 1}` })) },
     { title: "인기 장소", items: Array.from({ length: 10 }, (_, i) => ({ title: `드라마 ${i + 1}` })) },
     { title: "계절별", items: Array.from({ length: 10 }, (_, i) => ({ title: `애니 ${i + 1}` })) },
   ]);
