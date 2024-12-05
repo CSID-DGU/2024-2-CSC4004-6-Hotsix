@@ -6,10 +6,10 @@
 }
 
 .carousel-section h2 {
-  font-size: 18px !important; /* 제목 크기 */
+  font-size: 24px !important; /* 제목 크기 */
   position: absolute !important; /* 고정 위치 */
-  top: -30px !important; /* 상단 위치를 위로 이동 */
-  left: 22% !important; /* 수평 중앙 정렬 */
+  top: -38px !important; /* 상단 위치를 위로 이동 */
+  left: 21% !important; /* 수평 중앙 정렬 */
 }
 
 .carousel-container {

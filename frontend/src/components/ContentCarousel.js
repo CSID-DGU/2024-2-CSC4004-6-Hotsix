@@ -9,7 +9,7 @@ function ContentCarousel() {
   // sections 상태 관리
   const [sections, setSections] = useState([
     { title: "사용자 맞춤", items: [] },
-    { title: "기념일 기념", items: Array.from({ length: 10 }, (_, i) => ({ title: `경궁 ${i + 1}` })) },
+    { title: "여자친구가 좋아할 데이트", items: [] },
     { title: "인기 장소", items: Array.from({ length: 10 }, (_, i) => ({ title: `드라마 ${i + 1}` })) },
     { title: "계절별", items: Array.from({ length: 10 }, (_, i) => ({ title: `애니 ${i + 1}` })) },
   ]);
@@ -21,18 +21,30 @@ function ContentCarousel() {
   useEffect(() => {
     const fetchGptResponse = async () => {
       // 실제 사용자 데이터로 대체하세요
-      const userInfo = {
+      const userInfo1 = {
         mbti: 'ISFP',
-        location: '서울특별시 중구 퇴계로',
+        location: '서울특별시 중구',
         budget: '10~20만원',
         requiredCourse: '카페, 영화',
         preferredCourse: '산책',
         activityPreference: '비선호',
         transportType: '대중교통',
+        requestType: 'user_recommendations'
+      };
+
+      const userInfo2 = {
+        mbti: 'ISFP',
+        location: '서울특별시 중구',
+        budget: '10~20만원',
+        requiredCourse: '카페, 영화',
+        preferredCourse: '산책',
+        activityPreference: '비선호',
+        transportType: '대중교통',
+        requestType: 'date_ideas'
       };
 
       try {
-        const response = await axios.post('http://localhost:8080/ask', userInfo);
+        const response = await axios.post('http://localhost:8080/ask', userInfo1);
         console.log('GPT 응답 원본:', response.data); // 디버깅용
 
         // 응답 데이터 구조 확인
@@ -69,6 +81,45 @@ function ContentCarousel() {
             items: contentItems.map(item => ({ title: item })),
           };
           return newSections;
+        });
+
+        const response2 = await axios.post('http://localhost:8080/ask', userInfo2);
+        console.log('GPT 응답 원본:', response2.data); // 디버깅용
+
+        // 응답 데이터 구조 확인
+        let responseText2 = '';
+        if (typeof response2.data === 'object' && response2.data.text) {
+            responseText2 = response2.data.text;
+        } else if (typeof response2.data === 'string') {
+            responseText2 = response2.data;
+        } else {
+            console.error("응답 데이터 형식이 예상과 다릅니다:", response2.data);
+            setError("응답 데이터 형식이 올바르지 않습니다.");
+            setLoading(false);
+            return;
+        }
+
+        console.log('GPT 응답 텍스트:', responseText2); // 디버깅용
+
+        // GPT 응답 파싱 (콤마로 분리)
+        //const contentItems = responseText.split(',').filter(item => item.trim() !== '').map(item => item.trim());
+        //console.log('파싱된 GPT 응답:', contentItems); // 디버깅용
+        // GPT 응답 파싱 (콤마로 분리 및 대괄호 제거)
+        const contentItems2 = responseText2
+            .split(/\s*,\s*/) // 콤마와 그 주변의 공백을 기준으로 분리
+            .filter(item => item !== '') // 빈 문자열 제거
+            .map(item => item.replace(/^\[|\]$/g, '').trim()); // 대괄호 제거 및 공백 정리
+
+        console.log('파싱된 GPT 응답:', contentItems2); // 디버깅용
+
+        // sections 상태 업데이트
+        setSections(prevSections => {
+            const newSections2 = [...prevSections];
+            newSections2[1] = {
+            ...newSections2[1],
+            items: contentItems2.map(item => ({ title: item })),
+        };
+        return newSections2;
         });
         setLoading(false); // 로딩 완료
       } catch (error) {
