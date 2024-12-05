@@ -93,5 +93,14 @@ public class UserSer {
 
        userRep.save(user1);
     }
+    public Long getUserNumById(String id) {
+        Optional<UserDomain> userOptional = userRep.findById(id); // 通过 id 查找用户
+
+        if (userOptional.isPresent()) {
+            return userOptional.get().getUserNum(); // 返回 userNum
+        } else {
+            return null; // 如果用户不存在，返回 null
+        }
+    }
 
 }

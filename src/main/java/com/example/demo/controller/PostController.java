@@ -1,89 +1,145 @@
 package com.example.demo.controller;
 
 import com.example.demo.DTO.PostDTO;
+import com.example.demo.repository.PostRep;
 import com.example.demo.service.PostSer;
-import lombok.RequiredArgsConstructor;
+import com.example.demo.domain.PostDomain;
+import com.example.demo.domain.UserDomain;
+import com.example.demo.repository.UserRep;
+
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
 import java.util.List;
-import com.example.demo.domain.PostDomain;
-import com.example.demo.repository.PostRep;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-
+import java.time.LocalDateTime;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/posts")
 @RequiredArgsConstructor
 public class PostController {
-
     private final PostSer postSer;
     private final PostRep postRep;
+    private final UserRep userRep;
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addPost(@RequestBody PostDTO postDTO) {
-        return ResponseEntity.ok(postSer.createPost(postDTO));
+
+    @GetMapping
+    public List<PostDTO> getAllPosts() {
+        return postSer.getAllPosts().stream()
+                .map(postSer::convertToDto)
+                .collect(Collectors.toList());
     }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostDTO postDTO) {
-        postSer.updatePost(id, postDTO);
-        return ResponseEntity.ok("Post updated successfully");
+    //게시물 보여주기
+//    @GetMapping("/{postId}")
+//    public ResponseEntity<?> getPostByPostId(@PathVariable Long postId){
+//        Optional<PostDomain> optionalPostDomain = postRep.findById(postId);
+//        if(optionalPostDomain.isEmpty()){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "No Post"));
+//        }
+//        else {
+//            PostDomain post = optionalPostDomain.get();
+//            return ResponseEntity.ok().body(Map.of(
+//                    "Likes",post.getLikes(),
+//                    "PostImages",post.getPostImages()
+//
+//            ));
+//        }
+//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPostById(@PathVariable Long id) {
+        PostDomain post = postSer.getPostById(id);
+        System.out.println("postImages: " + post.getPostImages());
+        return ResponseEntity.ok().body(Map.of("postDTO",postSer.convertToDto(post)));
     }
+    //게시글 작성
+    @PostMapping("/{userId}")
+    public ResponseEntity<?> createPost(@ModelAttribute PostDTO postDTO,
+                              @RequestParam("postImages") List<MultipartFile> postImages,
+                              @PathVariable String userId
+                              ) {
 
-    @PostMapping("/like")
-    public ResponseEntity<?> likePost(@RequestBody Map<String, Long> request, HttpServletRequest httpServletRequest) {
-        Long postId = request.get("postId");
-        String userId = (String) httpServletRequest.getSession().getAttribute("ID");
+        UserDomain user = userRep.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + userId));
 
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+        //유저 정보 저장
+        UserDomain user1 = new UserDomain();
+        user1.setUserName(postDTO.getAuthorName());
+        user1.setUserNum(postDTO.getAuthorUserNum());
+
+        // PostDTO에서 PostDomain으로 변환
+        PostDomain postDomain = new PostDomain();
+        postDomain.setSubject(postDTO.getSubject());
+        postDomain.setContent(postDTO.getContent());
+        postDomain.setCategory(postDTO.getCategory());
+        postDomain.setAuthor(user1);
+        postDomain.setCreateDate(postDTO.getCreateDate());
+
+        // postImages가 null인 경우
+        if (postDTO.getPostImages() == null || postDTO.getPostImages().isEmpty()){
+            postDomain.setPostImages(null);
+        }
+        else {
+            // 파일 저장 로직 추가
+            List<String> fileNames = new ArrayList<>();
+            for (MultipartFile postImage : postImages) {
+                String fileName = postSer.saveFile(postImage); // 파일 저장 메서드 호출
+                fileNames.add(fileName);
+            }
+            postDomain.setPostImages(fileNames); // 파일명을 설정
         }
 
-        postSer.toggleLike(postId, userId);
-        int likeCount = postSer.getLikeCount(postId);
 
-        // 判断当前用户是否已点赞
-        boolean isLiked = postSer.isLikedByUser(postId, userId);
+        // 데이터 저장
+        postRep.save(postDomain);
 
-        return ResponseEntity.ok(Map.of("likeCount", likeCount, "isLiked", isLiked));
+        return ResponseEntity.ok("게시글 작성 완료");
+    }
+    //게시글 수정
+    @PutMapping("/{id}")
+    public PostDTO updatePost(@PathVariable Long id, @RequestBody PostDomain post) {
+        PostDomain updatedPost = postSer.updatePost(id, post);
+        return postSer.convertToDto(updatedPost);
+    }
+    //게시글 삭제
+    @DeleteMapping("/{id}")
+    public void deletePost(@PathVariable Long id) {
+        postSer.deletePost(id);
     }
 
-    @GetMapping("/posts")
-    public List<PostDTO> getPostsByBoard(@RequestParam String boardName, HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute("ID"); // 从 Session 获取用户 ID
-        return postSer.getPostsByCategory(boardName, userId); // 将 userId 传递给服务层
+    @GetMapping("/category/{category}")
+    public List<PostDTO> getPostsByCategory(@PathVariable String category) {
+        List<PostDomain> posts = postSer.findPostsByCategory(category);
+        return posts.stream().map(postSer::convertToDto).toList();
     }
 
-
-
-
-    @GetMapping("/detail")
-    public ResponseEntity<PostDTO> getPostDetail(@RequestParam Long id, HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute("ID"); // 获取当前用户 ID
-        PostDomain post = postRep.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
-
-        PostDTO dto = new PostDTO();
-        dto.setId(post.getPostId());
-        dto.setSubject(post.getSubject());
-        dto.setContent(post.getContent());
-        dto.setCategory(post.getCategory());
-        dto.setLikes(post.getLikes());
-        dto.setCreateDate(post.getCreateDate());
-        dto.setIsLiked(userId != null && postSer.isLikedByUser(post.getPostId(), userId));
-
-        if (post.getAuthor() != null) { // 修复映射作者信息
-            dto.setAuthorId(post.getAuthor().getUserNum());
-            dto.setAuthorName(post.getAuthor().getUserName());
-        }
-        return ResponseEntity.ok(dto);
+    @GetMapping("/category/{category}/latest")
+    public List<PostDTO> getLatestPostsByCategory(@PathVariable String category) {
+        List<PostDomain> posts = postSer.findLatestPostsByCategory(category);
+        return posts.stream().map(postSer::convertToDto).toList();
     }
 
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<String> likePost(@PathVariable Long postId) {
+        int likes = postSer.likePost(postId);
+        return ResponseEntity.ok("Post liked successfully. Current likes: " + likes);
+    }
+
+    @PostMapping("/{postId}/unlike")
+    public ResponseEntity<String> unlikePost(@PathVariable Long postId) {
+        int likes = postSer.unlikePost(postId);
+        return ResponseEntity.ok("Post unliked successfully. Current likes: " + likes);
+    }
 
 
 }

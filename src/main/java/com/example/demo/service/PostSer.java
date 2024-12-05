@@ -1,35 +1,30 @@
 package com.example.demo.service;
 
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import com.example.demo.DTO.PostDTO;
 import com.example.demo.domain.PostDomain;
+import com.example.demo.domain.UserDomain;
+import com.example.demo.DTO.ReplyDTO;
 import com.example.demo.repository.PostRep;
 import com.example.demo.repository.UserRep;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
+//import com.example.demo.exception.ResourceNotFoundException;
+
 import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-//import com.mysite.sbb.DataNotFoundException;
-import com.example.demo.domain.UserDomain;
-import com.example.demo.domain.ReplyDomain;
+import jakarta.persistence.criteria.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.io.FileNotFoundException;
+import java.util.UUID;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -38,140 +33,142 @@ public class PostSer {
 	private final PostRep postRep;
 	private final UserRep userRep;
 
-	@SuppressWarnings("unused")
-	private Specification<PostDomain> search(String kw) {
-		return new Specification<>() {
-			private static final long serialVersionUID = 1L;
+	// @SuppressWarnings("unused")
+	// private Specification<PostDomain> search(String kw) {
+	// 	return new Specification<>() {
+	// 		private static final long serialVersionUID = 1L;
 
-			@Override
-			public Predicate toPredicate(Root<PostDomain> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
-				query.distinct(true); // 중복을 제거
-				Join<PostDomain, UserDomain> u1 = q.join("author", JoinType.LEFT);
-				Join<PostDomain, ReplyDomain> a = q.join("answerList", JoinType.LEFT);
-				Join<ReplyDomain, UserDomain> u2 = a.join("author", JoinType.LEFT);
-				return cb.or(cb.like(q.get("subject"), "%" + kw + "%"), // 제목
-						cb.like(q.get("content"), "%" + kw + "%"), // 내용
-						cb.like(u1.get("username"), "%" + kw + "%"), // 질문 작성자
-						cb.like(a.get("content"), "%" + kw + "%"), // 답변 내용
-						cb.like(u2.get("username"), "%" + kw + "%")); // 답변 작성자
-			}
-		};
-	}
-	public Page<PostDomain> getPosts(int page, int size){
-		List<Sort.Order> sorts = new ArrayList<>();
-		sorts.add(Sort.Order.desc("createDate"));
-		Pageable pageable = PageRequest.of(page,size, Sort.by(sorts));
+	// 		@Override
+	// 		public Predicate toPredicate(Root<PostDomain> q, CriteriaQuery<?> query, CriteriaBuilder cb) {
+	// 			query.distinct(true); // 중복을 제거
+	// 			Join<PostDomain, UserDomain> u1 = q.join("author", JoinType.LEFT);
+	// 			Join<PostDomain, ReplyDomain> a = q.join("answerList", JoinType.LEFT);
+	// 			Join<ReplyDomain, UserDomain> u2 = a.join("author", JoinType.LEFT);
+	// 			return cb.or(
+	// 				cb.like(q.get("subject"), "%" + kw + "%"), // 제목
+	// 				cb.like(q.get("content"), "%" + kw + "%"), // 내용
+	// 				cb.like(u1.get("username"), "%" + kw + "%"), // 질문 작성자
+	// 				cb.like(a.get("content"), "%" + kw + "%"), // 답변 내용
+	// 				cb.like(u2.get("username"), "%" + kw + "%")); // 답변 작성자
+	// 		}
+	// 	};
+	// }
 
-		return postRep.findAll(pageable);
+	public List<PostDomain> getAllPosts() {
+		return postRep.findAll();
 	}
 
-	public PostDomain createPost(PostDTO postDTO) {
-		// 检查作者是否存在
-		UserDomain author = userRep.findById(postDTO.getAuthorId())
-				.orElseThrow(() -> new RuntimeException("Author not found"));
+	public PostDomain getPostById(Long id) {
 
-		// 创建帖子
-		PostDomain post = new PostDomain();
-		post.setCategory(postDTO.getCategory());
-		post.setContent(postDTO.getContent());
-		post.setCreateDate(LocalDateTime.now());
-		post.setModifyDate(LocalDateTime.now());
-		post.setLikes(0);
-		post.setSubject(postDTO.getSubject());
-		post.setAuthor(author);
-
-		return postRep.save(post);
+		return postRep.findWithAuthorById(id).get();
+//				.orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
 	}
 
-	public void updatePost(Long postId, PostDTO postDTO) {
-		PostDomain post = postRep.findById(postId)
-				.orElseThrow(() -> new RuntimeException("Post not found"));
 
-		post.setSubject(postDTO.getSubject());
-		post.setContent(postDTO.getContent());
-		post.setCategory(postDTO.getCategory());
-		post.setModifyDate(LocalDateTime.now());
+//	public PostDomain createPost(PostDTO postDto) {
+//
+//		Optional<UserDomain> user1 = userRep.findById(postDto.getAuthorUserNum());
+//		UserDomain user = user1.get();
+////				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + postDto.getAuthorUserNum()));
+//
+//		// Constructing a PostDomain Object
+//		PostDomain post = new PostDomain();
+//		post.setCategory(postDto.getCategory());
+//		post.setContent(postDto.getContent());
+//		post.setSubject(postDto.getSubject());
+//		post.setAuthor(user);
+//		post.setCreateDate(LocalDateTime.now());
+//
+//		post.setPostImages(postDto.getPostImages());
+//		return postRep.save(post);
+//	}
 
-		postRep.save(post);
+	public PostDomain updatePost(Long id, PostDomain post) {
+		PostDomain existingPost = getPostById(id);
+		existingPost.setCategory(post.getCategory());
+		existingPost.setContent(post.getContent());
+		existingPost.setSubject(post.getSubject());
+		existingPost.setModifyDate(LocalDateTime.now());
+		return postRep.save(existingPost);
 	}
 
-	public void deletePost(Long postId) {
-		postRep.deleteById(postId);
+	public void deletePost(Long id) {
+		postRep.deleteById(id);
 	}
 
-	public void addLike(Long postId) {
-		PostDomain post = postRep.findById(postId)
-				.orElseThrow(() -> new RuntimeException("Post not found"));
-
-		post.setLikes(post.getLikes() + 1);
-		postRep.save(post);
-	}
-
-	public void removeLike(Long postId) {
-		PostDomain post = postRep.findById(postId)
-				.orElseThrow(() -> new RuntimeException("Post not found"));
-
-		if (post.getLikes() > 0) {
-			post.setLikes(post.getLikes() - 1);
+	// DTO Conversion
+	public PostDTO convertToDto(PostDomain post) {
+		PostDTO dto = new PostDTO();
+		dto.setId(post.getPostId());
+		dto.setCategory(post.getCategory());
+		dto.setContent(post.getContent());
+		dto.setSubject(post.getSubject());
+		dto.setLikes(post.getLikes());
+		dto.setCreateDate(post.getCreateDate());
+		if (post.getAuthor() != null) {
+			dto.setAuthorUserNum(post.getAuthor().getUserNum());
+			dto.setAuthorName(post.getAuthor().getUserName());
+		} else {
+			dto.setAuthorUserNum(null);
+			dto.setAuthorName("Unknown");
 		}
+		dto.setPostImagesNames(post.getPostImages());
 
+		return dto;
+	}
+
+
+	public List<PostDomain> findPostsByCategory(String category) {
+		return postRep.findByCategory(category);
+	}
+
+	public List<PostDomain> findLatestPostsByCategory(String category) {
+		return postRep.findTop4ByCategoryOrderByCreateDateDesc(category);
+	}
+
+	public int likePost(Long postId) {
+		Optional<PostDomain> post1 = postRep.findById(postId);
+		PostDomain post = post1.get();
+//				.orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+
+		post.incrementLikes();
 		postRep.save(post);
-	}
-
-	public List<PostDTO> getPostsByCategory(String category, String userId) {
-		List<PostDomain> posts = postRep.findByCategory(category); // 获取 PostDomain 列表
-		return posts.stream().map(post -> {
-			PostDTO dto = new PostDTO();
-			dto.setId(post.getPostId());
-			dto.setSubject(post.getSubject());
-			dto.setContent(post.getContent());
-			dto.setCategory(post.getCategory());
-			dto.setLikes(post.getLikes());
-			dto.setCreateDate(post.getCreateDate());
-
-			// 调用 isLikedByUser 方法判断是否点过赞
-			dto.setIsLiked(userId != null && isLikedByUser(post.getPostId(), userId));
-
-			if (post.getAuthor() != null) {
-				dto.setAuthorId(post.getAuthor().getUserNum());
-				dto.setAuthorName(post.getAuthor().getUserName());
-			}
-			return dto;
-		}).collect(Collectors.toList());
-	}
-
-
-	public int getLikeCount(Long postId) {
-		PostDomain post = postRep.findById(postId)
-				.orElseThrow(() -> new RuntimeException("Post not found"));
 		return post.getLikes();
 	}
 
-	public void toggleLike(Long postId, String userId) {
-		PostDomain post = postRep.findById(postId)
-				.orElseThrow(() -> new RuntimeException("Post not found"));
-		UserDomain user = userRep.findById(userId)
-				.orElseThrow(() -> new RuntimeException("User not found"));
+	public int unlikePost(Long postId) {
+		Optional<PostDomain> post1 = postRep.findById(postId);
+		PostDomain post = post1.get();
+//				.orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
 
-		if (post.getVoter().contains(user)) {
-			post.getVoter().remove(user);
-			post.setLikes(post.getLikes() - 1);
-		} else {
-			post.getVoter().add(user);
-			post.setLikes(post.getLikes() + 1);
-		}
-
+		post.decrementLikes();
 		postRep.save(post);
+		return post.getLikes();
 	}
+	public String saveFile(MultipartFile file) {
+		String Dir =
+//                    이 부분 본인 프로젝트 디렉토리 경로로 변경
 
-	public boolean isLikedByUser(Long postId, String userId) {
-		PostDomain post = postRep.findById(postId)
-				.orElseThrow(() -> new RuntimeException("Post not found"));
-		UserDomain user = userRep.findById(userId)
-				.orElseThrow(() -> new RuntimeException("User not found"));
+//                     명훈 디렉토리 경로1
+//				"C:\\Users\\pc\\Desktop\\Hotsix\\" +
+//                    명훈 디렉토리 경로2
+                "\\Users\\jinmyeonghun\\Desktop\\3-2\\공소\\2024-2-CSC4004-6-Hotsix\\" +
+//
+						//여기는 공통 경로
+						"src\\main\\resources\\static\\asset\\Images\\postImage\\";
 
-		return post.getVoter().contains(user);
+		String fileName = file.getOriginalFilename();
+
+
+//		String filePath = Dir + UUID.randomUUID() + "_" + fileName; // 고유 파일명 생성
+
+		try {
+			File dest = new File(Dir + fileName);
+			file.transferTo(dest); // 파일 저장
+			return fileName;
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to save file: " + fileName, e);
+		}
 	}
-
 
 }

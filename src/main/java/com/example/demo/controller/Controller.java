@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -118,11 +119,9 @@ public class Controller {
 //                    이 부분 본인 프로젝트 디렉토리 경로로 변경
 
 //                     명훈 디렉토리 경로1
-                // "C:\\Users\\pc\\Desktop\\Hotsix\\" +
+//                "C:\\Users\\pc\\Desktop\\Hotsix\\" +
 //                    명훈 디렉토리 경로2
-               "\\Users\\jinmyeonghun\\Desktop\\3-2\\공소\\2024-2-CSC4004-6-Hotsix\\" +
-//                      윤열 디렉토리 경로 1
-// "C:\\Users\\yoony\\OneDrive\\Desktop\\3-2\\공소\\공소1203\\2024-2-CSC4004-6-Hotsix\\" +
+                "\\Users\\jinmyeonghun\\Desktop\\3-2\\공소\\2024-2-CSC4004-6-Hotsix\\" +
 //
                         //여기는 공통 경로
                         "src\\main\\resources\\static\\asset\\Images\\userProfile\\";
@@ -216,5 +215,34 @@ public class Controller {
 
         return ResponseEntity.ok().body(Map.of("profileImagePath", profileImagePath));
 
+    }
+    @GetMapping("/userNum/{id}")
+    public ResponseEntity<?> getUserNumById(@PathVariable String id) {
+        Long userNum = userSer.getUserNumById(id); // 通过 id 获取 userNum
+        if (userNum != null) {
+            return ResponseEntity.ok(userNum); // 返回 userNum
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("User not found"); // 如果找不到用户，则返回 404 错误
+        }
+    }
+    @PostMapping("recommendationCourse/{id}")
+    public ResponseEntity<?> saveRecommendationResult (@PathVariable String id,
+                                                       @RequestBody UserDomain userDomain
+                                                       ){
+        UserDomain user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + id));
+
+        user.setActivityPreference(userDomain.getActivityPreference());
+        user.setTransportType(userDomain.getTrangsportType());
+        user.setStartTime(userDomain.getStartTime());
+        user.setRequiredCourse(userDomain.getRequiredCourse());
+        user.setRequiredLocation(userDomain.getRequiredLocation());
+        user.setDayBudgetRange(userDomain.getDayBudgetRange());
+
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok("선호도 조사 완료");
     }
 }

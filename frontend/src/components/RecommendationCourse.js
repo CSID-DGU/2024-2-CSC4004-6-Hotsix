@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import '../styles/RecommendationCourse.css';
+import { useNavigate } from 'react-router-dom';
+
 
 function RecommendationCourse() {
   const [currentPage, setCurrentPage] = useState(1);
+
+  //session ID 확인
+  const id = sessionStorage.getItem("ID");
+
+  //navigate
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    mbti: '',
-    prefersActivity: false,
-    favoriteCourse: '',
-    transportation: '',
+    requiredLocation: '',
+    activityPreference: false,
+    dayBudgetRange: '',
+    requiredCourse: '',
+    transportType: '',
     startTime: '',
-    budget: '',
-    preferredRegions: [],
-    mustVisitCourses: [],
-    mustVisitRegion: '',
   });
 
   // 지역 리스트
@@ -27,12 +33,46 @@ function RecommendationCourse() {
 
   // 폼 데이터 업데이트
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+      const { name, value, type, checked } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+      console.log('Updated formData (handleChange):', formData);
+    };
+
+  // 지역 선택 핸들러
+  const handleRegionSelect = (region) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      requiredLocation : region,
     }));
+    console.log('Updated formData (handleRegionSelect):', formData);
+    handleNext(); // 선택 후 다음 페이지로 이동
   };
+  //선호도 조사 제출
+    const submitResult =  async () => {
+      console.log('Submitting formData:', formData);
+      try {
+        
+        const response = await fetch(`recommendationCourse/${id}`,{
+          method: `POST`,
+          body: JSON.stringify(formData),
+          headers: { 'Content-Type': 'application/json' },
+        },)
+        if(response.ok){
+          window.alert('제출되었습니다!');       
+        }
+        else{
+          window.alert('문제가 발생했습니다.잠시 후 다시 시도해주세요!');
+        }
+      }
+      catch (error) {
+        // 네트워크 오류 처리
+        console.error('Error occurred:', error);
+        window.alert('서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.');
+      }
+  }
 
   // 지역 선택 핸들러
   const handleRegionSelect = (region) => {
@@ -59,7 +99,7 @@ function RecommendationCourse() {
                 'button',
                 {
                   key: region,
-                  className: 'region-button',
+                  className: `region-button`,
                   onClick: () => handleRegionSelect(region),
                 },
                 region
@@ -82,23 +122,32 @@ function RecommendationCourse() {
               React.createElement('span', null, '예:'),
               React.createElement('input', {
                 type: 'checkbox',
-                name: 'prefersActivity',
-                checked: formData.prefersActivity,
+                name: 'activityPreference',
+                checked: formData.activityPreference,
                 onChange: handleChange,
               })
             )
           ),
           React.createElement(
-            'label',
-            null,
-            '선호하는 데이트 코스:',
-            React.createElement('input', {
-              type: 'text',
-              name: 'favoriteCourse',
-              value: formData.favoriteCourse,
-              onChange: handleChange,
-              placeholder: '예: 카페, 레스토랑',
-            })
+            'div',
+            { className: 'form-page' },
+            React.createElement('h2', null, '선호도 조사 - 지역 및 코스'),
+            React.createElement(
+              'label',
+              null,
+              '필수 코스:',
+              React.createElement('input', {
+                type: 'text',
+                name: 'requiredCourse',
+                value: formData.requiredCourse,
+                onChange: (e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    requiredCourse: e.target.value,
+                  })),
+                placeholder: '예: 롯데월드, 한강공원',
+              })
+            ),
           )
         );
       case 3:
@@ -114,7 +163,7 @@ function RecommendationCourse() {
               'select',
               {
                 name: 'transportation',
-                value: formData.transportation,
+                value: formData.transportType,
                 onChange: handleChange,
               },
               React.createElement('option', { value: '' }, '선택하세요'),
@@ -140,44 +189,10 @@ function RecommendationCourse() {
             '당일 예산 (단위:만원):',
             React.createElement('input', {
               type: 'number',
-              name: 'budget',
-              value: formData.budget,
+              name: 'dayBudgetRange',
+              value: formData.dayBudgetRange,
               onChange: handleChange,
               placeholder: '예: 5',
-            })
-          )
-        );
-      case 4:
-        return React.createElement(
-          'div',
-          { className: 'form-page' },
-          React.createElement('h2', null, '선호도 조사 - 지역 및 코스'),
-          React.createElement(
-            'label',
-            null,
-            '필수 코스:',
-            React.createElement('input', {
-              type: 'text',
-              name: 'mustVisitCourses',
-              value: formData.mustVisitCourses,
-              onChange: (e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  mustVisitCourses: e.target.value.split(','),
-                })),
-              placeholder: '예: 롯데월드, 한강공원',
-            })
-          ),
-          React.createElement(
-            'label',
-            null,
-            '필수 지역:',
-            React.createElement('input', {
-              type: 'text',
-              name: 'mustVisitRegion',
-              value: formData.mustVisitRegion,
-              onChange: handleChange,
-              placeholder: '예: 강남, 홍대 (한 장소만)',
             })
           )
         );
@@ -195,7 +210,7 @@ function RecommendationCourse() {
       { className: 'navigation-buttons' },
       currentPage > 1 &&
         React.createElement('button', { className: 'prev-button', onClick: handleBack }, '뒤로'),
-      currentPage < 4 && currentPage > 1 &&
+      currentPage < 3 && currentPage > 1 &&
         React.createElement(
           'button',
           { className: 'next-button', onClick: handleNext },
@@ -204,7 +219,12 @@ function RecommendationCourse() {
       currentPage === 4 &&
         React.createElement(
           'button',
-          { className: 'commit-button', onClick: () => console.log(formData) },
+          { className: 'commit-button', onClick: () => {
+            // 제출 시 동작
+              submitResult();
+              console.log(formData)
+            } 
+          },
           '제출'
         )
     )

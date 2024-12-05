@@ -3,14 +3,30 @@ import axios from 'axios';
 import '../styles/Community.css';
 
 function Community() {
-  const [view, setView] = useState('cards'); // 当前视图状态：'cards', 'list', 或 'detail'
-  const [currentBoard, setCurrentBoard] = useState(null); // 当前板块名称
-  const [posts, setPosts] = useState([]); // 当前板块的帖子列表
-  const [selectedPost, setSelectedPost] = useState(null); // 当前选中的帖子详情
-  const [loading, setLoading] = useState(false); // 加载状态
-  const [latestPosts, setLatestPosts] = useState({}); // 存储每个公告板的最新帖子
-  const [navigationStack, setNavigationStack] = useState([]); // 路径栈
+  const [view, setView] = useState('cards'); // Current view state：'cards', 'list', 或 'detail'
+  const [currentBoard, setCurrentBoard] = useState(null); // Current section name
+  const [posts, setPosts] = useState([]); // List of posts in the current section
+  const [selectedPost, setSelectedPost] = useState(null); // Details of the currently selected post
+  const [loading, setLoading] = useState(false); // Loading Status
+  const [latestPosts, setLatestPosts] = useState({}); // Stores the latest post for each board
+  const [navigationStack, setNavigationStack] = useState([]); // Path Stack
   const [likeLoading, setLikeLoading] = useState(false);
+  const [commentContent, setCommentContent] = useState(''); // Current comment content
+  const [comments, setComments] = useState([]); // All comments on the current post
+  const [userNum, setUserNum] = useState(null);
+  const userId = sessionStorage.getItem('ID'); 
+  const [likes, setLikes] = useState({});
+  const [isPosting, setIsPosting] = useState(false); // Controls whether to display the input box for posting new posts
+  const [subject, setSubject] = useState('');
+  const [content, setContent] = useState('');
+  const [postImages,setPostImages] = useState([]);
+  const [profileImagePath, setProfileImagePath] = React.useState("");
+
+  const handleImageUpload = (event) => {
+    const files = event.target.files; // 업로드된 파일 가져오기
+    const fileArray = Array.from(files); // FileList를 배열로 변환
+    setPostImages((prevImages) => [...prevImages, ...fileArray]); // 상태 업데이트
+  };
 
   const boards = {
     자유게시판: '자유게시판',
@@ -45,92 +61,223 @@ function Community() {
          }
        }, [id]);
 
- useEffect(() => {
-  const fetchPosts = () => {
-    axios
-      .get(`/posts`, { params: { boardName: currentBoard } }) // 获取当前板块的帖子
-      .then((response) => {
-        setPosts(response.data); // 将返回的数据存储到 posts 状态
+  // 유저 이름 가져오기
+  const [userName, setUserName] = useState('');
+  const id = sessionStorage.getItem('ID');
+  
+  //유저 프로필 요청
+  React.useEffect(() => {
+    if(id){
+      fetch(`/userProfile/${id}`, { // API 요청
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              // 필요시 Authorization 헤더 추가
+              // 'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+          },
+  } )
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Failed to fetch user data');
+          }
+          return response.json();
       })
-      .catch((error) => {
-        console.error('Failed to fetch posts:', error);
-      });
-  };
-
-  fetchPosts();
-}, [currentBoard]);
-
-
-
-  const fetchBoardPosts = (boardName) => {
-    setNavigationStack((prevStack) => [...prevStack, { view, currentBoard }]);
-    setLoading(true);
-    setCurrentBoard(boardName);
-
-    axios
-      .get(`/post/posts`, { params: { boardName } }) // 获取指定板块的所有帖子
-      .then((response) => {
-        const postsWithLikes = response.data.map((post) => ({
-          ...post,
-          likeCount: post.likes, // 映射后端的点赞数
-          liked: post.isLiked,  // 映射后端的点赞状态
-        }));
-        setPosts(postsWithLikes); // 更新帖子列表
-        setView('list'); // 切换到列表视图
-        setLoading(false);
+      .then(data => {
+          setProfileImagePath(data.profileImagePath); // 사용자 이름 설정
       })
-      .catch((error) => {
-        console.error(`Failed to fetch posts for ${boardName}:`, error);
-        setLoading(false);
-      });
-  };
+      .catch(error => {
+          console.error('Error fetching user data:', error);
+      })
+    }
+  }, [id]);
+  //유저 이름 불러오기
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`/userName/${id}`)
+        .then((response) => {
+          setUserName(response.data.userName); // 사용자 이름 설정
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error);
+        });
+    }
+  }, [id]);
 
+  // Get the userNum of the current user
+  useEffect(() => {
+    if (userId) {
+      axios
+        .get(`/userNum/${userId}`)
+        .then((response) => {
+          setUserNum(response.data);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch userNum:', error);
+        });
+    }
+  }, [userId]);
 
+  // Get the latest posts in each forum
+  useEffect(() => {
+    const fetchLatestPosts = async () => {
+      try {
+        const results = {};
+        for (const boardName of Object.values(boards)) {
+          const response = await axios.get(`/posts/category/${boardName}/latest`);
+          results[boardName] = response.data.slice(0, 4); // Get the latest 4 posts in each forum
+        }
+        setLatestPosts(results);
+      } catch (error) {
+        console.error('Failed to fetch latest posts:', error);
+      }
+    };
+    fetchLatestPosts();
+  }, []);
 
-  // 获取帖子详情
+  useEffect(() => {
+    if (currentBoard) {
+      setLoading(true);
+      axios
+        .get(`/posts/category/${currentBoard}`)
+        .then((response) => {
+          setPosts(response.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch posts:', error);
+          setLoading(false);
+        });
+    }
+  }, [currentBoard]);
+
+  // 게시물 내용 요청하기(GET)
   const fetchPostDetail = (postId) => {
-    setNavigationStack((prevStack) => [...prevStack, { view, currentBoard, posts }]);
     setLoading(true);
     axios
-      .get(`/post/detail`, { params: { id: postId } })
+      .get(`/posts/${postId}`)
       .then((response) => {
-        const postDetail = {
-          ...response.data,
-          likeCount: response.data.likes, // 映射后端的点赞数
-          liked: response.data.isLiked,  // 映射后端的点赞状态
-        };
-        setSelectedPost(postDetail); // 更新帖子详情
-        setView('detail'); // 切换到详情视图
+        const postDTO = response.data.postDTO;
+        const postImagesName = postDTO.postImagesNames;
+
+        setPostImages(postImagesName);
+
+        postImagesName.forEach((image, index) => {
+          console.log(`Image ${index + 1}: ${image}`);
+        });
+        const images = postImagesName || [];
+        setSelectedPost({
+          ...postDTO,
+          postImagesName: images,
+        });
+        setLikes(postDTO.likes);
+        setPostImages(images); // 이미지 배열 설정
+        fetchComments(postId); 
+        setView('detail');
         setLoading(false);
       })
       .catch((error) => {
-        console.error(`Failed to fetch post detail:`, error);
+        console.error('Failed to fetch post detail:', error);
         setLoading(false);
       });
   };
 
+  // 댓글 달기
+  const addComment = (postId, content) => {
+    if (!content.trim()) return; // Preventing Blank Comments
 
-  // 创建帖子
-  const createPost = (postData) => {
+    if (!userNum) {
+      alert("User not found or userNum is not available.");
+      return;
+    }
+
+    const commentData = {
+      content: content,
+      author: { userNum: userNum },
+    };
+
     axios
-      .post('/post/add', postData)
+      .post(`/replies?postId=${postId}`, commentData)
       .then((response) => {
-        alert('Post created successfully!');
-        fetchBoardPosts(currentBoard); // 刷新当前板块
+        alert('댓글이 작성되었습니다!');
+        setCommentContent('');
+
+        fetchComments(postId);
+      })
+      .catch((error) => {
+        console.error('Failed to add comment:', error);
+      });
+  };
+
+  // 댓글 로드
+  const fetchComments = (postId) => {
+    axios
+      .get(`/replies/post/${postId}`)
+      .then((response) => {
+        setComments(response.data); 
+      })
+      .catch((error) => {
+        console.error('Failed to fetch comments:', error);
+      });
+  };
+
+  // 게시글 작성
+  const createPost = () => {
+    if (!userNum) {
+      alert("User not found or userNum is not available.");
+      // console.log("content : ",content);
+      return;
+    }
+
+    if (!subject || !content) {
+      alert('Title and content cannot be empty.');
+      // console.log("content : ",content);
+      return;
+    }
+    console.log("content : ",content);
+    const formData = new FormData();
+    formData.append('subject', subject);
+    formData.append('content', content);
+    formData.append('category', currentBoard);
+    formData.append('authorUserNum', userNum);
+
+    // 파일 데이터 추가
+    if (postImages.length > 0) {
+      postImages.forEach((image) => {
+        formData.append("postImages", image); // 같은 키를 사용해도 서버에서 배열로 처리
+      });
+    } else {
+      console.log("No images to upload");
+    }
+    axios
+      .post(`/posts/${userId}`, formData,{
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }
+        
+      )
+      .then((response) => {
+        if(response.status == 200){
+          alert('게시글 작성이 완료되었습니다!');
+          setSubject(''); 
+          setContent(''); 
+          setPostImages([]);
+          setIsPosting(false); 
+          fetchPostsByCategory(currentBoard); 
+        }
       })
       .catch((error) => {
         console.error('Failed to create post:', error);
       });
   };
 
-  // 删除帖子
+  // Delete a post
   const deletePost = (postId) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
       axios
-        .delete(`/post/delete/${postId}`)
+        .delete(`/posts/${postId}`)
         .then(() => {
           alert('Post deleted successfully!');
-          fetchBoardPosts(currentBoard); // 刷新当前板块
+          fetchPostsByCategory(currentBoard); 
         })
         .catch((error) => {
           console.error('Failed to delete post:', error);
@@ -138,52 +285,22 @@ function Community() {
     }
   };
 
-  // 更新帖子
+  // Update Post
   const updatePost = (postId, updatedData) => {
     axios
-      .put(`/post/update/${postId}`, updatedData)
+      .put(`/posts/${postId}`, updatedData) 
       .then(() => {
         alert('Post updated successfully!');
-        fetchPostDetail(postId); // 刷新详情视图
+        fetchPostDetail(postId); 
       })
       .catch((error) => {
         console.error('Failed to update post:', error);
       });
   };
 
-  // 添加回复
-  const addReply = (replyData) => {
-    axios
-      .post('/reply/add', replyData)
-      .then((response) => {
-        alert('Reply added successfully!');
-        fetchPostDetail(selectedPost.id); // 刷新帖子详情
-      })
-      .catch((error) => {
-        console.error('Failed to add reply:', error);
-      });
-  };
-
-  // 获取每个板块的最新帖子
-  useEffect(() => {
-    const fetchLatestPosts = async () => {
-      try {
-        const results = {};
-        for (const boardName of Object.values(boards)) {
-          const response = await axios.get(`/post/posts`, { params: { boardName } });
-          results[boardName] = response.data.slice(0, 3); // 取每个板块的最新三条帖子
-        }
-        setLatestPosts(results);
-      } catch (error) {
-        console.error('Failed to fetch latest posts:', error);
-      }
-    };
-
-    fetchLatestPosts();
-  }, []);
-
+  // 좋아요 누르기
   const toggleLikeHandler = (postId, isDetail = false) => {
-    if (likeLoading) return; // 防止重复点击
+    if (likeLoading) return; // Prevent duplicate clicks
     setLikeLoading(true);
 
     if (!sessionStorage.getItem('ID')) {
@@ -192,8 +309,13 @@ function Community() {
       return;
     }
 
+    setLikes((prevLikes) => ({
+      ...prevLikes,
+      [postId]: (prevLikes[postId] || 0) + 1, 
+    }));
+
     axios
-      .post(`/post/like`, { postId })
+      .post(`/posts/${postId}/like`) 
       .then((response) => {
         const { likeCount, isLiked } = response.data;
 
@@ -218,7 +340,23 @@ function Community() {
       });
   };
 
-  // 返回上一级
+  // Unlike a post
+  const unlikePost = (postId) => {
+    axios
+      .post(`/posts/${postId}/unlike`) 
+      .then((response) => {
+        const { likeCount, isLiked } = response.data;
+        const updatedPosts = posts.map((post) =>
+          post.id === postId ? { ...post, liked: isLiked, likeCount } : post
+        );
+        setPosts(updatedPosts);
+      })
+      .catch((error) => {
+        console.error('Failed to unlike post:', error);
+      });
+  };
+
+  // Back to previous level
   const goBack = () => {
     if (navigationStack.length > 0) {
       const lastState = navigationStack.pop();
@@ -229,7 +367,7 @@ function Community() {
       setPosts(lastState.posts || []);
 
       if (lastState.view === 'list') {
-        fetchBoardPosts(lastState.currentBoard); // 重新加载列表
+        fetchPostsByCategory(lastState.currentBoard); 
       }
     } else {
       setView('cards');
@@ -237,16 +375,39 @@ function Community() {
     }
   };
 
+  // Get posts by section
+  const fetchPostsByCategory = (category) => {
+    setNavigationStack((prevStack) => [...prevStack, { view, currentBoard }]);
+    setLoading(true);
+    setCurrentBoard(category);
+
+    axios
+      .get(`/posts/category/${category}`)
+      .then((response) => {
+        setPosts(response.data); // Update Post List
+        setView('list'); // Switch to list view
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch posts for category:', error);
+        setLoading(false);
+      });
+  };
 
   return (
     <div id="container" className="community">
       <div className="content-area">
-        {/* 左侧内容 */}
+        {/* Left  */}
         <div className="leftside">
           <div className="card">
             <form className="logged">
-              <img src="#" className="picture" alt="User" />
-              <p className="nickname">USER NAME</p>
+              <img 
+                  src={`/asset/Images/userProfile/${profileImagePath}`} 
+                  className="picture" 
+                  alt="User" 
+                  onError={(e) => e.target.src = '/asset/Images/altImage/alt.png'} 
+              />
+              <p className="nickname">{userName}</p>
             </form>
           </div>
           <div className="card">
@@ -258,106 +419,203 @@ function Community() {
           </div>
         </div>
 
-        {/* 中间内容 */}
+        {/* mid */}
         <div className="main">
           {loading ? (
             <p>Loading...</p>
           ) : view === 'cards' ? (
             <div className="card-container">
               {Object.keys(boards).map((boardName) => (
-                <div
-                  key={boardName}
-                  className="card"
-                  onClick={() => fetchBoardPosts(boards[boardName])}
-                >
-                  <div className="board">
-                    <h3>{boardName}</h3>
-                    <div className="latest-posts">
+                <div key={boardName} className="board-container">
+                  <table className="posts-table">
+                    <tbody>
+                      <tr onClick={() => fetchPostsByCategory(boards[boardName])}>
+                        <td style={{ textAlign: 'left', color: 'red' }}>
+                          {boardName}
+                        </td>
+                      </tr>
                       {latestPosts[boards[boardName]]?.map((post) => (
-                        <div
+                        <tr
                           key={post.id}
-                          className="latest-post-item"
                           onClick={(e) => {
-                            e.stopPropagation(); // 阻止冒泡到父级卡片
-                            fetchPostDetail(post.id); // 获取详情
+                            e.stopPropagation(); // Stop bubbling
+                            fetchPostDetail(post.id); // Get post details
                           }}
                         >
-                          <span className="post-title">{post.subject}</span>
-                          <span className="post-date">
-                            {new Date(post.createDate).toLocaleDateString()}
-                          </span>
-                        </div>
+                          <td>
+                            <div className="left-column">{post.subject}</div>
+                            <div className="right-column">
+                              {new Date(post.createDate).toLocaleDateString()}
+                            </div>
+                          </td>
+                        </tr>
                       ))}
-                    </div>
-                  </div>
+                    </tbody>
+                  </table>
                 </div>
               ))}
             </div>
           ) : view === 'list' ? (
             <div className="post-list-container">
-              <button className="back-button" onClick={goBack}>
-                Back
-              </button>
-              <h2 className="board-title">{currentBoard}</h2>
-              <div className="post-list">
-                {posts.map((post) => (
-                  <div
-                    key={post.id}
-                    className="post-item"
-                    onClick={() => fetchPostDetail(post.id)}
-                  >
-                    <div className="post-title-row">
-                      <span className="post-title">{post.subject}</span>
-                    </div>
-                    <div className="post-meta-row">
-                      <div className="like-section">
-                        <i
-                          className={`fas fa-thumbs-up like-icon ${post.liked ? 'liked' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation(); // 阻止事件冒泡
-                            toggleLikeHandler(post.id, false); // 调用通用函数
-                          }}
-                        ></i>
-                        <span className="like-count">{post.likeCount}</span>
-                      </div>
-                      <div className="author-section">
-                        <span>By: {post.authorName || 'Unknown'}</span>
-                      </div>
-                      <div className="date-section">
-                        <span>{new Date(post.createDate).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div className="button-container">
+                <button className="back-button" onClick={goBack}>
+                  뒤로가기
+                </button>
+                <button
+                  className="post-button"
+                  onClick={() => setIsPosting(true)}
+                >
+                  글쓰기
+                </button>
               </div>
+              <h2 className="board-title">{currentBoard}</h2>
+              {isPosting ? (
+                //게시글 작성
+                <div className="createPost-form">
+                  <input
+                    type="text"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="제목을 입력해주세요"
+                    className="input-field"
+                  />
+                  <textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="내용을 입력해주세요"
+                    rows="4"
+                    className="input-field"
+                  ></textarea>
+                  <div className="image-preview">
+                      {postImages.map((image, index) => (
+                        <img
+                          key={index}
+                          src={URL.createObjectURL(image)}
+                          alt={`Uploaded Preview ${index + 1}`}
+                          className="uploaded-image"
+                        />
+                      ))}
+                    </div>
+                    <input
+                    type = "file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                  />
+
+                  <div className="createPost-button">
+                    <button
+                      onClick={createPost}
+                      className="submit-post-btn"
+                    >
+                      게시글 작성
+                    </button>
+                    <button
+                      onClick={() => setIsPosting(false)}
+                      className="cancel-post-btn"
+                    >
+                      취소
+                    </button>
+                  </div>
+                </div>
+              ) : 
+              //게시글 리스트 
+                (<div className="post-list">
+                  {posts.map((post) => (
+                    <div
+                      key={post.id}
+                      className="post-item"
+                      onClick={() => fetchPostDetail(post.id)}
+                    >
+                      <div className="post-title-row">
+                        <span className="post-title">{post.subject}</span>
+                      </div>
+                      <div className="post-meta-row">
+                        <div className="like-section">
+                          <i
+                            className={`fas fa-thumbs-up like-icon ${
+                              post.liked ? "liked" : ""
+                            }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleLikeHandler(post.id, false); // 点赞
+                            }}
+                          ></i>
+                        </div>
+                        <div className="author-section">
+                          <span>작성자 : {post.authorName || 'Unknown'}</span>
+                        </div>
+                        <div className="date-section">
+                          <span>
+                            {new Date(post.createDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          ) : view === 'detail' ? (
+          ) : 
+          // 게시글 확인 창
+          view === 'detail' ? (
             <div className="post-list-container">
-              <button className="back-button" onClick={goBack}>
-                Back
-              </button>
+              <button className="back-button" onClick={goBack}>뒤로가기</button>
               <div className="card large-card">
                 <h2 className="board-title">{selectedPost.subject}</h2>
-                <p>
-                  <strong>Author:</strong> {selectedPost.authorName || 'Unknown'}
-                </p>
-                <p>
-                  <strong>Date:</strong> {new Date(selectedPost.createDate).toLocaleString()}
-                </p>
+                <p><strong>작성자 :</strong> {selectedPost.authorName || 'Unknown'}</p>
+                <p><strong>작성일 :</strong> {new Date(selectedPost.createDate).toLocaleString()}</p>
+                <hr></hr>
+                {postImages && postImages.length > 0 &&(
+                  <div className="image-gallery">
+                    {postImages.map((image, index) => ( 
+                      <img
+                        key={index}
+                        src={`/asset/Images/postImage/${image}`}
+                        alt={`Post Image ${index + 1}`}
+                        className="post-image"
+                      />
+                    ))}
+                  </div>
+                )}
                 <div className="content">{selectedPost.content}</div>
                 <div className="like-section">
                   <i
                     className={`fas fa-thumbs-up like-icon ${selectedPost.liked ? 'liked' : ''}`}
-                    onClick={() => toggleLikeHandler(selectedPost.id, true)} // 调用通用函数
+                    onClick={() => toggleLikeHandler(selectedPost.id, true)} // 点赞
                   ></i>
-                  <span className="like-count">{selectedPost.likeCount}</span>
+                </div>
+
+                <div className="comment-section">
+                  <h3>댓글</h3>
+                  <textarea
+                    value={commentContent}
+                    onChange={(e) => setCommentContent(e.target.value)} 
+                    placeholder="댓글을 입력해주세요..."
+                    rows="4"
+                  ></textarea>
+                  <button
+                    className="comment-submit-btn"
+                    onClick={() => addComment(selectedPost.id, commentContent)} 
+                  >
+                    댓글 쓰기
+                  </button>
+
+                  <div className="comments-list">
+                    {comments.map((comment) => (
+                      <div key={comment.id} className="comment-card">
+                        <p><strong>{comment.authorName || 'Unknown'}</strong> - {new Date(comment.createDate).toLocaleString()}</p>
+                        <p>{comment.content}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           ) : null}
         </div>
 
-        {/* 右侧内容 */}
+        {/* right */}
         <div className="rightside">
           <div className="card">
             <div className="board">

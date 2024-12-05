@@ -51,21 +51,6 @@ function SurveyForm() {
 
 
 
-    //  const [formData, setFormData] = React.useState({
-    //   mbti: '',
-    //   meetingFrequency: '',
-    //   expectedBudgetRange: '',
-    //   relationshipDate: '',
-    //   activityPreference: '',
-    //   preferredCourse: '',
-    //   transportation: '',
-    //   startTime: '',
-    //   mustVisitArea: '',
-    //   preferredArea: '',
-    //  });
-
-
-
   const handleSubmit = async (event) => {
    event.preventDefault();
 
@@ -108,10 +93,9 @@ const formData1 = {
         body: JSON.stringify(formData1),
       })
       if(response.ok){
-        window.alert('설문 조사가 끝났습니다!');
+        window.alert('제출되었습니다!');
         navigate('/');// 메인 페이지로 이동
       }
-      
       else{
         window.alert('문제가 발생했습니다.잠시 후 다시 시도해주세요!');
       }
@@ -183,16 +167,6 @@ const formData1 = {
         required: true,
       }),
   
-      // // 평균 예산 범위
-      // React.createElement('label', null, '3. 평균 예산 범위  (단위:만원)'),
-      // React.createElement('input', {
-      //   type: 'number',
-      //   name: 'budgetRange',
-      //  value: formData.budgetRange,
-      //  onChange: handleChange,
-      //   placeholder: '예: 10 ~ 20',
-      //   required: true,
-      // }),
       React.createElement(
         'div',
         { className: 'budget-range' },
