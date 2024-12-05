@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useRef, useEffect, useState } from "react";
 import "../styles/ContentCarousel.css";
 
