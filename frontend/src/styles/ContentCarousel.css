@@ -81,3 +81,21 @@
 .next {
   margin-left: 5px; /* 컨텐츠 박스와의 간격을 좁게 설정 */
 }
+
+/* src/styles/ContentCarousel.css */
+
+/* 기존 스타일 유지 */
+
+.loading-message {
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  margin: 20px 0;
+}
+
+.error-message {
+  text-align: center;
+  font-size: 18px;
+  color: red;
+  margin: 20px 0;
+}

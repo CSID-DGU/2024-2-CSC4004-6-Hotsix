@@ -5,11 +5,10 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000") // 프론트엔드 URL 명시
 public class GptController {
     private final GPTService gptService;
 
@@ -19,31 +18,17 @@ public class GptController {
     }
 
     @PostMapping("/ask")
-    public Map<String, String> ask(@RequestBody Map<String, Object> userInfo) throws JSONException {
-        // userInfo를 문자열로 변환하거나 필요한 형태로 가공
-        String prompt = createPromptFromUserInfo(userInfo);
-
-        return gptService.ask(prompt);
+    public Map<String, String> ask(@RequestBody Map<String, String> prompt) throws JSONException {
+        String promptData = promptToString(prompt);
+        Map<String, String> responseMap = gptService.ask(promptData); // Map<String, String> 반환
+        return responseMap; // { "text": "응답 텍스트", "imageUrl": "이미지 URL" }
     }
 
-    // createPromptFromUserInfo 메서드 구현
-    private String createPromptFromUserInfo(Map<String, Object> userInfo) {
-        StringBuilder promptBuilder = new StringBuilder();
-
-        // userInfo 맵을 기반으로 프롬프트 문자열 구성
-        for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
-            promptBuilder.append("{")
-                    .append(entry.getKey())
-                    .append(" : ")
-                    .append(entry.getValue())
-                    .append("} , ");
-        }
-
-        // 마지막에 추가된 콤마와 공백 제거
-        if (promptBuilder.length() > 2) {
-            promptBuilder.setLength(promptBuilder.length() - 2);
-        }
-
-        return promptBuilder.toString();
+    private String promptToString(Map<String, String> prompt) {
+        StringBuilder sb = new StringBuilder();
+        prompt.forEach((key, value) -> {
+            sb.append(key).append(": ").append(value).append("\n");
+        });
+        return sb.toString();
     }
 }
