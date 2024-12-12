@@ -56,17 +56,6 @@ function Setting() {
         React.createElement(
           "div",
           { className: "settings-group" },
-          React.createElement(
-            "label",
-            null,
-            "모든 기기에서 생성된 새 탭 그룹을 북마크바에 자동으로 고정"
-          ),
-          React.createElement("input", { type: "checkbox", defaultChecked: true })
-        ),
-        React.createElement("hr"),
-        React.createElement(
-          "div",
-          { className: "settings-group" },
           React.createElement("label", null, "측면 패널 위치"),
           React.createElement(
             "select",
