@@ -2,172 +2,265 @@
 // import '../styles/SurveyForm.css'; 
 import React from 'react';
 import '../styles/SurveyForm.css';
+import { useNavigate } from 'react-router-dom';
 
 function SurveyForm() {
-  const [formData, setFormData] = React.useState({
-   mbti: '',
-   meetingFrequency: '',
-   budgetRange: '',
-   relationshipDate: '',
-   activityPreference: '',
-   mustVisitCourse: '',
-   preferredCourse: '',
-   transportation: '',
-   startTime: '',
-   mustVisitArea: '',
-   preferredArea: '',
-  });
-  
-  const handleChange = (event) => {
-   const { name, value } = event.target;
-   setFormData({ ...formData, [name]: value });
-  };
-  
-  const handleSubmit = (event) => {
+
+
+    //변수
+    const [mbti, setMbti] = React.useState('INFP'); //기본값
+    const [meetingFrequency, setMeetingFrequency] = React.useState('');
+    const [expectedBudgetRange, setExpectedBudgetRange] = React.useState('');
+        const [minBudget, setMinBudget] = React.useState('');
+        const [maxBudget, setMaxBudget] = React.useState('');
+    const [relationshipDate, setRelationshipDate] = React.useState('');
+    const [activityPreference, setActivityPreference] = React.useState('');
+    const [preferredCourse,setPreferredCourse] = React.useState('');
+    const [transportation, setTransportation] = React.useState('');
+    const [preferredArea, setPreferredArea] = React.useState('');
+    //session ID 확인
+    const id = sessionStorage.getItem("ID");
+    //navigate
+    const navigate = useNavigate();
+
+  //handleChange
+    const handleMbtiChange = (event) => setMbti(event.target.value);
+    const handleMeetingFrequencyChange = (event) => {
+      const value = parseInt(event.target.value, 10);
+      setMeetingFrequency(value || 0);
+    }
+    const handleExpectedBudgetRangeChange = (event) => setExpectedBudgetRange(`${minBudget} ~ ${maxBudget}(만원)`);
+    const handleRelationshipDateChange = (event) => setRelationshipDate(event.target.value);
+    const handleActivityPreferenceChange = (event) => setActivityPreference(event.target.value);
+    const handlePreferredCourseChange = (event) => setPreferredCourse(event.target.value);
+    const handleTransportationChange = (event) => setTransportation(event.target.value);
+    const handlePreferredAreaChange = (event) => setPreferredArea(event.target.value);
+
+    //예산 최소,최대
+        const handleMinBudgetChange = (e) => {
+            setMinBudget(e.target.value);
+            handleExpectedBudgetRangeChange();
+        };
+
+        const handleMaxBudgetChange = (e) => {
+            setMaxBudget(e.target.value);
+            handleExpectedBudgetRangeChange();
+        };
+
+
+
+  const handleSubmit = async (event) => {
    event.preventDefault();
-   console.log('Survey Data:', formData);
-   // 서버에 POST 요청 예제
-   fetch('/RecommandDateCourse', {
-     method: 'POST',
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify(formData),
-   })
-     .then((response) => response.json())
-     .then((data) => console.log('성공:', data))
-     .catch((error) => console.error('에러:', error));
-  };
-  
+
+   if (!id) {
+    window.alert("사용자 ID가 설정되지 않았습니다.");
+    return;
+  }
+
+ // FormData 객체 생성
+  const formData = new FormData();
+  formData.append('mbti',mbti);
+  formData.append('meetingFrequency',meetingFrequency);
+  formData.append('expectedBudgetRange',expectedBudgetRange);
+  formData.append('relationshipDate',relationshipDate);
+  formData.append('activityPreference',activityPreference);
+  formData.append('preferredCourse',preferredCourse);
+  formData.append('transportation',transportation);
+  formData.append('preferredArea',preferredArea);
+
+
+const formData1 = {
+    mbti,
+    meetingFrequency,
+    expectedBudgetRange,
+    relationshipDate,
+    activityPreference,
+    preferredCourse,
+    transportation,
+    preferredArea,
+};
+//   console.log('Survey Data:', formData);
+
+
+    try{
+      const response = await fetch(`/survey/${id}`,{
+        method: `POST`,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData1),
+      })
+      if(response.ok){
+        window.alert('제출되었습니다!');
+        navigate('/');// 메인 페이지로 이동
+      }
+      else{
+        window.alert('문제가 발생했습니다.잠시 후 다시 시도해주세요!');
+      }
+    }
+    catch(error){
+      // 네트워크 오류 처리
+      console.error('Error occurred:', error);
+      window.alert('서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.');
+    }
+
+  }
+
   return React.createElement(
     'div',
     { className: 'survey-container' },
     React.createElement(
-      'form',
-      { className: 'survey-form'
-     , onSubmit: handleSubmit
-      },
-      // MBTI 입력
-      React.createElement('label', null, '1. MBTI'),
-      React.createElement('input', {
-        type: 'text',
-        name: 'mbti',
-       value: formData.mbti,
-       onChange: handleChange,
-        placeholder: '예: ENFP',
-        required: true,
-      }),
+      'form',{ className: 'survey-form', onSubmit: handleSubmit},
+      // // MBTI 입력
+      // React.createElement('label', null, '1. MBTI'),
+      // React.createElement('input', {
+      //   type: 'text',
+      //   name: 'mbti',
+      //  value: formData.mbti,
+      //  onChange: handleChange,
+      //   placeholder: '예: ENFP',
+      //   required: true,
+      // }),
+      
+      // MBTI 선택
+      React.createElement('label', null, '1. MBTI 선택'),
+      React.createElement(
+        'select',
+        {
+          name: 'mbti',
+          value: mbti,
+          onChange: handleMbtiChange,
+          placeholder: '예: ENFP',
+          required: true,
+        },
+        
+        React.createElement('option', { value: '' }, '선택하세요'),
+        React.createElement('option', { value: 'INFP' }, 'INFP'),
+        React.createElement('option', { value: 'INFJ' }, 'INFJ'),
+        React.createElement('option', { value: 'INTP' }, 'INTP'),
+        React.createElement('option', { value: 'INTJ' }, 'INTJ'),
+        React.createElement('option', { value: 'ENFP' }, 'ENFP'),
+        React.createElement('option', { value: 'ENFJ' }, 'ENFJ'),
+        React.createElement('option', { value: 'ENTP' }, 'ENTP'),
+        React.createElement('option', { value: 'ENTJ' }, 'ENTJ'),
+        React.createElement('option', { value: 'ISFP' }, 'ISFP'),
+        React.createElement('option', { value: 'ISFJ' }, 'ISFJ'),
+        React.createElement('option', { value: 'ISTP' }, 'ISTP'),
+        React.createElement('option', { value: 'ISTJ' }, 'ISTJ'),
+        React.createElement('option', { value: 'ESFP' }, 'ESFP'),
+        React.createElement('option', { value: 'ESFJ' }, 'ESFJ'),
+        React.createElement('option', { value: 'ESTP' }, 'ESTP'),
+        React.createElement('option', { value: 'ESTJ' }, 'ESTJ')
+      ),
+
   
       // 주당 만남 횟수
       React.createElement('label', null, '2. 주당 만남 횟수'),
       React.createElement('input', {
         type: 'number',
         name: 'meetingFrequency',
-       value: formData.meetingFrequency,
-       onChange: handleChange,
+       value: meetingFrequency,
+       onChange: handleMeetingFrequencyChange,
         placeholder: '숫자 입력',
         required: true,
       }),
   
-      // 평균 예산 범위
-      React.createElement('label', null, '3. 평균 예산 범위'),
-      React.createElement('input', {
-        type: 'text',
-        name: 'budgetRange',
-       value: formData.budgetRange,
-       onChange: handleChange,
-        placeholder: '예: 10만원~20만원',
-        required: true,
-      }),
+      React.createElement(
+        'div',
+        { className: 'budget-range' },
+        React.createElement('label', null, '3. 평균 예산 범위 (단위: 만원)'),
+        React.createElement(
+          'div',
+          { className: 'budget-inputs' },
+          React.createElement('input', {
+            type: 'number',
+            name: 'minBudget',
+            value: minBudget || '',
+            onChange: handleMinBudgetChange,
+            placeholder: '최소 예산',
+            required: true,
+          }),
+          React.createElement('span', { className: 'separator' }, ' ~ '),
+          React.createElement('input', {
+            type: 'number',
+            name: 'maxBudget',
+            value: maxBudget || '',
+            onChange: handleMaxBudgetChange,
+            placeholder: '최대 예산',
+            required: true,
+          })
+        )
+      ),
+      
   
       // 사귄 날짜
       React.createElement('label', null, '4. 사귄 날짜'),
       React.createElement('input', {
         type: 'date',
         name: 'relationshipDate',
-       value: formData.relationshipDate,
-       onChange: handleChange,
+       value: relationshipDate,
+       onChange: handleRelationshipDateChange,
         required: true,
       }),
   
-      // 액티비티 선호 유무
-      React.createElement('label', null, '5. 액티비티 선호 유무'),
-      React.createElement(
-        'select',
-        {
-          name: 'activityPreference',
-         value: formData.activityPreference,
-         onChange: handleChange,
-          required: true,
-        },
-        React.createElement('option', { value: '' }, '선택하세요'),
-        React.createElement('option', { value: 'yes' }, '예'),
-        React.createElement('option', { value: 'no' }, '아니요')
-      ),
+      // // 액티비티 선호 유무
+      // React.createElement('label', null, '5. 액티비티 선호 유무'),
+      // React.createElement( 
+      //   'select',
+      //   {
+      //     name: 'activityPreference',
+      //    value: activityPreference,
+      //    onChange: handleActivityPreferenceChange,
+      //     required: true,
+      //   },
+      //   React.createElement('option', { value: '' }, '선택하세요'),
+      //   React.createElement('option', { value: 'true' }, '예'),
+      //   React.createElement('option', { value: 'false' }, '아니요')
+      // ),
   
-      // 필수 코스
-      React.createElement('label', null, '6. 필수 코스'),
-      React.createElement('textarea', {
-        name: 'mustVisitCourse',
-       value: formData.mustVisitCourse,
-       onChange: handleChange,
-        placeholder: '예: 롯데월드, 한강공원',
-        rows: 3,
-        required: true,
-      }),
+      // // 필수 코스
+      // React.createElement('label', null, '6. 필수 코스'),
+      // React.createElement('textarea', {
+      //   name: 'mustVisitCourse',
+      //  value: formData.mustVisitCourse,
+      //  onChange: handleChange,
+      //   placeholder: '예: 롯데월드, 한강공원',
+      //   rows: 3,
+      //   required: true,
+      // }),
   
       // 선호 코스
-      React.createElement('label', null, '7. 선호 코스'),
+      React.createElement('label', null, '6. 선호 코스'),
       React.createElement('textarea', {
         name: 'preferredCourse',
-       value: formData.preferredCourse,
-       onChange: handleChange,
+       value: preferredCourse,
+       onChange: handlePreferredCourseChange,
         placeholder: '예: 카페, 레스토랑',
         rows: 3,
         required: true,
       }),
   
       // 교통 수단
-      React.createElement('label', null, '8. 교통 수단'),
+      React.createElement('label', null, '7. 교통 수단'),
       React.createElement(
         'select',
         {
           name: 'transportation',
-         value: formData.transportation,
-         onChange: handleChange,
+         value: transportation,
+         onChange: handleTransportationChange,
           required: true,
         },
         React.createElement('option', { value: '' }, '선택하세요'),
-        React.createElement('option', { value: 'car' }, '자동차'),
-        React.createElement('option', { value: 'public' }, '대중교통'),
-        React.createElement('option', { value: 'walk' }, '도보')
+        React.createElement('option', { value: '자차' }, '자차'),
+        React.createElement('option', { value: '대중교통' }, '대중교통'),
+        React.createElement('option', { value: '도보' }, '도보')
       ),
-  
-      // 데이트 시작 예정 시간
-      React.createElement('label', null, '9. 데이트 시작 예정 시간'),
-      React.createElement('input', {
-        type: 'time',
-        name: 'startTime',
-       value: formData.startTime,
-       onChange: handleChange,
-        required: true,
-      }),
-  
-      // 필수 지역
-      React.createElement('label', null, '10. 필수 지역'),
-      React.createElement('textarea', {
-        name: 'mustVisitArea',
-       value: formData.mustVisitArea,
-       onChange: handleChange,
-        placeholder: '예: 강남, 홍대',
-        rows: 2,
-        required: true,
-      }),
+
   
       // 선호 지역
-      React.createElement('label', null, '11. 선호 지역'),
+      React.createElement('label', null, '8. 선호 지역'),
       React.createElement('textarea', {
         name: 'preferredArea',
-       value: formData.preferredArea,
-       onChange: handleChange,
+       value: preferredArea,
+       onChange: handlePreferredAreaChange,
         placeholder: '예: 이태원, 신촌',
         rows: 2,
         required: true,

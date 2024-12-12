@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick,onRecommendationCourseClick }) {
 
+  const fallbackImagePath = "/asset/Images/altImage/alt.png"; // 대체 이미지 경로
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [profileImagePath, setProfileImagePath] = React.useState("");
@@ -76,18 +77,20 @@ function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyP
     React.createElement('header', { className: 'header' },
       React.createElement('div', { className: 'left-group' },
         React.createElement('div', { className: 'logo', onClick: (e) => { e.preventDefault(); onHomeClick();  navigate('/'); } },
-          React.createElement('img', { src: '/asset/image.jpeg', alt: '어디갈래 로고' })
+          React.createElement('img', { src: '/asset/Images/logo/로고.png', alt: '어디갈래 로고' })
         ),
         React.createElement('nav', { className: 'nav' },
           React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); navigate('/community'); } }, '커뮤니티'),
             isLoggedIn ?
             //로그인 되어 있는 경우
             [
-              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/recommendation-course'); }}, '사용자 맞춤 코스 추천')
+              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/recommendation-course'); }}, '사용자 맞춤 코스 추천'),
+//              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); navigate('/bingo'); },},'빙고 게임')
             ] : 
             //로그인 안되어 있는 경우
             [
-              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/login'); }}, '사용자 맞춤 코스 추천')
+              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/login'); }}, '사용자 맞춤 코스 추천'),
+//              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); navigate('/login'); },},'빙고 게임')
             ]
         ),
       ),
@@ -126,9 +129,11 @@ function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyP
           },
           React.createElement('img', {
               key: 'profile-img', // 고유한 key 추가
-              // 절대경로 : resources/static/ 에서 시작
-              src:  `/asset/Images/userProfile/${profileImagePath}`,
-              alt: '/asset/Images/altImage/alt.png'
+              src: profileImagePath ? `/asset/Images/userProfile/` + profileImagePath : fallbackImagePath,
+              onError: (e) => {
+                console.log(profileImagePath);
+                 e.target.src = fallbackImagePath; }, // 이미지 로드 실패 시 대체 이미지로 변경
+              alt: 'No Image'
           }),
           isDropdownOpen &&
           React.createElement('div', { className: 'dropdown-menu', key: 'dropdown-menu' }, // 고유한 key 추가
