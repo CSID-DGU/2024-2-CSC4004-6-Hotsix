@@ -4,7 +4,7 @@
   justify-content: space-between;
   padding: 0 20px;
   background-color: #FFD1DC;
-  color: #B76E79;
+  color: #d47f8a;
   position: fixed;
   top: 0;
   left: 0;
@@ -25,11 +25,12 @@
   height: 40px;
   margin-right: 15px;
   cursor: pointer;
+  border-radius: 10px;
 }
 
 .nav a {
   text-decoration: none;
-  color: #B76E79;
+  color: #d47f8a;
   font-size: 16px;
   margin-left: 15px;
 }
@@ -42,12 +43,12 @@
 .auth-link {
   margin-right: 20px;
   text-decoration: none;
-  color: #B76E79;
+  color: #d47f8a;
   font-size: 14px;
 }
 
 .auth-link:hover {
-  color: #B76E79;
+  color: #d47f8a;
 }
 
 .profile-icon {
@@ -61,8 +62,8 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid black;
-  background-color: #000;
+  border: 2px solid #FFD1DC;
+  background-color: #FFD1DC;
   cursor: pointer;
 }
 
@@ -71,7 +72,7 @@
   position: absolute;
   right: 20px;
   top: 60px;
-  background-color: black;
+  background-color: #FFD1DC;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -82,10 +83,10 @@
   display: block;
   padding: 10px 15px;
   text-decoration: none;
-  color: white;
+  color: #d47f8a;
   font-size: 14px;
 }
 
 .dropdown-menu a:hover {
-  background-color: black;
+  background-color: #FFD1DC;
 }

@@ -87,11 +87,11 @@ public class UserSer {
 
         Optional<UserDomain> userOpt = userRep.findById(user.getId());
 
-       UserDomain user1 = userOpt.get();
+        UserDomain user1 = userOpt.get();
 
-       user1.setIsFirstLogin(false);
+        user1.setIsFirstLogin(false);
 
-       userRep.save(user1);
+        userRep.save(user1);
     }
     public Long getUserNumById(String id) {
         Optional<UserDomain> userOptional = userRep.findById(id); // 通过 id 查找用户

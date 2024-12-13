@@ -24,14 +24,18 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.json:json:20230618'
+	implementation 'org.jsoup:jsoup:1.15.4'
+	// Jackson Databind 추가
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.session:spring-session-core'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	compileOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
@@ -41,6 +45,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON Parsing
 	implementation 'org.json:json:20230227'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 ////	OPEN API  의존성 추가
 //	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 //	implementation 'com.fasterxml.jackson.core:jackson-databind' // json 파싱

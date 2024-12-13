@@ -4,16 +4,13 @@ package com.example.demo.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.validation.constraints.Size;
 
-import java.sql.Time;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.List;
 
 //테이블 이름
 @Table(name = "user")
@@ -100,7 +97,7 @@ public class UserDomain {
     private LocalTime startTime;
 
     //선호 지역
-    private String preferredArea;
+    private String preferredLocation;
 
     //데이트 필수 코스
     private String RequiredCourse;

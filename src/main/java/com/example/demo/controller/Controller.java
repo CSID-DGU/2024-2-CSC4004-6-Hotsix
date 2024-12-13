@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.PostDomain;
 import com.example.demo.domain.UserDomain;
+import com.example.demo.repository.PostRep;
 import com.example.demo.repository.UserRep;
+import com.example.demo.service.PostSer;
 import com.example.demo.service.UserSer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -16,23 +19,24 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @org.springframework.stereotype.Controller
 public class Controller {
+
     @Autowired
     private UserRep userRepository;
 
+
+    private PostRep postRepository;
+
     private final UserSer userSer;
+    private final PostSer postSer;
 
     // 모든 경로를 index.html로 매핑 (정적 파일 제외)
-    @GetMapping("/{path:[^\\.]*}")
+    @GetMapping("/{path:^(?!.*\\.).*$}")
     public String forward() {
         return "forward:/index.html";
     }
@@ -119,12 +123,14 @@ public class Controller {
 //                    이 부분 본인 프로젝트 디렉토리 경로로 변경
 
 //                     명훈 디렉토리 경로1
-//                "C:\\Users\\pc\\Desktop\\Hotsix\\" +
+				"C:\\Users\\pc\\Desktop\\Hotsix\\" +
 //                    명훈 디렉토리 경로2
-                "\\Users\\jinmyeonghun\\Desktop\\3-2\\공소\\2024-2-CSC4004-6-Hotsix\\" +
+//                "/Users/jinmyeonghun/Desktop/3-2/공소/2024-2-CSC4004-6-Hotsix/" +
 //
-                        //여기는 공통 경로
-                        "src\\main\\resources\\static\\asset\\Images\\userProfile\\";
+                        //여기는 윈도우 공통 경로
+						"src\\main\\resources\\static\\asset\\Images\\postImage\\";
+                        //여기는 mac 공통 경로
+//                        "src/main/resources/static/asset/Images/userProfile/";
 
         String fileName = profile.getOriginalFilename();
 
@@ -170,20 +176,9 @@ public class Controller {
         foundUser.setActivityPreference(user.getActivityPreference());
         foundUser.setPreferredCourse(user.getPreferredCourse());
         foundUser.setStartTime(user.getStartTime());
-        foundUser.setPreferredArea(user.getPreferredArea());
+        foundUser.setPreferredLocation(user.getPreferredLocation());
         foundUser.setTransportType(user.getTransportType());
 
-//        user.setMbti(mbti);
-//        user.setWeeklyMeetingCount(Integer.parseInt(meetingFrequency));
-//        user.setExpectedBudget(expectedBudgetRange);
-//        user.setDatingDate(Date.valueOf(relationshipDate));
-//        user.setIsPreferedActivity(Boolean.valueOf(activityPreference));
-//        user.setPreferedDateCourse(preferredCourse);
-//        user.setDateStartTime(LocalDateTime.parse(startTime));
-//        user.setPreferedLocation(preferredArea);
-
-
-//        UserRep.save(user);
         userSer.saveSurveyResult(foundUser);
         return ResponseEntity.ok("Save Completed");
     }
@@ -245,4 +240,23 @@ public class Controller {
 
         return ResponseEntity.ok("선호도 조사 완료");
     }
+    @GetMapping("/userDetail/{userId}")
+    public ResponseEntity<?> getUserDetail(@PathVariable String userId) {
+        UserDomain user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
+        return ResponseEntity.ok().body(Map.of(
+                "activityPreference", user.getActivityPreference() != null ? user.getActivityPreference() : "N/A",
+                "dayBudgetRange", user.getDayBudgetRange() != null ? user.getDayBudgetRange() : "N/A",
+                "requiredLocation", user.getRequiredLocation() != null ? user.getRequiredLocation() : "N/A",
+                "mbti", user.getMbti() != null ? user.getMbti() : "N/A",
+                "preferredCourse", user.getPreferredCourse() != null ? user.getPreferredCourse() : "N/A",
+                "requiredCourse", user.getRequiredCourse() != null ? user.getRequiredCourse() : "N/A",
+                "startTime", user.getStartTime() != null ? user.getStartTime() : "N/A",
+                "transportType", user.getTransportType() != null ? user.getTransportType() : "N/A",
+                "userLocation", user.getUserLocation() != null ? user.getUserLocation() : "N/A",
+                "expectedBudget", user.getExpectedBudgetRange() != null ? user.getExpectedBudgetRange() : "N/A"
+        ));
+    }
+
 }

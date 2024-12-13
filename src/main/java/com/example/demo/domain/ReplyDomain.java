@@ -1,13 +1,10 @@
 package com.example.demo.domain;
 
-import java.time.LocalDateTime;
-import java.util.Set;
-
-import com.example.demo.domain.UserDomain;
-import com.example.demo.domain.PostDomain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 
 //테이블 이름

@@ -1,18 +1,12 @@
 package com.example.demo.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import com.example.demo.Converter.StringListConverter;
-import com.example.demo.domain.UserDomain;
-import com.example.demo.domain.ReplyDomain;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 //테이블 이름
@@ -75,7 +69,9 @@ public class PostDomain {
             this.likes--;
         }
     }
-
+    public LocalDateTime getPostDate() {
+        return this.createDate; // 或者 this.modifyDate
+    }
     @PrePersist
     public void prePersist() {
         this.createDate = LocalDateTime.now();

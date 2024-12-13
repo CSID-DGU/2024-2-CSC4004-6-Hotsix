@@ -17,7 +17,6 @@ function SurveyForm() {
     const [activityPreference, setActivityPreference] = React.useState('');
     const [preferredCourse,setPreferredCourse] = React.useState('');
     const [transportation, setTransportation] = React.useState('');
-    const [startTime, setStartTime] = React.useState('');
     const [preferredArea, setPreferredArea] = React.useState('');
     //session ID 확인
     const id = sessionStorage.getItem("ID");
@@ -35,7 +34,6 @@ function SurveyForm() {
     const handleActivityPreferenceChange = (event) => setActivityPreference(event.target.value);
     const handlePreferredCourseChange = (event) => setPreferredCourse(event.target.value);
     const handleTransportationChange = (event) => setTransportation(event.target.value);
-    const handleStartTimeChange = (event) => setStartTime(event.target.value);
     const handlePreferredAreaChange = (event) => setPreferredArea(event.target.value);
 
     //예산 최소,최대
@@ -68,7 +66,6 @@ function SurveyForm() {
   formData.append('activityPreference',activityPreference);
   formData.append('preferredCourse',preferredCourse);
   formData.append('transportation',transportation);
-  formData.append('startTime',startTime);
   formData.append('preferredArea',preferredArea);
 
 
@@ -80,7 +77,6 @@ const formData1 = {
     activityPreference,
     preferredCourse,
     transportation,
-    startTime,
     preferredArea,
 };
 //   console.log('Survey Data:', formData);
@@ -125,7 +121,7 @@ const formData1 = {
       // }),
       
       // MBTI 선택
-      React.createElement('label', null, 'MBTI 선택'),
+      React.createElement('label', null, '1. MBTI 선택'),
       React.createElement(
         'select',
         {
@@ -257,20 +253,10 @@ const formData1 = {
         React.createElement('option', { value: '대중교통' }, '대중교통'),
         React.createElement('option', { value: '도보' }, '도보')
       ),
-  
-      // 데이트 시작 예정 시간
-      React.createElement('label', null, '8. 데이트 시작 예정 시간'),
-      React.createElement('input', {
-        type: 'time',
-        name: 'startTime',
-       value: startTime,
-       onChange: handleStartTimeChange,
-        required: true,
-      }),
 
   
       // 선호 지역
-      React.createElement('label', null, '9. 선호 지역'),
+      React.createElement('label', null, '8. 선호 지역'),
       React.createElement('textarea', {
         name: 'preferredArea',
        value: preferredArea,

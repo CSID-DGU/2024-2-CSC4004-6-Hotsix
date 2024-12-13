@@ -1,10 +1,11 @@
 .signup-container {
+  margin-top: 100px;
+  color: #d47f8a;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f5f5f5;
 }
 
 .signup-form {
@@ -15,6 +16,7 @@
   border: 1px solid #ddd;
   background-color: white;
   border-radius: 8px;
+  background-color: #f5f5f5;
 }
 
 .signup-form label {
@@ -22,7 +24,7 @@
 }
 
 .signup-form input {
-  padding: 8px;
+  padding: 10px;
   font-size: 14px;
   margin-bottom: 15px;
   margin-top: -5px;
@@ -31,7 +33,7 @@
 }
 
 .signup-form button {
-  background-color: #333;
+  background-color: #d47f8a;
   color: white;
   padding: 10px;
   border: none;
@@ -40,7 +42,7 @@
 }
 
 .signup-form button:hover {
-  background-color: #555;
+  background-color: #d47f8a;
 }
 .Address-container{
   display: flex;           /* flexbox 레이아웃을 사용 */

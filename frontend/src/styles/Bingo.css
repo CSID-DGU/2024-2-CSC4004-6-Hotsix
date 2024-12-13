@@ -27,8 +27,8 @@
     position: relative; /* 절대 위치 요소 정렬을 위해 필요 */
     background-color: #fff;
     border: 3px solid #ccc;
-    font-size: 36px;
-    font-weight: bold;
+    font-size: 20px;
+    /* font-weight: bold; */
     cursor: pointer;
   }
   
@@ -48,8 +48,8 @@
   .bingo-cell > span {
     position: absolute;
     z-index: 2; /* O를 텍스트 위로 배치 */
-    font-size: 36px; /* O 크기 조정 */
-    color: black;
+    font-size: 60px; /* O 크기 조정 */
+    color: red;
   }
   
   .bingo-cell:hover {
@@ -61,4 +61,10 @@
     font-size: 24px;
     color: #666;
   }
-  
+  .bingo-text{
+    color: #FA58AC !important;
+  }
+
+  .bingo-cell .bing-text{
+    color: red !important; 
+  }

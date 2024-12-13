@@ -5,7 +5,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick,onRecommendationCourseClick }) {
+function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick,onRecommendationCourseClick,onSettingClick}) {
 
   const fallbackImagePath = "/asset/Images/altImage/alt.png"; // 대체 이미지 경로
   const navigate = useNavigate();
@@ -28,17 +28,15 @@ function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyP
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                // 필요시 Authorization 헤더 추가
-                // 'Authorization': `Bearer ${sessionStorage.getItem('token')}`
             },
     } )
-        .then(response => {
+        .then((response) => {
             if (!response.ok) {
                 throw new Error('Failed to fetch user data');
             }
             return response.json();
         })
-        .then(data => {
+        .then((data) => {
             setProfileImagePath(data.profileImagePath); // 사용자 이름 설정
         })
         .catch(error => {
@@ -130,7 +128,8 @@ function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyP
           React.createElement('img', {
               key: 'profile-img', // 고유한 key 추가
               src: profileImagePath ? `/asset/Images/userProfile/` + profileImagePath : fallbackImagePath,
-              onError: (e) => { e.target.src = fallbackImagePath; }, // 이미지 로드 실패 시 대체 이미지로 변경
+              onError: (e) => {
+                 e.target.src = fallbackImagePath; }, // 이미지 로드 실패 시 대체 이미지로 변경
               alt: 'No Image'
           }),
           isDropdownOpen &&
@@ -144,7 +143,7 @@ function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyP
               React.createElement('a', {
                   key: 'settings', // 고유한 key 추가
                   href: '#',
-                  onClick: () => alert('설정 클릭됨')
+                  onClick: (e) => { e.preventDefault(); onSettingClick(); navigate('/settings');}
               },
                   '설정')
               )

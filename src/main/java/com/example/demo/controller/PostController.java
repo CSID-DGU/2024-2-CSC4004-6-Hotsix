@@ -1,28 +1,18 @@
 package com.example.demo.controller;
 
 import com.example.demo.DTO.PostDTO;
-import com.example.demo.repository.PostRep;
-import com.example.demo.service.PostSer;
 import com.example.demo.domain.PostDomain;
 import com.example.demo.domain.UserDomain;
+import com.example.demo.repository.PostRep;
 import com.example.demo.repository.UserRep;
-
-
-import org.springframework.http.HttpStatus;
+import com.example.demo.service.PostSer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 
 
 @RestController
@@ -40,22 +30,6 @@ public class PostController {
                 .map(postSer::convertToDto)
                 .collect(Collectors.toList());
     }
-    //게시물 보여주기
-//    @GetMapping("/{postId}")
-//    public ResponseEntity<?> getPostByPostId(@PathVariable Long postId){
-//        Optional<PostDomain> optionalPostDomain = postRep.findById(postId);
-//        if(optionalPostDomain.isEmpty()){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "No Post"));
-//        }
-//        else {
-//            PostDomain post = optionalPostDomain.get();
-//            return ResponseEntity.ok().body(Map.of(
-//                    "Likes",post.getLikes(),
-//                    "PostImages",post.getPostImages()
-//
-//            ));
-//        }
-//    }
     @GetMapping("/{id}")
     public ResponseEntity<?> getPostById(@PathVariable Long id) {
         PostDomain post = postSer.getPostById(id);
@@ -120,7 +94,10 @@ public class PostController {
     @GetMapping("/category/{category}")
     public List<PostDTO> getPostsByCategory(@PathVariable String category) {
         List<PostDomain> posts = postSer.findPostsByCategory(category);
-        return posts.stream().map(postSer::convertToDto).toList();
+        return posts.stream()
+                .sorted((p1, p2) -> p2.getPostDate().compareTo(p1.getPostDate()))
+                .map(postSer::convertToDto)
+                .toList();
     }
 
     @GetMapping("/category/{category}/latest")
@@ -130,15 +107,41 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/like")
-    public ResponseEntity<String> likePost(@PathVariable Long postId) {
-        int likes = postSer.likePost(postId);
-        return ResponseEntity.ok("Post liked successfully. Current likes: " + likes);
+    public ResponseEntity<String> likePost(@PathVariable Long postId, @RequestParam Long userId) {
+        postSer.likePost(postId, userId);
+        return ResponseEntity.ok("Post liked successfully.");
     }
 
     @PostMapping("/{postId}/unlike")
-    public ResponseEntity<String> unlikePost(@PathVariable Long postId) {
-        int likes = postSer.unlikePost(postId);
-        return ResponseEntity.ok("Post unliked successfully. Current likes: " + likes);
+    public ResponseEntity<String> unlikePost(@PathVariable Long postId, @RequestParam Long userId) {
+        int likes = postSer.unlikePost(postId, userId);
+        return ResponseEntity.ok("Post unliked successfully.");
+    }
+
+    @GetMapping("/{postId}/like-status")
+    public ResponseEntity<Map<String, Object>> getLikeStatus(@PathVariable Long postId, @RequestParam Long userId) {
+        boolean isLiked = postSer.isPostLikedByUser(postId, userId);
+        int likeCount = postSer.getPostById(postId).getLikes();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("isLiked", isLiked);
+        response.put("likeCount", likeCount);
+
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/getUserPosts/{id}")
+    public ResponseEntity<?> getUserPosts(@PathVariable String id){
+        Optional<UserDomain> optUser = userRep.findById(id);
+        UserDomain user = optUser.get();
+
+        List<PostDomain> posts = postRep.findByAuthorUserNum(Long.valueOf(user.getUserNum()));
+
+        // 게시글의 첫 번째 이미지를 가져오고, null 값 제거
+        List<String> thumbnails = posts.stream()
+                .map(post -> post.getPostImages().isEmpty() ? null : post.getPostImages().get(0))
+                .filter(Objects::nonNull) // null 값 제거
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(thumbnails);
     }
 
 

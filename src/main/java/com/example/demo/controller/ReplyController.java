@@ -1,16 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.service.ReplySer;
 import com.example.demo.DTO.ReplyDTO;
 import com.example.demo.domain.ReplyDomain;
-
-
+import com.example.demo.service.ReplySer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import lombok.RequiredArgsConstructor;
 
 
 @RestController

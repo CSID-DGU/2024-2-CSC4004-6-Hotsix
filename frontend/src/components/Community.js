@@ -35,6 +35,10 @@ function Community() {
     이벤트: '이벤트',
   };
 
+  // Dynamically generate image paths
+  const getPostImagePath = (filename) => `/uploads/postImage/${filename}`;
+
+
   // 유저 이름 가져오기
   const [userName, setUserName] = useState('');
   const id = sessionStorage.getItem('ID');
@@ -124,37 +128,6 @@ function Community() {
         });
     }
   }, [currentBoard]);
-
-  // 게시물 내용 요청하기(GET)
-  const fetchPostDetail = (postId) => {
-    setLoading(true);
-    axios
-      .get(`/posts/${postId}`)
-      .then((response) => {
-        const postDTO = response.data.postDTO;
-        const postImagesName = postDTO.postImagesNames;
-
-        setPostImages(postImagesName);
-
-        postImagesName.forEach((image, index) => {
-          console.log(`Image ${index + 1}: ${image}`);
-        });
-        const images = postImagesName || [];
-        setSelectedPost({
-          ...postDTO,
-          postImagesName: images,
-        });
-        setLikes(postDTO.likes);
-        setPostImages(images); // 이미지 배열 설정
-        fetchComments(postId); 
-        setView('detail');
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch post detail:', error);
-        setLoading(false);
-      });
-  };
 
   // 댓글 달기
   const addComment = (postId, content) => {
@@ -273,53 +246,67 @@ function Community() {
   };
 
   // 좋아요 누르기
-  const toggleLikeHandler = (postId, isDetail = false) => {
-    if (likeLoading) return; // Prevent duplicate clicks
+   const toggleLikeHandler = async (postId, isDetail = false) => {
+    if (likeLoading || !userNum) return; // 防止重复点击，并确保 userNum 存在
     setLikeLoading(true);
 
-    if (!sessionStorage.getItem('ID')) {
-      alert('Please log in to like posts.');
-      setLikeLoading(false);
-      return;
-    }
+    try {
+      // 根据当前视图获取帖子数据
+      const postIndex = posts.findIndex((post) => post.id === postId);
+      const currentPost = posts[postIndex];
+      const isLiked = isDetail ? selectedPost.liked : currentPost.liked;
 
-    setLikes((prevLikes) => ({
-      ...prevLikes,
-      [postId]: (prevLikes[postId] || 0) + 1, 
-    }));
+      // 点赞或取消点赞操作
+      if (isLiked) {
+        await axios.post(`/posts/${postId}/unlike`, null, {
+          params: { userId: userNum },
+        });
+      } else {
+        await axios.post(`/posts/${postId}/like`, null, {
+          params: { userId: userNum },
+        });
+      }
 
-    axios
-      .post(`/posts/${postId}/like`) 
-      .then((response) => {
-        const { likeCount, isLiked } = response.data;
-
-        if (isDetail) {
-          setSelectedPost({
-            ...selectedPost,
-            liked: isLiked,
-            likeCount,
-          });
-        } else {
-          const updatedPosts = posts.map((post) =>
-            post.id === postId ? { ...post, liked: isLiked, likeCount } : post
-          );
-          setPosts(updatedPosts);
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to toggle like:', error);
-      })
-      .finally(() => {
-        setLikeLoading(false);
+      // 获取最新的点赞状态
+      const likeStatusResponse = await axios.get(`/posts/${postId}/like-status`, {
+        params: { userId: userNum },
       });
+
+      const { isLiked: updatedLiked, likeCount: updatedLikeCount } = likeStatusResponse.data;
+
+      // 更新帖子列表中的状态
+      if (!isDetail) {
+        const updatedPosts = [...posts];
+        updatedPosts[postIndex] = {
+          ...currentPost,
+          liked: updatedLiked,
+          likeCount: updatedLikeCount,
+        };
+        setPosts(updatedPosts);
+      }
+
+      // 更新详情视图中的帖子状态
+      if (isDetail && selectedPost?.id === postId) {
+        setSelectedPost({
+          ...selectedPost,
+          liked: updatedLiked,
+          likeCount: updatedLikeCount,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to toggle like:", error);
+    } finally {
+      setLikeLoading(false);
+    }
   };
 
   // Unlike a post
   const unlikePost = (postId) => {
     axios
-      .post(`/posts/${postId}/unlike`) 
+      .post(`/posts/${postId}/unlike`) // 调用取消点赞接口
       .then((response) => {
         const { likeCount, isLiked } = response.data;
+
         const updatedPosts = posts.map((post) =>
           post.id === postId ? { ...post, liked: isLiked, likeCount } : post
         );
@@ -330,6 +317,73 @@ function Community() {
       });
   };
 
+  const fetchPostDetail = async (postId) => {
+    setLoading(true);
+    try {
+      // 保存当前导航栈状态
+      setNavigationStack((prev) => [...prev, { view, currentBoard, posts }]);
+
+      // 获取帖子详情
+      const postResponse = await axios.get(`/posts/${postId}`);
+      const postDTO = postResponse.data.postDTO;
+
+      // 获取点赞状态
+      const likeStatusResponse = await axios.get(`/posts/${postId}/like-status`, {
+            params: { userId: userNum },
+      });
+      const { isLiked, likeCount } = likeStatusResponse.data;
+
+      // 设置详情页的帖子状态
+      setSelectedPost({
+          ...postDTO,
+          liked: isLiked,
+          likeCount: likeCount,
+      });
+
+      setView("detail");
+    } catch (error) {
+        console.error("Failed to fetch post detail or like status:", error);
+    } finally {
+        setLoading(false);
+    }
+  };
+
+
+
+
+  const fetchPosts = async (category) => {
+    if (!userNum) return; // 确保 userNum 存在
+    setLoading(true);
+
+    try {
+      // 获取帖子列表
+      const response = await axios.get(`/posts/category/${category}`);
+      const postsData = response.data;
+
+      // 获取所有帖子的点赞状态
+      const postIds = postsData.map((post) => post.id);
+      const likesResponse = await axios.get(`/posts/like-status`, {
+        params: { userNum, postIds },
+      });
+
+      // 合并点赞状态到帖子数据
+      const updatedPosts = postsData.map((post) => {
+        const likeInfo = likesResponse.data.find((like) => like.postId === post.id);
+        return {
+          ...post,
+          liked: likeInfo?.isLiked || false,
+          likeCount: likeInfo?.likeCount || 0,
+        };
+      });
+
+      setPosts(updatedPosts);
+    } catch (error) {
+      console.error('Failed to fetch posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Back to previous level
   const goBack = () => {
     if (navigationStack.length > 0) {
@@ -338,7 +392,6 @@ function Community() {
 
       setView(lastState.view);
       setCurrentBoard(lastState.currentBoard || null);
-      setPosts(lastState.posts || []);
 
       if (lastState.view === 'list') {
         fetchPostsByCategory(lastState.currentBoard); 
@@ -350,22 +403,43 @@ function Community() {
   };
 
   // Get posts by section
-  const fetchPostsByCategory = (category) => {
+  const fetchPostsByCategory = async (category) => {
+    if (!userNum) return; // 确保 userNum 存在
     setNavigationStack((prevStack) => [...prevStack, { view, currentBoard }]);
     setLoading(true);
     setCurrentBoard(category);
 
-    axios
-      .get(`/posts/category/${category}`)
-      .then((response) => {
-        setPosts(response.data); // Update Post List
-        setView('list'); // Switch to list view
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch posts for category:', error);
-        setLoading(false);
-      });
+    try {
+      // 获取帖子列表
+      const response = await axios.get(`/posts/category/${category}`);
+      const postsData = response.data;
+
+      // 为每个帖子获取点赞状态
+      const updatedPosts = await Promise.all(
+        postsData.map(async (post) => {
+          try {
+            const likeResponse = await axios.get(`/posts/${post.id}/like-status`, {
+              params: { userId: userNum },
+            });
+            return {
+              ...post,
+              liked: likeResponse.data.isLiked || false,
+              likeCount: likeResponse.data.likeCount || 0,
+            };
+          } catch (error) {
+            console.error(`Failed to fetch like status for post ${post.id}:`, error);
+            return post; // 如果获取失败，保持原始帖子数据
+          }
+        })
+      );
+
+      setPosts(updatedPosts);
+      setView('list'); // 切换到列表视图
+    } catch (error) {
+      console.error('Failed to fetch posts for category:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -492,9 +566,9 @@ function Community() {
                     </button>
                   </div>
                 </div>
-              ) : 
+              ) : (
               //게시글 리스트 
-                (<div className="post-list">
+                <div className="post-list">
                   {posts.map((post) => (
                     <div
                       key={post.id}
@@ -511,10 +585,11 @@ function Community() {
                               post.liked ? "liked" : ""
                             }`}
                             onClick={(e) => {
-                              e.stopPropagation();
-                              toggleLikeHandler(post.id, false); // 点赞
+                              e.stopPropagation(); // 阻止事件冒泡
+                              toggleLikeHandler(post.id, false); // 点赞或取消点赞
                             }}
                           ></i>
+                          <span className="like-count">{post.likeCount || 0}</span>
                         </div>
                         <div className="author-section">
                           <span>작성자 : {post.authorName || 'Unknown'}</span>
@@ -540,26 +615,29 @@ function Community() {
                 <p><strong>작성자 :</strong> {selectedPost.authorName || 'Unknown'}</p>
                 <p><strong>작성일 :</strong> {new Date(selectedPost.createDate).toLocaleString()}</p>
                 <hr></hr>
-                {postImages && postImages.length > 0 &&(
-                  <div className="image-gallery">
-                    {postImages.map((image, index) => ( 
-                      <img
-                        key={index}
-                        src={`/asset/Images/postImage/${image}`}
-                        alt={`Post Image ${index + 1}`}
-                        className="post-image"
-                      />
-                    ))}
-                  </div>
+                {selectedPost?.postImagesNames && selectedPost.postImagesNames.length > 0 && (
+                    <div className="image-gallery">
+                        {selectedPost.postImagesNames.map((image, index) => (
+                            <img
+                                key={index}
+                                src={getPostImagePath(image)} // 动态生成图片路径
+                                alt={`Post Image ${index + 1}`}
+                                className="post-image"
+                                onError={(e) => e.target.src = '/asset/Images/altImage/alt.png'} // 默认图片
+                            />
+                        ))}
+                    </div>
                 )}
                 <div className="content">{selectedPost.content}</div>
                 <div className="like-section">
                   <i
-                    className={`fas fa-thumbs-up like-icon ${selectedPost.liked ? 'liked' : ''}`}
-                    onClick={() => toggleLikeHandler(selectedPost.id, true)} // 点赞
+                    className={`fas fa-thumbs-up like-icon ${
+                      selectedPost?.liked ? "liked" : ""
+                    }`}
+                    onClick={() => toggleLikeHandler(selectedPost?.id, true)}
                   ></i>
+                  <span className="like-count">{selectedPost?.likeCount || 0}</span>
                 </div>
-
                 <div className="comment-section">
                   <h3>댓글</h3>
                   <textarea
@@ -594,19 +672,11 @@ function Community() {
           <div className="card">
             <div className="board">
               <h3><a href="#">실시간 인기 글</a></h3>
-              <a className="article" href="#">
-                <p className="title">XXX</p>
-                <p className="small">XXXXXX</p>
-              </a>
             </div>
           </div>
           <div className="card">
             <div className="board">
               <h3><a href="#">HOT 게시물</a></h3>
-              <a className="list" href="#">
-                <time>10분 전</time>
-                <p>AAAAAAAA</p>
-              </a>
             </div>
           </div>
         </div>
