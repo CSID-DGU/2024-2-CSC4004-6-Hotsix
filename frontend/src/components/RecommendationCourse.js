@@ -1,10 +1,11 @@
 // src/components/RecommendationCourse.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/RecommendationCourse.css';
 import { useNavigate } from 'react-router-dom';
 
 function RecommendationCourse() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [showPrompt, setShowPrompt] = useState(false); // 控制弹窗显示
   const navigate = useNavigate();
   const id = sessionStorage.getItem("ID");
 
@@ -16,6 +17,27 @@ function RecommendationCourse() {
     startTime: '',
     dayBudgetRange: '',
   });
+
+  // 检查 localStorage 中是否有 GameTask
+  useEffect(() => {
+    const storedGameTask = localStorage.getItem('GameTask');
+    if (storedGameTask) {
+      setShowPrompt(true); // 如果存在 GameTask，显示弹窗
+    }
+  }, []);
+
+  // 用户选择使用现有任务
+  const handleUseExistingTask = () => {
+    setShowPrompt(false);
+    navigate('/recommendation-course-result'); // 跳转到结果页面
+  };
+
+  // 用户选择生成新任务
+  const handleGenerateNewTask = () => {
+    setShowPrompt(false);
+    localStorage.removeItem('result');
+    localStorage.removeItem('GameTask'); // 删除现有的 GameTask
+  };
 
   const seoulRegions = [
     '종로', '강북', '의정부', '노원', '광화문', '이태원',
@@ -156,20 +178,35 @@ function RecommendationCourse() {
 
   return (
     <div className='survey-form'>
-      {renderPage()}
-      <div className='navigation-buttons'>
-        {currentPage > 1 && (
-          <button className='prev-button' onClick={handleBack}>뒤로</button>
-        )}
-        {currentPage < 3 && currentPage > 1 && (
-          <button className='next-button' onClick={handleNext}>다음</button>
-        )}
-        {currentPage === 3 && (
-          <button className='commit-button' onClick={submitResult}>
-            제출
-          </button>
-        )}
-      </div>
+      {showPrompt ? (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>기존 추천 결과가 존재합니다.</h3>
+            <p>기존 추천을 사용하시겠습니까?</p>
+            <div className="modal-buttons">
+              <button onClick={handleUseExistingTask}>예</button>
+              <button onClick={handleGenerateNewTask}>아니오</button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          {renderPage()}
+          <div className='navigation-buttons'>
+            {currentPage > 1 && (
+              <button className='prev-button' onClick={handleBack}>뒤로</button>
+            )}
+            {currentPage < 3 && currentPage > 1 && (
+              <button className='next-button' onClick={handleNext}>다음</button>
+            )}
+            {currentPage === 3 && (
+              <button className='commit-button' onClick={submitResult}>
+                제출
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
