@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import '../styles/RecommendationResult.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useContext } from 'react';
+import { ResultContext } from './ResultContext.js';
+
 
 function RecommendationResult() {
   // State 초기화
@@ -15,11 +18,12 @@ function RecommendationResult() {
   const [transportType, setTransportType] = useState('');
   const [userLocation, setUserLocation] = useState('');
   const [prompt, setPrompt] = useState('');
-  const [result, setResult] = useState('');
+  const { result, setResult } = useContext(ResultContext);
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
   const [isCarousel,setIsCarousel] = useState(false);
   const navigate = useNavigate();
   const userId = sessionStorage.getItem('ID');
+  const storedResult = localStorage.getItem('result');
 
   // 유저 정보를 가져오는 함수
   const fetchUserDetail = async (userId) => {
@@ -84,15 +88,22 @@ const getGPTResult = async (prompt) => {
 
   // 컴포넌트가 렌더링될 때 fetchUserDetail -> getGPTResult 순차 실행
   useEffect(() => {
-    const fetchData = async () => {
-      if (userId) {
-        const generatedPrompt = await fetchUserDetail(userId); // 유저 정보 가져오기
-        if (generatedPrompt) {
-          await getGPTResult(generatedPrompt); // GPT 결과 가져오기
+    if (storedResult) {
+      // 如果存在本地缓存的 result，直接使用
+      setResult(storedResult);
+      setLoading(false);
+    } else {
+      // 如果不存在 result，按原逻辑获取数据
+      const fetchData = async () => {
+        if (userId) {
+          const generatedPrompt = await fetchUserDetail(userId);
+          if (generatedPrompt) {
+            await getGPTResult(generatedPrompt);
+          }
         }
-      }
-    };
-    fetchData();
+      };
+      fetchData();
+    }
   }, [userId]);
 
   // 렌더링

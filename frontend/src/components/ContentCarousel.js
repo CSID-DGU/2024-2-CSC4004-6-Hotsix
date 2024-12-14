@@ -12,6 +12,7 @@ function ContentCarousel() {
   const nowDate = date.toLocaleDateString();
   const location = useLocation();
   const containerRefs = useRef([]);
+  const [expandedIndex, setExpandedIndex] = useState({ section: null, item: null });
   const [isCarousel,setIsCarousel] = useState(true);
   // 에러 및 로딩 상태 추가
   const [error, setError] = useState(null);
@@ -22,11 +23,81 @@ function ContentCarousel() {
 
   //유저 정보
   const [activityPreference, setActivityPreference] = useState(false);
-  const [expectedBudgetRange, setExpectedBudgetRange] = useState('10~20만원');
+  const [expectedBudgetRange, setExpectedBudgetRange] = useState('0~20만원');
   const [mbti, setMbti] = useState('ISFP');
   const [preferredCourse, setPreferredCourse] = useState('카페,영화,산책');
   const [transportType, setTransportType] = useState('대중교통');
-  const [userLocation, setUserLocation] = useState('서울특별시 중구');
+  const [userLocation, setUserLocation] = useState('서울특별시');
+
+
+  const handleItemClick = (sectionIndex, itemIndex) => {
+    const container = containerRefs.current[sectionIndex];
+  
+    if (!container) {
+      console.error(`No container found for sectionIndex: ${sectionIndex}`);
+      return;
+    }
+  
+    const items = container.querySelectorAll(".carousel-item");
+    const item = items[itemIndex];
+  
+    if (!item) {
+      console.error(`No .carousel-item found for itemIndex: ${itemIndex}`);
+      return;
+    }
+  
+    // 클릭된 항목이 이미 확장된 상태인지 확인
+    if (
+      expandedIndex.section === sectionIndex &&
+      expandedIndex.item === itemIndex
+    ) {
+      setExpandedIndex({ section: null, item: null }); // 초기화
+    } else {
+      setExpandedIndex({ section: sectionIndex, item: itemIndex });
+  
+      // 아이템이 content를 넘지 않도록 위치 조정
+      const contentWidth = container.offsetWidth;
+      const itemLeft = item.offsetLeft;
+      const itemRight = itemLeft + item.offsetWidth;
+  
+      if (itemLeft < 0) {
+        // 아이템이 왼쪽으로 나간 경우
+        container.scrollBy({ left: itemLeft, behavior: "smooth" });
+      } else if (itemRight > contentWidth) {
+        // 아이템이 오른쪽으로 나간 경우
+        const scrollOffset = itemRight - contentWidth;
+        container.scrollBy({ left: scrollOffset, behavior: "smooth" });
+      }
+    }
+  };
+  
+  const scrollAmount = 200;
+
+  const scroll = (direction, sectionIndex) => {
+    const container = containerRefs.current[sectionIndex];
+    if (!container) {
+      console.error(`No container found for sectionIndex: ${sectionIndex}`);
+      return;
+    }
+  
+    const itemWidth =
+      container.querySelector(".carousel-item")?.offsetWidth || 0;
+    console.log(`Item width: ${itemWidth}`);
+  
+    const totalWidth = itemWidth * (sections[sectionIndex]?.items.length || 0);
+    console.log(`Total width: ${totalWidth}, Container width: ${container.offsetWidth}`);
+  
+    if (direction === "left") {
+      container.scrollBy({ left: -itemWidth, behavior: "smooth" });
+    } else {
+      container.scrollBy({ left: itemWidth, behavior: "smooth" });
+    }
+  
+    console.log(`Scroll position after scroll: ${container.scrollLeft}`);
+  };
+
+  
+  
 
 
   //updateSectionItems
@@ -48,7 +119,7 @@ function ContentCarousel() {
     preferredCourse,
     activityPreference,
     transportType,
-    requestType: 'user_recommendations',
+    requestType: 'date_idea',
     isCarousel: 'true',
   };
   // Setter 함수 정의
@@ -60,6 +131,7 @@ function ContentCarousel() {
     }
   }
 
+  
   //유저 이름 가져오기
   useEffect(() => {
     if (userId) {
@@ -84,13 +156,13 @@ function ContentCarousel() {
     isLoggedIn
       ? [
           { title: `${userName}님에게 추천`, items: [] },
-          { title: "실내 인기 코스", items: [] },
+          { title: "실시간 인기 코스", items: [] },
           { title: "액티비티", items: [] },
           { title: "계절에 맞는", items: [] },
         ]
       : [
           { title: "여자친구가 좋아할 데이트", items: [] },
-          { title: "실내 인기 코스", items: [] },
+          { title: "실시간 인기 코스", items: [] },
           { title: "액티비티", items: [] },
           { title: "계절에 맞는", items: [] },
         ]
@@ -101,14 +173,14 @@ function ContentCarousel() {
     if (isLoggedIn) {
       setSections([
         { title: `${userName || "사용자"}님에게 추천`, items: [] },
-        { title: "실내 인기 코스", items: [] },
+        { title: "실시간 인기 코스", items: [] },
         { title: "액티비티", items: [] },
         { title: "계절에 맞는", items: [] },
       ]);
     } else {
       setSections([
         { title: "여자친구가 좋아할 데이트", items: [] },
-        { title: "실내 인기 코스", items: [] },
+        { title: "실시간 인기 코스", items: [] },
         { title: "액티비티", items: [] },
         { title: "계절에 맞는", items: [] },
       ]);
@@ -136,6 +208,7 @@ function ContentCarousel() {
           setUserInfo('preferredCourse', data.preferredCourse);
           setUserInfo('userLocation', data.userLocation);
           setUserInfo('transportType', data.transportType);
+          setUserInfo('requestType','user_recommendations');
         } catch (error) {
           console.error(error);
         }
@@ -145,50 +218,38 @@ function ContentCarousel() {
   }, [userId, isLoggedIn]);
 
   useEffect(() => {
-
-    // //user recommendation
-    // const userInfo1 = ({
-    //   mbti : mbti,
-    //   location: userLocation,
-    //   budget: expectedBudgetRange,
-    //   preferredCourse,
-    //   activityPreference,
-    //   transportType,
-    //   requestType: 'user_recommendations',
-    //   isCarousel: 'true',
-    // });
   
-    //defalut recommendation1
+    //실내 인기 코스
     const userInfo2 = {
-            mbti: 'ISFP',
-            location: '서울특별시 중구',
-            budget: '10~20만원',
-            preferredCourse: '산책',
-            activityPreference: '비선호',
+            mbti: 'ENTP',
+            location: '서울특별시',
+            budget: '0~30만원',
+            preferredCourse: '데이트 명소, 카페',
+            activityPreference: 'false',
             transportType: '대중교통',
             requestType: 'popular_spot',
             isCarousel : 'true'
           };
-    //defalut recommendation2
+    //액티비티
     const userInfo3 = {
       mbti: 'ENFP',
-      location: '서울특별시 홍대',
-      budget: '20~30만원',
-      preferredCourse: '이색카페',
+      location: '서울특별시 전체',
+      budget: '10~30만원',
+      preferredCourse: '',
       activityPreference: '선호',
       transportType: '대중교통',
-      requestType: 'popular_spot',
+      requestType: 'activity_spot',
       isCarousel : 'true'
       };
-    //defalut recommendation3
+    //계절에 맞는
     const userInfo4 = {
       mbti: 'ESTJ',
-      location: '서울특별시 연남',
-      budget: '20~30만원',
-      preferredCourse: '디저트 카페, 맛집, 핫플레이스',
+      location: '서울특별시 전체',
+      budget: '0~30만원',
+      preferredCourse: '디저트 카페,맛집',
       activityPreference: '잘 모르겠음',
       transportType: '대중교통',
-      requestType: 'popular_spot',
+      requestType: 'season_spot',
       isCarousel : 'true',
       LocalDate : nowDate
       };
@@ -226,65 +287,54 @@ function ContentCarousel() {
 }, [isLoggedIn, mbti, userLocation, expectedBudgetRange, preferredCourse, activityPreference, transportType]);
 
 
-  // 스크롤 이동량 설정
-  const scrollAmount = 200; // 예시로 한 번에 200px씩 이동
-
-  const scroll = (direction, index) => {
-    const container = containerRefs.current[index];
-    if (!container) return; // 컨테이너가 없을 경우 대비
-
-    const itemWidth = container.querySelector(".carousel-item")?.offsetWidth || 0;
-    const totalWidth =  itemWidth * (sections[index].items.length || 0);
-
-    if (direction === 'left') {
-      container.scrollLeft -= scrollAmount; // 왼쪽으로 스크롤
-
-      // 처음에 도달하면 끝으로 돌아가도록 설정
-      if (container.scrollLeft < 0) {
-        container.scrollLeft = totalWidth - container.clientWidth; // 끝으로 이동
-      }
-    } else {
-      container.scrollLeft += scrollAmount; // 오른쪽으로 스크롤
-
-      // 끝에 도달하면 처음으로 돌아가도록 설정
-      if (container.scrollLeft >= totalWidth - container.clientWidth) {
-        container.scrollLeft = 0; // 처음으로 돌아감
-      }
-    }
-  };
 
   return (
     <React.Fragment>
       {loading && <div className="loading-message">Loading...</div>}
       {error && <div className="error-message">{error}</div>}
-      {!loading && !error && (sections).map((section, index) => (
-        <section className="carousel-section" key={index}>
+      {!loading && !error && sections.map((section,sectionIndex) => (
+          <section className="carousel-section" key={sectionIndex}>
           <h2 className="carousel-title">{section.title}</h2>
-          <div className="carousel-container">
+          <div
+            className="carousel-container"
+            ref={(el) => (containerRefs.current[sectionIndex] = el)}
+          >
             <button
               className="carousel-button prev"
-              onClick={() => scroll("left", index)}
+              onClick={() => scroll("left", sectionIndex)}
             >
               ‹
             </button>
-            <div
-              className="carousel-content"
-              ref={(el) => (containerRefs.current[index] = el)}
-            >
+            <div className="carousel-content">
               {section.items.map((item, itemIndex) => (
-                <div className="carousel-item" key={itemIndex}>
+                <div
+                  className={`carousel-item ${
+                    expandedIndex.section === sectionIndex && expandedIndex.item === itemIndex
+                      ? "expanded"
+                      : ""
+                  }`}
+                  key={itemIndex}
+                  onClick={() => handleItemClick(sectionIndex, itemIndex)}
+                >
                   <div className="content-number">{item.title}</div>
+                  {
+                  expandedIndex.section === sectionIndex && expandedIndex.item === itemIndex ? 
+                  (
+                    <div className="expanded-content">
+                      <p>추가된 내용: 여기에 새로운 정보가 표시됩니다.</p>
+                    </div>
+                  ) : null}
                 </div>
               ))}
             </div>
             <button
               className="carousel-button next"
-              onClick={() => scroll("right", index)}
+              onClick={() => scroll("right", sectionIndex)}
             >
               ›
             </button>
           </div>
-        </section>
+        </section>      
       ))}
     </React.Fragment>
   );

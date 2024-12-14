@@ -339,7 +339,7 @@ function Community() {
           liked: isLiked,
           likeCount: likeCount,
       });
-
+      fetchComments(postId);
       setView("detail");
     } catch (error) {
         console.error("Failed to fetch post detail or like status:", error);

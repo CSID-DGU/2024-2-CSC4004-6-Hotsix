@@ -19,7 +19,7 @@ import static java.awt.SystemColor.text;
 
 public class OpenAIApi {
 
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
 
     // GPT API 호출 메서드: 장소 추천
     public String ask(String prompt) throws JSONException {
@@ -32,7 +32,7 @@ public class OpenAIApi {
                 "이모티콘은 써도 되는데 특수문자는 너무 많이 쓰지마" +
                 "마지막에 깔끔하게 요약해줘." +
                 "MBTI 언급 하지마." +
-                "장소를 말할 때는 항상 실제로 존재하는 특정 장소를 말해줘야 해." +
+                "장소를 말할 때는 반드시 실제로 존재하는 장소명을 말해줘야 해." +
                 "Markdown 문법으로 대답하지말아줘." +
                 "시간 단위는 10분 단위로 얘기해줘." +
                 "- 각 활동은 줄바꿈으로 구분해서 출력해 주세요.\n" +
@@ -41,10 +41,17 @@ public class OpenAIApi {
                 "- 시간: (시간)\n" +
                 "- 장소: (장소)\n" +
                 "출력을 보기 좋게 정렬해 주세요." +
+                "장소는 무조건 구체적인 이름으로 알려줘. ex) 연남동 연트럴파크, 대학로 한뼘사이" +
+                "key가 'requiredLocation'인 경우 반드시 그 값에 해당하는 장소 내에서만 코스를 추천해야해. " +
+                "예산은 남아도 상관없어. 억지로 채우지마." +
                 "조건 %s";
-        String query2 = "내가 'key : value' 형태의 데이터를 줄거야. requestType: 'user_recommendations'가 있으면 너가 그 데이터를 토대로 나에게 하루 데이트 장소를 추천해줘. 총 10개를 말해주고 장소만 단어로 말해줘. 다른 건 말하지 말고. 출력 예시는 다음과 같아. [예시) 경복궁, 북촌마을, 청와대 ] 말할 때 맨 앞에 번호 붙이는 건 빼줘." +
-                "requestType: 'date_ideas'가 있으면 너가 그 데이터를 토대로 나에게 '여자친구가 좋아할 로맨틱한 레스토랑'을 추천해줘. 총 10개를 말해주고 한글 9글자 이하인 레스토랑 이름만 말해줘. 다른 건 말하지 말고. 출력 예시는 다음과 같아. [예시) 롯데타워 81바, 아이파크몰 아웃백, 오길칠 비스트로] 말할 때 맨 앞에 번호 붙이는 건 빼줘." +
-                "requestType: 'popluar_spot'이 있으면 너가 그 데이터를 토대로 나에게 '대중적으로 인기가 많은 장소'를 추천해줘. 총 10개를 말해주고 한글 9글자 이하인 장소 이름만 말해줘. 다른 건 말하지 말고. 출력 예시는 다음과 같아. [예시) 경복궁, 광화문 광장, 청와대] 말할 때 맨 앞에 번호 붙이는 건 빼줘. 그리고 한국어로 말해줘. 조건: %s";
+        String query2 = "내가 'key : value' 형태의 데이터를 줄거야. requestType: 'user_recommendations'가 있으면 너가 그 데이터를 토대로 나에게 하루 데이트 장소를 추천해줘. 총 10개를 말해주고 특정 장소이름(예시 형식 - 홍대 황곱)만 단어로 말해줘. 다른 건 말하지 말고 결과만 나열해(예시 - a,b,c,...). 예시는 포함시키지마" +
+                "requestType: 'date_ideas'가 있으면 너가 그 데이터를 토대로 나에게 '여자친구가 좋아할 데이트 코스'를 추천해줘. 총 10개를 말해주고 한글 9글자 이하인 장소 이름만 말해줘. 다른 건 말하지 말고 결과만 나열해(예시 - a,b,c,...). 출력 예시는 다음과 같아. [예시) 롯데타워 81바, 아이파크몰 아웃백, 오길칠 비스트로]. 예시는 대답하지마" +
+                "requestType: 'popular_spot'이 있으면 너가 그 데이터를 토대로 나에게 '대중적으로 인기가 많은 장소'를 추천해줘. 총 10개를 말해주고 한글 9글자 이하인 장소 이름만 말해줘.다른 건 말하지 말고 결과만 나열해(예시 - a,b,c,...). 출력 예시는 다음과 같아. [예시) 경복궁, 광화문 광장, 청와대]. 그리고 한국어로 말해줘. 예시는 대답하지마." +
+                "requestType: 'activity_spot'이 있으면 너가 그 데이터를 토대로 나에게 '액티비티한 데이트 코스'를 추천해줘. 총 10개를 말해주고 한글 9글자 이하인 장소 이름만 말해줘.다른 건 말하지 말고 결과만 나열해(예시 - a,b,c,...). 출력 예시는 다음과 같아.[예시) 홍대 점핑배틀, 홍대 액티브모드]. 그리고 한국어로 말해줘. 예시는 포함시키지마." +
+                "requestType: 'season_spot'이 있으면 'LocalDate' 값을 읽고 현재의 계절을 고려해서 '계절에 어울리는 데이트 코스'를 추천해줘. 총 10개를 말해주고 한글 9글자 이하인 장소 이름만 말해줘. 다른 건 말하지 말고 결과만 나열해(예시 - a,b,c,...). 그리고 한국어로 말해줘." +
+
+                "조건: %s";
         // GPT 요청 프롬프트 구성
         String formattedPrompt1 = String.format(
                 query1

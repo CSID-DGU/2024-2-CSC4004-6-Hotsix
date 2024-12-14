@@ -12,6 +12,7 @@ import Bingo from './components/Bingo.js';
 import ContentCarousel from './components/ContentCarousel.js';
 import ChatWindow from './components/ChatWindow.js';
 import Setting from './components/Setting.js'; // Setting 컴포넌트 추가
+import { ResultProvider } from './components/ResultContext.js';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -33,41 +34,44 @@ function App() {
   const toggleSetting = () => setPage('settings');
  
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path='/login' element = {<Login />} />
-          <Route path='/community' element = {<Community />} />
-          <Route path='/recommendation-course' element = {< RecommendationCourse/>} />
-          <Route path='/recommendation-course-result' element = {< RecommendationResult/>} />
-          <Route path='/bingo' element = {<Bingo/>} />
-          <Route path='/survey' element = {< SurveyForm/>} />
-          <Route path='/signup' element = {< Signup/>} />
-          <Route path='/mypage' element = {< MyPage/>} />
-          <Route path="/settings" element={<Setting />} /> {/* Setting 페이지 추가 */}
-          <Route path='/'       element = {
-          <>
-            <ContentCarousel/>
-            <ChatWindow />
-          </>}/>
-        </Routes>
-        <Header
-          isLoggedIn={isLoggedIn}
-          setIsLoggedIn={setIsLoggedIn}
-          user={user}
-          onLoginClick={toggleLogin}
-          onHomeClick={toggleHome}
-          onCommunityClick={toggleCommunity}
-          onRecommendationCourseClick={toggleRecommendationCourse}
-          // onRecommendationResultClick={toggleRecommendationResult}
-          // onBingoClick={toggleBingo}
-          onSurveyClick={toggleSurvey}
-          onSignupClick={toggleSignup}
-          onMyPageClick={toggleMyPage}
-          onSettingClick={toggleSetting}
-        />
-      </BrowserRouter>
-    </div>
+    <ResultProvider>
+      <div className="App">
+        <BrowserRouter>
+          <Routes>
+            <Route path='/login' element = {<Login />} />
+            <Route path='/community' element = {<Community />} />
+            <Route path='/recommendation-course' element = {< RecommendationCourse/>} />
+            <Route path='/recommendation-course-result' element = {< RecommendationResult/>} />
+            <Route path="/RecommendationResult" element={<RecommendationResult />} />
+            <Route path='/bingo' element = {<Bingo/>} />
+            <Route path='/survey' element = {< SurveyForm/>} />
+            <Route path='/signup' element = {< Signup/>} />
+            <Route path='/mypage' element = {< MyPage/>} />
+            <Route path="/settings" element={<Setting />} /> {/* Setting 페이지 추가 */}
+            <Route path='/'       element = {
+            <>
+              <ContentCarousel/>
+              <ChatWindow />
+            </>}/>
+          </Routes>
+          <Header
+            isLoggedIn={isLoggedIn}
+            setIsLoggedIn={setIsLoggedIn}
+            user={user}
+            onLoginClick={toggleLogin}
+            onHomeClick={toggleHome}
+            onCommunityClick={toggleCommunity}
+            onRecommendationCourseClick={toggleRecommendationCourse}
+            // onRecommendationResultClick={toggleRecommendationResult}
+            // onBingoClick={toggleBingo}
+            onSurveyClick={toggleSurvey}
+            onSignupClick={toggleSignup}
+            onMyPageClick={toggleMyPage}
+            onSettingClick={toggleSetting}
+          />
+        </BrowserRouter>
+      </div>
+    </ResultProvider>
     );
   }
 export default App;
