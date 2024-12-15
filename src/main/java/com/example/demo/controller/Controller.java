@@ -123,14 +123,14 @@ public class Controller {
 //                    이 부분 본인 프로젝트 디렉토리 경로로 변경
 
 //                     명훈 디렉토리 경로1
-				"C:\\Users\\pc\\Desktop\\Hotsix\\" +
+//				"C:\\Users\\pc\\Desktop\\Hotsix\\" +
 //                    명훈 디렉토리 경로2
-//                "/Users/jinmyeonghun/Desktop/3-2/공소/2024-2-CSC4004-6-Hotsix/" +
+                "/Users/jinmyeonghun/Desktop/3-2/공소/2024-2-CSC4004-6-Hotsix/" +
 //
                         //여기는 윈도우 공통 경로
-						"src\\main\\resources\\static\\asset\\Images\\postImage\\";
+//						"src\\main\\resources\\static\\asset\\Images\\postImage\\";
                         //여기는 mac 공통 경로
-//                        "src/main/resources/static/asset/Images/userProfile/";
+                        "src/main/resources/static/asset/Images/userProfile/";
 
         String fileName = profile.getOriginalFilename();
 
@@ -258,5 +258,21 @@ public class Controller {
                 "expectedBudget", user.getExpectedBudgetRange() != null ? user.getExpectedBudgetRange() : "N/A"
         ));
     }
-
+    @GetMapping("/accumulateBingoPoint")
+    public void accumulateBingoPoint(@RequestParam("userId")String userId,
+                                     @RequestParam("bingoPoint")Long bingoPoint
+    ){
+        UserDomain user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+        user.setBingoPoint(user.getBingoPoint() + bingoPoint);
+        userRepository.save(user);
+    }
+    @GetMapping("/getBingoPoint/{id}")
+    public ResponseEntity<?> getBingoPoint(@PathVariable String id){
+        UserDomain user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
+        return ResponseEntity.ok().body(Map.of(
+                "bingoPoint" ,user.getBingoPoint()
+        ));
+    }
 }

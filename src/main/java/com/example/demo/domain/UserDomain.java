@@ -109,8 +109,10 @@ public class UserDomain {
 //    @Column(nullable = false)
     private String dayBudgetRange;
 
+//--------------------------------------------------- 빙고 포인트 -------------------------------------------------------//
 
-
+    //빙고 포인트 (초기값 0 으로 고정)
+    private Long bingoPoint = 0L;
 
     public UserDomain(String id,String password,String userName,Date birthDate,String phoneNum,String profileImagePath,boolean isFirstLogin){
         this.id = id;

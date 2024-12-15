@@ -7,12 +7,17 @@ import { useNavigate } from 'react-router-dom';
 
 function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyPageClick, onLoginClick, onSignupClick, onSurveyClick,onRecommendationCourseClick,onSettingClick}) {
 
-  const fallbackImagePath = "/asset/Images/altImage/alt.png"; // 대체 이미지 경로
+  const fallbackImagePath = "alt.png"; // 대체 이미지 경로
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [profileImagePath, setProfileImagePath] = React.useState("");
   // const [isLoggedIn, setIsLoggedIn] = React.useState(!!sessionStorage.getItem("ID"));
   // const navigate = useNavigate();
+
+   // Dynamically generate image paths
+  const getProfileImagePath = (filename) => `/uploads/userProfile/${filename}`;
+  const getAltImagePath = (filename) => `/uploads/altImage/${filename}`;
+  const getLogoImagePath = (filename) => `/uploads/logo/${filename}`;
 
   const id = sessionStorage.getItem("ID");
   // 로그인 상태 확인
@@ -75,19 +80,19 @@ function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyP
     React.createElement('header', { className: 'header' },
       React.createElement('div', { className: 'left-group' },
         React.createElement('div', { className: 'logo', onClick: (e) => { e.preventDefault(); onHomeClick();  navigate('/'); } },
-          React.createElement('img', { src: '/asset/Images/logo/로고.png', alt: '어디갈래 로고' })
+          React.createElement('img', { src: getLogoImagePath('logo.png'), alt: '어디갈래 로고' })
         ),
         React.createElement('nav', { className: 'nav' },
           React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onCommunityClick(); navigate('/community'); } }, '커뮤니티'),
             isLoggedIn ?
             //로그인 되어 있는 경우
             [
-              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/recommendation-course'); }}, '사용자 맞춤 코스 추천 & 미니게임'),
+              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/recommendation-course'); }}, '오늘의 코스 추천 & 미니게임'),
 //              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); navigate('/bingo'); },},'빙고 게임')
             ] : 
             //로그인 안되어 있는 경우
             [
-              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/login'); }}, '사용자 맞춤 코스 추천 & 미니 게임'),
+              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); onRecommendationCourseClick();navigate('/login'); }}, '오늘의 코스 추천 & 미니 게임'),
 //              React.createElement('a', { href: '#', onClick: (e) => { e.preventDefault(); navigate('/login'); },},'빙고 게임')
             ]
         ),
@@ -127,9 +132,9 @@ function Header({ isLoggedIn, setIsLoggedIn,onHomeClick, onCommunityClick, onMyP
           },
           React.createElement('img', {
               key: 'profile-img', // 고유한 key 추가
-              src: profileImagePath ? `/asset/Images/userProfile/` + profileImagePath : fallbackImagePath,
+              src: profileImagePath ? getProfileImagePath(profileImagePath) : getAltImagePath(fallbackImagePath),
               onError: (e) => {
-                 e.target.src = fallbackImagePath; }, // 이미지 로드 실패 시 대체 이미지로 변경
+                 e.target.src = getAltImagePath(fallbackImagePath); }, // 이미지 로드 실패 시 대체 이미지로 변경
               alt: 'No Image'
           }),
           isDropdownOpen &&

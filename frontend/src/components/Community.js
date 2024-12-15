@@ -61,7 +61,7 @@ function Community() {
           return response.json();
       })
       .then(data => {
-          setProfileImagePath(data.profileImagePath); // 사용자 이름 설정
+          setProfileImagePath(data.profileImagePath); // 
       })
       .catch(error => {
           console.error('Error fetching user data:', error);

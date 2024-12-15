@@ -21,7 +21,10 @@ function RecommendationCourse() {
   // 检查 localStorage 中是否有 GameTask
   useEffect(() => {
     const storedGameTask = localStorage.getItem('GameTask');
-    if (storedGameTask) {
+    console.log(localStorage.getItem('result'));
+    const isExistResult = !!localStorage.getItem('result');
+    console.log(isExistResult);
+    if (storedGameTask || isExistResult) {
       setShowPrompt(true); // 如果存在 GameTask，显示弹窗
     }
   }, []);
@@ -29,7 +32,7 @@ function RecommendationCourse() {
   // 用户选择使用现有任务
   const handleUseExistingTask = () => {
     setShowPrompt(false);
-    navigate('/RecommendationResult'); // 跳转到结果页面
+    navigate('/recommendation-course-result'); // 跳转到结果页面
   };
 
   // 用户选择生成新任务
@@ -72,6 +75,7 @@ function RecommendationCourse() {
         headers: { 'Content-Type': 'application/json' },
       });
       if (response.ok) {
+        localStorage.removeItem('result');
         alert('제출되었습니다!');
         // 제출 후 추천 결과 페이지로 이동
         navigate('/recommendation-course-result');

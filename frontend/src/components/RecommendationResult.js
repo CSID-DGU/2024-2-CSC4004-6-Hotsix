@@ -115,7 +115,7 @@ const getGPTResult = async (prompt) => {
     <>
       <h2>추천 코스</h2>
       {/* \n 줄바꿈을 <br />로 변환하여 렌더링 */}
-      <p>
+      <p className='recommendation'>
         {result.split('\n').map((line, index) => (
           <React.Fragment key={index}>
             {line}

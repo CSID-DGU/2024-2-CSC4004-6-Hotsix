@@ -8,11 +8,15 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 function Bingo() {
   const { result } = useContext(ResultContext);
+  const [loading,setLoading] = useState(true);
   const [board, setBoard] = useState([]);
   const [bingoCount, setBingoCount] = useState(0);
+  const userId = sessionStorage.getItem("ID");
+  const storedResult = localStorage.getItem('result');
+  
   
   const navigate = useNavigate();
-  //const result = '노원에서 밥먹고 카페가고 노래방가고 사진찍기';
+
   const updateBoard = (activities) => {
     const rows = [];
     for (let i = 0; i < 3; i++) {
@@ -28,9 +32,25 @@ function Bingo() {
     // courses를 기반으로 GPT에 활동 추천 요청
     // 예: prompt: "다음 장소들에 대해 각각 할만한 재미있는 활동을 한 문장씩 총 9개 추천해줘: '경복궁', '남산타워', ..."
 
+    const AccumulateBingoPoint = (bingoCount) => {
+      axios
+        .get(`/accumulateBingoPoint`, {
+          params: {
+            userId: userId,
+            bingoPoint: bingoCount * 300,
+          },
+          headers: { 'Content-Type': 'application/json' },
+        })
+  };
+
   const fetchBingoActivities = async () => {
     const prompt = `
-      내가 다음과 같이 시간과 장소, 요약에 대해 추천 받았어. 시간이랑 요약내용은 무시하고 각각의 장소에서 할 수 있는 미션 총 9개 말해줘. 장소당 여러 개의 미션을 줘도 돼. 출력은 '(장소명)에서 (미션)하기' 형태로 각 줄에 하나씩. 다른 내용 없이 오직 활동 목록만. 
+      내가 다음과 같이 시간과 장소, 요약에 대해 추천 받았어. 
+      시간이랑 요약내용은 무시하고 각각의 장소에서 할 수 있는 미션 총 9개 말해줘. 
+      장소당 여러 개의 미션을 줘도 돼. 
+      출력은 '(장소명)에서 (미션)하기' 형태로 각 줄에 하나씩.
+      다른 내용 없이 오직 활동 목록만.
+      모든 빙고 미션에서 지역명은 생략해줘. 
       추천 내용 : ${result}`;
 
     try {
@@ -45,6 +65,7 @@ function Bingo() {
 
       // 更新游戏板
       updateBoard(activities);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching bingo activities:', error);
     }
@@ -53,6 +74,7 @@ function Bingo() {
   useEffect(() => {
     // 优先从 LocalStorage 加载 GameTask
     const storedGameTask = localStorage.getItem('GameTask');
+    setLoading(storedGameTask ? false : true);
     if (storedGameTask) {
       const activities = JSON.parse(storedGameTask);
       updateBoard(activities);
@@ -94,35 +116,43 @@ function Bingo() {
   };
 
   return (
-    <div className="bingo-game">
-      <h2>Bingo Game</h2>
-      <div className="bingo-board">
-        {board.map((row, rowIndex) => (
-          <div key={rowIndex} className="bingo-row">
-            {row.map((cell, colIndex) => (
-              <div
-                key={colIndex}
-                className="bingo-cell"
-                onClick={() => handleClick(rowIndex, colIndex)}
-              >
-                <div className="cell-text">{cell.text}</div>
-                {cell.value && <span>{cell.value}</span>}
-              </div>
-            ))}
-          </div>
-        ))}
+      <div className="bingo-game">
+  {loading ? (
+    <p>Loading...</p>
+  ) : (
+    <>
+        <h2>Bingo Game</h2>
+        <div className="bingo-board">
+          {board.map((row, rowIndex) => (
+            <div key={rowIndex} className="bingo-row">
+              {row.map((cell, colIndex) => (
+                <div
+                  key={colIndex}
+                  className="bingo-cell"
+                  onClick={() => handleClick(rowIndex, colIndex)}
+                >
+                  <div className="cell-text">{cell.text}</div>
+                  {cell.value && <span>{cell.value}</span>}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <p className="turn-indicator">Bingo Lines Completed: {bingoCount}</p>
+        <button
+          className="bingo-complete-button"
+          onClick={() => {
+            AccumulateBingoPoint(bingoCount);
+            localStorage.removeItem('GameTask');
+            alert('빙고 포인트 적립완료!');
+            navigate('/');
+          }}
+        >
+          빙고게임 완료
+        </button>
+    </>
+  )}
       </div>
-      <p className="turn-indicator">Bingo Lines Completed: {bingoCount}</p>
-      <button
-        className="bingo-complete-button"
-        onClick={() => {
-          alert('빙고 포인트 적립완료!');
-          navigate('/');
-        }}
-      >
-        빙고게임 완료
-      </button>
-    </div>
   );
 }
 

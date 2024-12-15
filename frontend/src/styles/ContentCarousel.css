@@ -14,27 +14,27 @@
 }
 
 .carousel-container {
+  position: relative;
+  overflow: scroll; /* 내용이 영역을 넘지 않도록 설정 */
+  overflow-x: scroll;
   display: flex;
   align-items: center;
-  position: relative;
   justify-content: center;
-  overflow: hidden; /* content 범위를 넘지 않도록 설정 */
-  scroll-behavior: smooth;
   width: 100%; /* 전체 너비 */
-  /* overflow: hidden; 스크롤바 숨김 */
+  padding: 0; /* 컨텐츠와 버튼 사이 여백 제거 */
 }
+
 
 .carousel-content {
   display: flex;
   position: relative;
-  width: 80%; /* 콘텐츠가 중앙에 위치 */
-  overflow-x: scroll; /* 스크롤 활성화 */
+  width: 60%; /* 콘텐츠가 중앙에 위치 */
+  overflow-x: auto; 
   scroll-behavior: smooth;
-  /* overflow: hidden; 스크롤바 숨김 */
 }
 
 .carousel-item {
-  flex-shrink: 0; /* 아이템 크기를 유지 */
+  flex: 0 0 auto; /* 크기 고정 */
   min-width: 200px; /* 아이템 최소 너비 */
   height: 150px;
   margin-right: 10px; /* 아이템 간격 */
@@ -47,8 +47,10 @@
   color: white;
   transition: all 0.3s ease; /* 부드러운 전환 */
   overflow: hidden; /* 내부 내용 넘치지 않도록 */
+  cursor: pointer;
 }
 
+/* 확장 시 */
 .carousel-item.expanded {
   z-index: 10; /* 확장된 아이템이 다른 요소 위로 */
   min-width: 500px; /* 확장된 너비 */
@@ -56,6 +58,25 @@
   background-color: #555;
   flex-direction: column;
   transition: all 0.3s ease;
+  position: relative;
+  cursor: default;
+}
+
+.expanded-content {
+  max-width: 300px; /* 원하는 크기로 설정 */
+  padding: 10px;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  word-wrap: break-word; /* 줄바꿈 */
+  word-break: break-word; /* 긴 단어 줄바꿈 */
+  overflow-wrap: break-word; /* 최신 브라우저 지원 */
+  white-space: pre-wrap; /* 줄바꿈(\n) 유지 */
+}
+
+
+.expanded-content h3, .expanded-content p {
+  margin: 0 0 10px 0; /* 간격 조정 */
 }
 
 .carousel-item.expanded.to-left {
@@ -65,7 +86,9 @@
 .carousel-item.expanded.to-right {
   transform-origin: left center; /* 왼쪽을 기준으로 확장 */
 }
-
+.expanded-title{
+  text-align: center;
+}
 .expanded-content {
   margin-top: 10px;
   font-size: 16px;
@@ -78,52 +101,28 @@
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
   overflow: hidden;
-  text-align: center; /* 텍스트 중앙 정렬 */
+  text-align: left; /* 텍스트 좌측 정렬 */
   word-wrap: break-word; /* 텍스트 줄바꿈 */
 }
 
-.carousel-button {
-  background-color: white;
-  border: none;
-  color: #ffd1dc;
-  font-size: 48px;
-  cursor: pointer;
-  width: 40px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2; /* 버튼이 다른 요소 위에 위치 */
-  position: absolute; /* 위치를 고정 */
-  top: 50%; /* 수직 중앙 정렬 */
-  transform: translateY(-50%); /* 중앙으로 이동 */
-  opacity: 0; /* 기본적으로 숨김 */
-  transition: opacity 0.3s ease;
-}
-.carousel-content::-webkit-scrollbar {
-  display: none; /* Chrome/Safari: 스크롤바 숨김 */
-}
 
-.carousel-button.prev {
-  left: 0; /* 왼쪽 버튼 위치 */
-}
 
-.carousel-button.next {
-  right: 0; /* 오른쪽 버튼 위치 */
-}
-
-.carousel-button:focus,
-.carousel-button:active {
-  background-color: white;
-  color: #ffd1dc;
-  outline: none;
-  border: none;
-}
-
-.carousel-button:hover {
-  background-color: white !important;
-  color: #ffd1dc;
-}
 .chat-input{
   display: none;
+}
+/* 닫기버튼 */
+.collapse-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #ff5f5f;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.collapse-button:hover {
+  background-color: #d93b58; /* 호버 시 색상 변경 */
 }

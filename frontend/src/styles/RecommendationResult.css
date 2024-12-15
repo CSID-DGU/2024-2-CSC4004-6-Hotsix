@@ -12,12 +12,15 @@
   line-height: 1.6; /* 가독성을 높이기 위한 줄 간격 */
   height: auto; /* 높이 설정 변경 */
   position: absolute; /* 위치 설정 */
-  top: 50%; /* 세로 가운데 정렬 */
+  top: 10%; /* 세로 가운데 정렬 */
   left: 50%; /* 가로 가운데 정렬 */
-  transform: translate(-50%, -50%); /* 가운데 정렬을 위한 변환 */
+  transform: translateX(-50%); /* 가운데 정렬을 위한 변환 */
   overflow-y: auto; /* 내용이 길 경우 스크롤 추가 */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 추가 */
   border-radius: 12px; /* 모서리를 둥글게 */
+
+
+  
 }
 
 
@@ -61,7 +64,9 @@
   background-color: #41729f; /* 버튼 호버 색상 */
   transform: scale(1.05); /* 호버 시 살짝 커짐 */
 }
-
+.recommendation{
+  font-size: 1.2rem;
+}
 /* 로딩 텍스트 스타일 */
 .recommendation-result p.loading {
   font-size: 1.2rem;

@@ -12,12 +12,39 @@ function MyPage() {
   const [userName, setUserName] = useState('');
   const id = sessionStorage.getItem("ID"); // 저장된 사용자 ID 가져오기
   const [profileImagePath, setProfileImagePath] = React.useState("");
-  const fallbackImagePath = "/asset/Images/altImage/alt.png"; // 대체 이미지 경로
-  const fallbackthumnail = "/asset/Images/altImage/altposts.png"; // 대체 이미지 경로
+  const fallbackImagePath = "alt.png"; // 대체 이미지 경로
+  const fallbackthumnail = "altposts.png"; // 대체 이미지 경로
 
   const [thumbnails, setThumbnails] = useState([]); //썸네일
   const [postCount, setPostCount] = useState(0); // 게시물 개수
+  const [bingoPoint,setBingoPoint] = useState(0); //빙고 포인트
 
+  const getBingoPoint = () => {
+    fetch(`/getBingoPoint/${id}`,{
+      method: 'GET',
+      headers:{
+        'Content-Type':'application/json',
+        },
+      }
+    )
+    .then(response => {
+      if(!response.ok){
+        throw new Error('Failed to fetch user data');
+      }
+      return response.json();
+    })
+    .then(data => {
+      setBingoPoint(data.bingoPoint);
+    })
+    .catch(error => {
+      console.error('Error fetching user data:', error);
+  })
+  };
+
+  // Dynamically generate image paths
+  const getPostImagePath = (filename) => `/uploads/postImage/${filename}`;
+  const getProfileImagePath = (filename) => `/uploads/userProfile/${filename}`;
+  const getAltImagePath = (filename) => `/uploads/altImage/${filename}`;
 
   if(id){
       fetch(`/userNameAndUserProfile/${id}`, { // 유저 프로필,이름 요청
@@ -42,6 +69,7 @@ function MyPage() {
   }
   //사용자 게시글 가져오기
   useEffect(() => {
+    getBingoPoint();
     if (!id) return;
 
     fetch(`/posts/getUserPosts/${id}`,{
@@ -69,8 +97,8 @@ return (
     React.createElement('div', { className: 'profile-section' },
       React.createElement('img', {  
         className: 'profile-picture' , 
-        src: profileImagePath ? `/asset/Images/userProfile/` + profileImagePath : fallbackImagePath,
-        onError: (e) => { e.target.src = fallbackImagePath; }, // 이미지 로드 실패 시 대체 이미지로 변경
+        src: profileImagePath ? getProfileImagePath(profileImagePath) : getAltImagePath(fallbackImagePath),
+        onError: (e) => { e.target.src = getAltImagePath(fallbackImagePath); }, // 이미지 로드 실패 시 대체 이미지로 변경
         alt: 'No Image'
         }
       ),
@@ -80,8 +108,7 @@ return (
         ),
         React.createElement('div', { className: 'stats' },
           React.createElement('div', { className: 'stat' }, `게시물 ${postCount}`),
-          React.createElement('div', { className: 'stat' }, '팔로워 0'),
-          React.createElement('div', { className: 'stat' }, '팔로우 0')
+          React.createElement('div', { className: 'stat' }, `빙고 포인트 ${bingoPoint} point`),
         )
       )
     ),
@@ -95,8 +122,8 @@ return (
         React.createElement('img', {
             key: index,
             className: 'feed-item',
-            src: thumbnail ?  `/asset/Images/postImage/${thumbnail}` : fallbackthumnail,
-            onError: (e) => { e.target.src = fallbackthumnail; },
+            src: thumbnail ?   getPostImagePath(thumbnail) : getAltImagePath(fallbackthumnail),
+            onError: (e) => { e.target.src = getAltImagePath(fallbackthumnail); },
             alt: `No Image`
           })
       )

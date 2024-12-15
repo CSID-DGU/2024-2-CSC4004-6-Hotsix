@@ -153,7 +153,7 @@ const formData1 = {
 
   
       // 주당 만남 횟수
-      React.createElement('label', null, '2. 주당 만남 횟수'),
+      React.createElement('label', null, '2. 주당 만남 횟수 (0 ~ 7)'),
       React.createElement('input', {
         type: 'number',
         name: 'meetingFrequency',
@@ -200,32 +200,6 @@ const formData1 = {
        onChange: handleRelationshipDateChange,
         required: true,
       }),
-  
-      // // 액티비티 선호 유무
-      // React.createElement('label', null, '5. 액티비티 선호 유무'),
-      // React.createElement( 
-      //   'select',
-      //   {
-      //     name: 'activityPreference',
-      //    value: activityPreference,
-      //    onChange: handleActivityPreferenceChange,
-      //     required: true,
-      //   },
-      //   React.createElement('option', { value: '' }, '선택하세요'),
-      //   React.createElement('option', { value: 'true' }, '예'),
-      //   React.createElement('option', { value: 'false' }, '아니요')
-      // ),
-  
-      // // 필수 코스
-      // React.createElement('label', null, '6. 필수 코스'),
-      // React.createElement('textarea', {
-      //   name: 'mustVisitCourse',
-      //  value: formData.mustVisitCourse,
-      //  onChange: handleChange,
-      //   placeholder: '예: 롯데월드, 한강공원',
-      //   rows: 3,
-      //   required: true,
-      // }),
   
       // 선호 코스
       React.createElement('label', null, '6. 선호 코스'),
