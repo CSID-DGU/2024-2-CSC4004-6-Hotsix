@@ -1,11 +1,17 @@
 package com.example.demo;
 
+import jakarta.annotation.PostConstruct;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,16 +22,26 @@ import java.net.http.HttpResponse;
 import static java.awt.SystemColor.text;
 
 //import static java.awt.SystemColor.text;
-
+@Component
 public class OpenAIApi {
 
-    private static final String API_KEY =
-            "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"
-            ;
+
+    @Autowired
+    private Environment env;
+
+
+    private final String API_KEY;
+
+    public OpenAIApi(Environment env) {
+        this.API_KEY = env.getProperty("OPENAI_API_KEY");
+        if (this.API_KEY == null || this.API_KEY.isEmpty()) {
+            throw new IllegalStateException("API_KEY가 설정되지 않았습니다.");
+        }
+    }
 
     // GPT API 호출 메서드: 장소 추천
     public String ask(String prompt) throws JSONException {
-
+        System.out.println("Loaded API Key: " + API_KEY);
         //
         boolean isRecommendationResult = prompt.contains("isNotCarousel");
         boolean isCarousel = prompt.contains("requestType");

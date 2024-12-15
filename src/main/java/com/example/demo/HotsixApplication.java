@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HotsixApplication {
 
 	public static void main(String[] args) {
+		EnvLoader.loadEnv();
 		SpringApplication.run(HotsixApplication.class, args);
 	}
 
