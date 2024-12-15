@@ -35,9 +35,11 @@ function Community() {
     이벤트: '이벤트',
   };
 
+  const altProfile = 'alt.png';
   // Dynamically generate image paths
   const getPostImagePath = (filename) => `/uploads/postImage/${filename}`;
-
+  const getUserProfile = (filename) => `/uploads/userProfile/${filename}`;
+  const getAltImage = (filename) => `/uploads/altImage/${filename}`;
 
   // 유저 이름 가져오기
   const [userName, setUserName] = useState('');
@@ -450,10 +452,10 @@ function Community() {
           <div className="card">
             <form className="logged">
               <img 
-                  src={`/asset/Images/userProfile/${profileImagePath}`} 
+                  src= {profileImagePath ? getUserProfile(profileImagePath) : getAltImage(altProfile)}
                   className="picture" 
                   alt="User" 
-                  onError={(e) => e.target.src = '/asset/Images/altImage/alt.png'} 
+                  onError={(e) => e.target.src = getAltImage(altProfile)} 
               />
               <p className="nickname">{userName}</p>
             </form>
