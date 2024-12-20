@@ -9,7 +9,6 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.PostRep;
 import com.example.demo.repository.PostVoterRep;
 import com.example.demo.repository.UserRep;
-//import com.example.demo.exception.ResourceNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,15 +37,12 @@ public class PostSer {
 	private final UserRep userRep;
 	private final PostVoterRep postVoterRep;
 
-
 	public List<PostDomain> getAllPosts() {
 		return postRep.findAll();
 	}
 
 	public PostDomain getPostById(Long id) {
-
 		return postRep.findWithAuthorById(id).get();
-
 	}
 
 	public PostDomain updatePost(Long id, PostDomain post) {
@@ -62,7 +58,6 @@ public class PostSer {
 		postRep.deleteById(id);
 	}
 
-	// DTO Conversion
 	public PostDTO convertToDto(PostDomain post) {
 		PostDTO dto = new PostDTO();
 		dto.setId(post.getPostId());
@@ -79,10 +74,8 @@ public class PostSer {
 			dto.setAuthorName("Unknown");
 		}
 		dto.setPostImagesNames(post.getPostImages());
-
 		return dto;
 	}
-
 
 	public List<PostDomain> findPostsByCategory(String category) {
 		return postRep.findByCategory(category);
@@ -92,7 +85,6 @@ public class PostSer {
 		return postRep.findTop4ByCategoryOrderByCreateDateDesc(category);
 	}
 
-	// like
 	@Transactional
 	public int likePost(Long postId, Long userId) {
 		PostDomain post = postRep.findById(postId)
@@ -115,7 +107,6 @@ public class PostSer {
 		return post.getLikes();
 	}
 
-	//unlike
 	@Transactional
 	public int unlikePost(Long postId, Long userId) {
 		PostDomain post = postRep.findById(postId)
@@ -145,23 +136,29 @@ public class PostSer {
 		return postVoterRep.existsByPostAndVoter(post, user);
 	}
 
-
 	public String saveFile(MultipartFile file) {
-		String Dir ="/home/ubuntu/hotsix/images/postImage/";
+		String Dir = "/home/ubuntu/hotsix/images/postImage/";
 		String fileName = file.getOriginalFilename();
-
-
-//		String filePath = Dir + UUID.randomUUID() + "_" + fileName; // 고유 파일명 생성
 
 		try {
 			File dest = new File(Dir + fileName);
-			file.transferTo(dest); // 파일 저장
+			file.transferTo(dest);
 			System.out.println("파일 저장 성공");
 			System.out.println(Dir + fileName);
 			return fileName;
 		} catch (IOException e) {
 			System.out.println("파일 저장 실패");
 			throw new RuntimeException("Failed to save file: " + fileName, e);
+		}
+	}
+
+	public void archiveOldPosts() {
+		List<PostDomain> posts = postRep.findAll();
+		for (PostDomain post : posts) {
+			if (post.getCreateDate().isBefore(LocalDateTime.now().minusDays(365))) {
+				String temp = post.getSubject();
+				temp.length();
+			}
 		}
 	}
 
