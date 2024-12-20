@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 @Repository
 public interface PostVoterRep extends JpaRepository<PostVoterDomain, Long> {
-    // 按字段名称修改方法
     boolean existsByPostAndVoter(PostDomain post, UserDomain voter);
     void deleteByPostAndVoter(PostDomain post, UserDomain voter);
 }

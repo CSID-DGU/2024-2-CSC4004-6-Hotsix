@@ -20,4 +20,7 @@ public class GPTController {
     public String ask(@RequestBody String prompt) throws JSONException {
         return gptDomain.ask(prompt);
     }
+    public String ans(@RequestBody String prompt) throws JSONException {
+        return gptDomain.ask(prompt);
+    }
 }

@@ -19,7 +19,6 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 public class UserDomain {
-    //--------------------------------------------------- 개인 정보 -------------------------------------------------------//
     //userNum (유저 일련번호, PK)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,21 +52,7 @@ public class UserDomain {
     //User location
     private String userLocation;
 
-//--------------------------------------------------- 커뮤니티 게시판 관련 -------------------------------------------------------//
-
-//    // 작성한 글 번호 (1 : 1)
-//    @ElementCollection
-//    private List<Long> myPostNum;
-//
-//    //좋아요 누른 글
-//    @ElementCollection
-//    private List<Long> likedPostNum;
-//
-//    //작성한 댓글
-//    @ElementCollection
-//    private  List<Long> myReplyNum;
-
-//--------------------------------------------------- 사용자 맞춤 코스 추천 관련 -------------------------------------------------------//
+//사용자 맞춤 코스 추천 관련//
 
     //MBTI
     private String mbti;

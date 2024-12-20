@@ -147,18 +147,7 @@ public class PostSer {
 
 
 	public String saveFile(MultipartFile file) {
-		String Dir =
-//                    이 부분 본인 프로젝트 디렉토리 경로로 변경
-
-//                     명훈 디렉토리 경로1
-//				"C:\\Users\\pc\\Desktop\\Hotsix\\" +
-//                    명훈 디렉토리 경로2
-				"/Users/jinmyeonghun/Desktop/3-2/공소/2024-2-CSC4004-6-Hotsix/" +
-//
-						//여기는 윈도우 공통 경로
-//						"src\\main\\resources\\static\\asset\\Images\\postImage\\";
-						//여기는 mac 공통 경로
-						"src/main/resources/static/asset/Images/postImage/";
+		String Dir ="/home/ubuntu/hotsix/images/postImage/";
 		String fileName = file.getOriginalFilename();
 
 

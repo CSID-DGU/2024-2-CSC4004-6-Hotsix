@@ -97,9 +97,9 @@ public class UserSer {
         Optional<UserDomain> userOptional = userRep.findById(id); // 通过 id 查找用户
 
         if (userOptional.isPresent()) {
-            return userOptional.get().getUserNum(); // 返回 userNum
+            return userOptional.get().getUserNum();
         } else {
-            return null; // 如果用户不存在，返回 null
+            return null;
         }
     }
 

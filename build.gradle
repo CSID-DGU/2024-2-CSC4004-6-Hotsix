@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'io.github.cdimascio:dotenv-java:2.3.0' // dotenv-java 의존성 추가
 	implementation 'org.json:json:20230618'
 	implementation 'org.jsoup:jsoup:1.15.4'
 	// Jackson Databind 추가
@@ -43,9 +44,13 @@ dependencies {
 	//JJWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON Parsing
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	implementation 'org.json:json:20230227'
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	testCompileOnly 'org.projectlombok:lombok:1.18.24'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 ////	OPEN API  의존성 추가
 //	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 //	implementation 'com.fasterxml.jackson.core:jackson-databind' // json 파싱

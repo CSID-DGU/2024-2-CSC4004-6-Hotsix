@@ -16,12 +16,11 @@ public class PostDTO {
     private String subject;
     private String content;
     private String category;
-    private Long authorUserNum;    // 作者 ID
-    private String authorName; // 作者姓名
+    private Long authorUserNum;
+    private String authorName;
     private LocalDateTime createDate;
-    private int likes;         // 点赞数
-    private boolean isLiked;   // 是否已点赞
-    //사진 저장
+    private int likes;
+    private boolean isLiked;
     private List<MultipartFile> postImages;
 
     private List<String> postImagesNames;

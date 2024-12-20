@@ -19,16 +19,8 @@ public class ImageController {
     @GetMapping("/postImage/{filename}")
     public ResponseEntity<Resource> getPostImage(@PathVariable String filename) {
         try {
-            String path =
-                    //윈도우 용 경로
-//                    "src\\main\\resources\\static\\asset\\Images\\postImage\\"
-                    //mac 용 경로
-                    "src/main/resources/static/asset/Images/postImage/"
-                    ;
-            // 指定路径为 src/main/resources/static/asset/Images/postImage
-            Path filePath = Paths.get(System.getProperty("user.dir"))
-                    .resolve(path)
-                    .resolve(filename);
+            String path="/home/ubuntu/hotsix/images/postImage/";
+            Path filePath = Paths.get(path, filename);
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() || resource.isReadable()) {
@@ -47,15 +39,8 @@ public class ImageController {
     public ResponseEntity<Resource> getProfileImage(@PathVariable String filename) {
         try {
             String path =
-                    //윈도우 용 경로
-//                    "src\\main\\resources\\static\\asset\\Images\\userProfile\\"
-                    //mac 용 경로
-                    "src/main/resources/static/asset/Images/userProfile/"
-                    ;
-            // 指定路径为 src/main/resources/static/asset/Images/postImage
-            Path filePath = Paths.get(System.getProperty("user.dir"))
-                    .resolve(path)
-                    .resolve(filename);
+                    "/home/ubuntu/hotsix/images/userProfile/";
+            Path filePath = Paths.get(path, filename);
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() || resource.isReadable()) {
@@ -73,16 +58,8 @@ public class ImageController {
     @GetMapping("/altImage/{filename}")
     public ResponseEntity<Resource> getAltImage(@PathVariable String filename) {
         try {
-            String path =
-                    //윈도우 용 경로
-//                    "src\\main\\resources\\static\\asset\\Images\\altImage\\"
-                    //mac 용 경로
-                    "src/main/resources/static/asset/Images/altImage/"
-                    ;
-            // 指定路径为 src/main/resources/static/asset/Images/postImage
-            Path filePath = Paths.get(System.getProperty("user.dir"))
-                    .resolve(path)
-                    .resolve(filename);
+            String path ="/home/ubuntu/hotsix/images/altImage/";
+            Path filePath = Paths.get(path, filename);
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() || resource.isReadable()) {
@@ -100,22 +77,14 @@ public class ImageController {
     @GetMapping("/logo/{filename}")
     public ResponseEntity<Resource> getLogoImage(@PathVariable String filename) {
         try {
-            String path =
-                    //윈도우 용 경로
-//                    "src\\main\\resources\\static\\asset\\Images\\logo\\"
-                    //mac 용 경로
-                    "src/main/resources/static/asset/Images/logo/"
-                    ;
-            // 指定路径为 src/main/resources/static/asset/Images/postImage
-            Path filePath = Paths.get(System.getProperty("user.dir"))
-                    .resolve(path)
-                    .resolve(filename);
+            String path ="/home/ubuntu/hotsix/images/logo/";
+            Path filePath = Paths.get(path, filename);
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() || resource.isReadable()) {
 
                 return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG) // 如果是 PNG 或其他类型可以修改
+                        .contentType(MediaType.IMAGE_JPEG)
                         .body(resource);
             } else {
                 return ResponseEntity.notFound().build();

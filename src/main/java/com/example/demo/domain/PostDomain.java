@@ -70,10 +70,23 @@ public class PostDomain {
         }
     }
     public LocalDateTime getPostDate() {
-        return this.createDate; // 或者 this.modifyDate
+        return this.createDate;
     }
     @PrePersist
     public void prePersist() {
         this.createDate = LocalDateTime.now();
+    }
+
+    public String getId() {
+        return "";
+    }
+
+    public void setStatus(String active) {
+    }
+
+    public void setViewCount(int i) {
+    }
+
+    public void setShareCount(int i) {
     }
 }
